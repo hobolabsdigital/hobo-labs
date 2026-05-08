@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useChat } from "ai/react";
 import {
   ReactFlow,
   Controls,
@@ -14,6 +15,7 @@ import "@xyflow/react/dist/style.css";
 
 import { HeroNode } from "./nodes/HeroNode";
 import { TextNode } from "./nodes/TextNode";
+import { ChatInput } from "./ChatInput";
 
 const initialNodes: Node[] = [
   {
@@ -38,6 +40,11 @@ export default function EditorialCanvas() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [isMobile, setIsMobile] = useState(false);
+
+  // Initialize Vercel AI SDK chat
+  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+    api: "/api/chat",
+  });
 
   const nodeTypes = useMemo(() => ({ hero: HeroNode, text: TextNode }), []);
 
@@ -68,6 +75,13 @@ export default function EditorialCanvas() {
       >
         <Controls showInteractive={false} />
       </ReactFlow>
+      
+      <ChatInput 
+        input={input}
+        handleInputChange={handleInputChange}
+        handleSubmit={handleSubmit}
+        isLoading={isLoading}
+      />
     </div>
   );
 }
