@@ -1,3 +1,9 @@
+import EditorialCanvas from "@/components/EditorialCanvas";
+
 export default function Home() {
-  return <main><h1>Portfolio Init</h1></main>;
+  return (
+    <main className="w-full h-screen overflow-hidden">
+      <EditorialCanvas />
+    </main>
+  );
 }
