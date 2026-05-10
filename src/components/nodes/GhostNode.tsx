@@ -1,0 +1,40 @@
+"use client";
+
+import React from 'react';
+import { Handle, Position } from "@xyflow/react";
+import { motion } from "framer-motion";
+
+export function GhostNode({ data }: { data: any }) {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="max-w-md p-6 bg-[var(--background)] relative border-l-4 border-dashed border-foreground/30 opacity-80"
+    >
+      {['top', 'right', 'bottom', 'left'].map(pos => {
+        const positionEnum = pos === 'top' ? Position.Top : pos === 'right' ? Position.Right : pos === 'bottom' ? Position.Bottom : Position.Left;
+        return (
+          <React.Fragment key={pos}>
+            <Handle type="target" position={positionEnum} id={pos} className="opacity-0" />
+            <Handle type="source" position={positionEnum} id={pos} className="opacity-0" />
+          </React.Fragment>
+        );
+      })}
+      
+      <div className="flex flex-col gap-4">
+        <motion.div 
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="font-mono text-xs font-bold uppercase tracking-widest bg-foreground/10 text-foreground self-start px-2 py-1"
+        >
+          [ THINKING... ]
+        </motion.div>
+        
+        <p className="text-lg font-mono text-foreground/50 leading-snug whitespace-pre-wrap break-words">
+          {data.text || "..."}
+        </p>
+      </div>
+    </motion.div>
+  );
+}

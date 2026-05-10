@@ -1,86 +1,147 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
-import { useChat } from "ai/react";
+import React, { useCallback, useEffect } from 'react';
 import {
   ReactFlow,
   Controls,
-  useNodesState,
-  useEdgesState,
+  Background,
   Node,
-  Edge,
-  PanOnScrollMode,
-} from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
+} from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
 
-import { HeroNode } from "./nodes/HeroNode";
-import { TextNode } from "./nodes/TextNode";
-import { ChatInput } from "./ChatInput";
+// Custom Nodes
+import { HeroNode } from './nodes/HeroNode';
+import { TextNode } from './nodes/TextNode';
+import { PromptNode } from './nodes/PromptNode';
+import { GhostNode } from './nodes/GhostNode';
+import { ChatInput } from './ChatInput';
+import { DebugPanel } from './DebugPanel';
+
+// Hooks and Store
+import { useCanvasStore } from '../store/useCanvasStore';
+import { useEditorialPhysics } from '../hooks/useEditorialPhysics';
+import { useEditorialChat } from '../hooks/useEditorialChat';
+import { useEdgeAnimations } from '../hooks/useEdgeAnimations';
+
+const nodeTypes = { hero: HeroNode, text: TextNode, prompt: PromptNode, ghost: GhostNode };
 
 const initialNodes: Node[] = [
   {
-    id: "welcome-node",
-    type: "text",
-    position: { x: 250, y: 150 },
-    data: { label: "Welcome to the Editorial Canvas." },
+    id: 'hero-1',
+    type: 'hero',
+    position: { x: 50, y: 50 },
+    data: {
+      headline: 'THE\nCREATIVE\nENGINE',
+      subline: 'I build experimental interfaces and AI-driven experiences.',
+      imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop'
+    },
   },
   {
-    id: "hero-demo",
-    type: "hero",
-    position: { x: 800, y: 100 },
-    data: { title: "MonstoryX", description: "A generative AI Tamagotchi", color: "var(--color-accent-lime)" },
+    id: 'text-1',
+    type: 'text',
+    position: { x: 800, y: 550 },
+    data: {
+      text: 'Exploring the intersection of brutalist design and generative AI. This canvas is alive.',
+      label: 'CONTEXT'
+    }
   }
 ];
 
-const initialEdges: Edge[] = [
-  { id: "e1", source: "welcome-node", target: "hero-demo", animated: true, style: { stroke: '#000', strokeWidth: 2 } }
-];
-
 export default function EditorialCanvas() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [isMobile, setIsMobile] = useState(false);
+  const nodes = useCanvasStore(state => state.nodes);
+  const edges = useCanvasStore(state => state.edges);
+  const onNodesChange = useCanvasStore(state => state.onNodesChange);
+  const onEdgesChange = useCanvasStore(state => state.onEdgesChange);
+  const onConnect = useCanvasStore(state => state.onConnect);
+  const setRfInstance = useCanvasStore(state => state.setRfInstance);
+  const setNodes = useCanvasStore(state => state.setNodes);
+  const setEdges = useCanvasStore(state => state.setEdges);
 
-  // Initialize Vercel AI SDK chat
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: "/api/chat",
-  });
-
-  const nodeTypes = useMemo(() => ({ hero: HeroNode, text: TextNode }), []);
-
+  // Initialize store if empty
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    handleResize(); // check on mount
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    if (useCanvasStore.getState().nodes.length === 0) {
+      setNodes(initialNodes);
+      setEdges([{ id: 'e-hero-1-text-1', source: 'hero-1', target: 'text-1' }]);
+    }
+  }, [setNodes, setEdges]);
+
+  // Activate custom hooks
+  useEditorialPhysics();
+  useEdgeAnimations();
+  const { input, setInput, handleSend, status } = useEditorialChat();
+
+  const onNodeDragStart = useCallback((event: React.MouseEvent, node: Node) => {
+    const simulation = useCanvasStore.getState().simulationRef;
+    if (!simulation) return;
+    
+    // Find the internal node
+    const simNode = simulation.nodes().find((n: any) => n.id === node.id);
+    if (simNode) {
+      simNode.fx = node.position.x;
+      simNode.fy = node.position.y;
+      
+      // Gentle heat to make the mesh elastic
+      simulation.alphaTarget(0.3).restart();
+    }
+  }, []);
+
+  const onNodeDrag = useCallback((event: React.MouseEvent, node: Node) => {
+    const simulation = useCanvasStore.getState().simulationRef;
+    if (!simulation) return;
+    
+    const simNode = simulation.nodes().find((n: any) => n.id === node.id);
+    if (simNode) {
+      simNode.fx = node.position.x;
+      simNode.fy = node.position.y;
+    }
+  }, []);
+
+  const onNodeDragStop = useCallback((event: React.MouseEvent, node: Node) => {
+    const simulation = useCanvasStore.getState().simulationRef;
+    if (!simulation) return;
+    
+    const simNode = simulation.nodes().find((n: any) => n.id === node.id);
+    if (simNode) {
+      if (node.id !== 'hero-1') {
+        simNode.fx = null;
+        simNode.fy = null;
+      }
+      // Let it cool down and snap back to equilibrium
+      simulation.alphaTarget(0);
+    }
   }, []);
 
   return (
-    <div className="w-full h-screen grid-bg relative">
+    <div className="w-full h-screen bg-[var(--background)] relative">
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        panOnDrag={!isMobile}
-        zoomOnScroll={!isMobile}
-        zoomOnDoubleClick={!isMobile}
-        panOnScroll={!isMobile}
-        panOnScrollMode={PanOnScrollMode.Free}
+        onConnect={onConnect}
+        onNodeDragStart={onNodeDragStart}
+        onNodeDrag={onNodeDrag}
+        onNodeDragStop={onNodeDragStop}
+        nodeTypes={nodeTypes}
+        onInit={setRfInstance}
+        proOptions={{ hideAttribution: true }}
         fitView
-        className="editorial-flow"
+        fitViewOptions={{ padding: 0.3, maxZoom: 1.2 }}
+        className="bg-grid"
+        minZoom={0.5}
+        maxZoom={2}
       >
-        <Controls showInteractive={false} />
+        <Background gap={24} size={2} color="var(--grid-color)" />
+        <Controls className="fill-foreground stroke-foreground" />
       </ReactFlow>
-      
-      <ChatInput 
+
+      <DebugPanel />
+
+      <ChatInput
         input={input}
-        handleInputChange={handleInputChange}
-        handleSubmit={handleSubmit}
-        isLoading={isLoading}
+        setInput={setInput}
+        onSubmit={(e) => { e.preventDefault(); handleSend(); }}
+        isLoading={status === 'submitted' || status === 'streaming'}
       />
     </div>
   );

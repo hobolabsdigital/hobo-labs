@@ -6,23 +6,23 @@ import { SendIcon } from "lucide-react";
 
 interface ChatInputProps {
   input: string;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  setInput: (value: string) => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   isLoading: boolean;
 }
 
-export function ChatInput({ input, handleInputChange, handleSubmit, isLoading }: ChatInputProps) {
+export function ChatInput({ input, setInput, onSubmit, isLoading }: ChatInputProps) {
   return (
-    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-50 pointer-events-auto">
+    <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-[100] pointer-events-auto">
       <form 
-        onSubmit={handleSubmit}
-        className="flex items-center gap-2 bg-background/80 backdrop-blur-md p-2 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-border"
+        onSubmit={onSubmit}
+        className="flex items-center gap-2 bg-background/95 backdrop-blur-2xl p-2 rounded-full shadow-2xl border border-border"
       >
         <Input 
           value={input}
-          onChange={handleInputChange}
+          onChange={(e) => setInput(e.target.value)}
           placeholder="Ask me about my work, process, or vision..." 
-          className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-4 text-lg"
+          className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-4 text-base sm:text-lg"
         />
         <Button 
           type="submit" 
