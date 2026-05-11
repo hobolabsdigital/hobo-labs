@@ -242,7 +242,5 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
         trackedNodeId: targetId 
       };
     });
-
-    });
   }
 }));
