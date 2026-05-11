@@ -7,6 +7,7 @@ export function TimelineScrubber() {
   const nodes = useCanvasStore((state) => state.nodes);
   const timeCursor = useCanvasStore((state) => state.timeCursor);
   const setTimeCursor = useCanvasStore((state) => state.setTimeCursor);
+  const setTimelineHovered = useCanvasStore((state) => state.setTimelineHovered);
   const [isHovered, setIsHovered] = useState(false);
   const [mouseY, setMouseY] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -65,6 +66,7 @@ export function TimelineScrubber() {
 
   const handlePointerLeave = () => {
     setIsHovered(false);
+    setTimelineHovered(false);
     setMouseY(null);
   };
 
@@ -74,7 +76,7 @@ export function TimelineScrubber() {
   return (
     <div 
       className="absolute right-0 top-0 h-full w-16 z-50 flex justify-center group border-l border-foreground/10 bg-background/50 backdrop-blur-md touch-none cursor-ns-resize"
-      onPointerEnter={() => setIsHovered(true)}
+      onPointerEnter={() => { setIsHovered(true); setTimelineHovered(true); }}
       onPointerLeave={handlePointerLeave}
       onPointerMove={handlePointerMove}
       onPointerDown={handlePointerDown}
@@ -117,18 +119,6 @@ export function TimelineScrubber() {
           );
         })}
       </div>
-
-      {/* The Following Invert Blob */}
-      {isHovered && mouseY !== null && (
-        <div 
-          className="absolute right-2 w-12 h-12 rounded-full bg-white mix-blend-difference pointer-events-none shadow-2xl"
-          style={{
-            top: mouseY,
-            transform: 'translateY(-50%)',
-            transition: 'top 0.05s linear',
-          }}
-        />
-      )}
 
       {/* Floating Monospace Indicator */}
       {isHovered && timeCursor !== null && (

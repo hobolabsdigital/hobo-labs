@@ -4,7 +4,6 @@ import React, { useCallback, useEffect } from 'react';
 import {
   ReactFlow,
   Controls,
-  Background,
   Node,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -17,6 +16,10 @@ import { GhostNode } from './nodes/GhostNode';
 import { ChatInput } from './ChatInput';
 import { DebugPanel } from './DebugPanel';
 import { TimelineScrubber } from './TimelineScrubber';
+import { FluidBackground } from './FluidBackground';
+import { InteractiveGrid } from './InteractiveGrid';
+import { ThemeToggle } from './ThemeToggle';
+import { useTheme } from '@/components/theme-provider';
 
 // Hooks and Store
 import { useCanvasStore } from '../store/useCanvasStore';
@@ -30,6 +33,7 @@ const nodeTypes = { hero: HeroNode, text: TextNode, prompt: PromptNode, ghost: G
 // injection happens entirely in useCanvasStore.ts now.
 
 export default function EditorialCanvas() {
+  const { theme } = useTheme();
   const nodes = useCanvasStore(state => state.nodes);
   const edges = useCanvasStore(state => state.edges);
   const onNodesChange = useCanvasStore(state => state.onNodesChange);
@@ -137,18 +141,21 @@ export default function EditorialCanvas() {
         nodeTypes={nodeTypes}
         onInit={setRfInstance}
         proOptions={{ hideAttribution: true }}
+        colorMode={theme === 'dark' ? 'dark' : 'light'}
         fitView
         fitViewOptions={{ padding: 0.3, maxZoom: 1.2 }}
         className="bg-grid"
         minZoom={0.5}
         maxZoom={2}
       >
-        <Background gap={24} size={2} color="var(--grid-color)" />
+        <InteractiveGrid gap={24} size={2} color="var(--grid-color)" repelRadius={150} repelStrength={15} />
         <Controls className="fill-foreground stroke-foreground" />
       </ReactFlow>
 
       <DebugPanel />
       <TimelineScrubber />
+      <FluidBackground />
+      <ThemeToggle />
 
       <ChatInput
         input={input}

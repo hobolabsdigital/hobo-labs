@@ -23,6 +23,8 @@ export interface CanvasState {
   setTimeCursor: (index: number | null) => void;
   setMockApiEnabled: (enabled: boolean) => void;
   setDebugDrawerOpen: (open: boolean) => void;
+  isTimelineHovered: boolean;
+  setTimelineHovered: (hovered: boolean) => void;
   // Physics config
   physicsConfig: {
     velocityDecay: number;
@@ -32,6 +34,23 @@ export interface CanvasState {
     linkIterations: number;
   };
   setPhysicsConfig: (config: Partial<CanvasState['physicsConfig']>) => void;
+
+  // Fluid config
+  fluidConfig: {
+    SPLAT_RADIUS: number;
+    SPLAT_FORCE: number;
+    DENSITY_DISSIPATION: number;
+    VELOCITY_DISSIPATION: number;
+    PRESSURE: number;
+    CURL: number;
+    ABERRATION_MULT: number;
+    SWELL_MULT: number;
+    MAGNETIC_RADIUS: number;
+    SPLAT_COLOR: string;
+    COLOR_CYCLE: boolean;
+    COLOR_CYCLE_SPEED: number;
+  };
+  setFluidConfig: (config: Partial<CanvasState['fluidConfig']>) => void;
 
   // D3 Simulation reference for drag events
   simulationRef: any | null;
@@ -76,6 +95,7 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   rfInstance: null,
   trackedNodeId: null,
   timeCursor: null,
+  isTimelineHovered: false,
   isMockApiEnabled: false,
   isDebugDrawerOpen: false,
 
@@ -86,6 +106,20 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
     linkStrength: 1.0,
     linkIterations: 10,
   },
+  fluidConfig: {
+    SPLAT_RADIUS: 0.15,
+    SPLAT_FORCE: 1000,
+    DENSITY_DISSIPATION: 5.0,
+    VELOCITY_DISSIPATION: 0.8,
+    PRESSURE: 0.8,
+    CURL: 1,
+    ABERRATION_MULT: 0.85,
+    SWELL_MULT: 2.5,
+    MAGNETIC_RADIUS: 0.05,
+    SPLAT_COLOR: '#ffffff',
+    COLOR_CYCLE: false,
+    COLOR_CYCLE_SPEED: 1.0,
+  },
   simulationRef: null,
 
   activeGhostId: null,
@@ -94,6 +128,9 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
 
   setPhysicsConfig: (config) => set((state) => ({
     physicsConfig: { ...state.physicsConfig, ...config }
+  })),
+  setFluidConfig: (config) => set((state) => ({
+    fluidConfig: { ...state.fluidConfig, ...config }
   })),
   setSimulationRef: (ref) => set({ simulationRef: ref }),
 
@@ -129,6 +166,8 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   setTimeCursor: (index) => {
     set({ timeCursor: index });
   },
+  
+  setTimelineHovered: (hovered) => set({ isTimelineHovered: hovered }),
 
   setMockApiEnabled: (enabled) => set({ isMockApiEnabled: enabled }),
   setDebugDrawerOpen: (open) => set({ isDebugDrawerOpen: open }),
