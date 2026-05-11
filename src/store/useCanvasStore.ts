@@ -19,6 +19,8 @@ export interface CanvasState {
   setEdges: (edges: Edge[] | ((current: Edge[]) => Edge[])) => void;
   setRfInstance: (instance: ReactFlowInstance | null) => void;
   setTrackedNodeId: (id: string | null) => void;
+  timeCursor: number | null;
+  setTimeCursor: (index: number | null) => void;
   setMockApiEnabled: (enabled: boolean) => void;
   setDebugDrawerOpen: (open: boolean) => void;
   // Physics config
@@ -43,6 +45,7 @@ export interface CanvasState {
   upsertActiveGhost: (text: string, isFinished?: boolean) => void;
   addHero: (data: any, id: string) => void;
   addText: (text: string, isFinished?: boolean) => void;
+  truncateHistory: (cursorIndex: number) => void;
 }
 
 import { createPromptNode, createGhostNode, createHeroNode, createTextNode, createEdge } from './nodeFactories';
@@ -72,6 +75,7 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   edges: [{ id: 'e-hero-1-text-1', source: 'hero-1', target: 'text-1' }],
   rfInstance: null,
   trackedNodeId: null,
+  timeCursor: null,
   isMockApiEnabled: false,
   isDebugDrawerOpen: false,
 
@@ -118,7 +122,14 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   },
 
   setRfInstance: (instance) => set({ rfInstance: instance }),
-  setTrackedNodeId: (id) => set({ trackedNodeId: id }),
+  setTrackedNodeId: (id) => {
+    set({ trackedNodeId: id });
+  },
+
+  setTimeCursor: (index) => {
+    set({ timeCursor: index });
+  },
+
   setMockApiEnabled: (enabled) => set({ isMockApiEnabled: enabled }),
   setDebugDrawerOpen: (open) => set({ isDebugDrawerOpen: open }),
 
@@ -241,6 +252,24 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
         lastPlacedNodeId: isFinished ? targetId : state.lastPlacedNodeId,
         activeStreamingTextId: targetId, // Lock the streaming text ID
         trackedNodeId: targetId 
+      };
+    });
+  },
+
+  truncateHistory: (cursorIndex: number) => {
+    set((state) => {
+      const newNodes = state.nodes.slice(0, cursorIndex + 1);
+      const validNodeIds = new Set(newNodes.map(n => n.id));
+      const newEdges = state.edges.filter(e => validNodeIds.has(e.source) && validNodeIds.has(e.target));
+      const lastNode = newNodes[newNodes.length - 1];
+
+      return {
+        nodes: newNodes,
+        edges: newEdges,
+        timeCursor: null,
+        lastPlacedNodeId: lastNode ? lastNode.id : null,
+        activeGhostId: null,
+        activeStreamingTextId: null
       };
     });
   }

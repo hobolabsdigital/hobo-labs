@@ -15,7 +15,7 @@ export function DebugPanel() {
   const setPhysicsConfig = useCanvasStore(state => state.setPhysicsConfig);
 
   return (
-    <div className={`absolute top-4 right-4 z-50 flex flex-col items-end gap-2 transition-transform duration-300 ${isDebugDrawerOpen ? 'translate-x-0' : 'translate-x-[calc(100%-2rem)]'}`}>
+    <div className={`absolute top-4 right-20 z-50 flex flex-col items-end gap-2 transition-transform duration-300 ${isDebugDrawerOpen ? 'translate-x-0' : 'translate-x-[calc(100%-2rem)]'}`}>
       <button 
         onClick={() => setDebugDrawerOpen(!isDebugDrawerOpen)}
         className="bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-mono absolute -left-24 top-0 hover:bg-opacity-80 transition-opacity"

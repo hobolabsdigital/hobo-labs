@@ -11,8 +11,11 @@ export function useEditorialChat() {
   const upsertActiveGhost = useCanvasStore(state => state.upsertActiveGhost);
   const addHero = useCanvasStore(state => state.addHero);
   const addText = useCanvasStore(state => state.addText);
+  const timeCursor = useCanvasStore(state => state.timeCursor);
+  const truncateHistory = useCanvasStore(state => state.truncateHistory);
+  const nodes = useCanvasStore(state => state.nodes);
 
-  const { messages, sendMessage, status, stop, addToolOutput } = useChat({
+  const { messages, setMessages, sendMessage, status, stop, addToolOutput } = useChat({
     transport: new DefaultChatTransport({
       api: isMockApiEnabled ? '/api/chat?mock=true' : '/api/chat',
     }),
@@ -139,6 +142,33 @@ export function useEditorialChat() {
 
   const handleSend = () => {
     if (!input.trim()) return;
+
+    if (timeCursor !== null) {
+      // Branching from history!
+      // 1. Truncate visual canvas
+      truncateHistory(timeCursor);
+      
+      // 2. Truncate AI SDK messages
+      // We map the remaining nodes to approximate how many messages should be kept.
+      // A simple approximation: keep messages that correspond to the kept nodes.
+      // Since it's hard to map exactly, a reliable approach for a portfolio is to count user prompts.
+      const nodesToKeep = nodes.slice(0, timeCursor + 1);
+      const userPromptCount = nodesToKeep.filter(n => n.type === 'prompt').length;
+      
+      let promptIndex = 0;
+      let cutIndex = messages.length;
+      for (let i = 0; i < messages.length; i++) {
+        if (messages[i].role === 'user') {
+          promptIndex++;
+          if (promptIndex > userPromptCount) {
+            cutIndex = i;
+            break;
+          }
+        }
+      }
+      
+      setMessages(messages.slice(0, cutIndex));
+    }
 
     addPrompt(input);
     sendMessage({ text: input });

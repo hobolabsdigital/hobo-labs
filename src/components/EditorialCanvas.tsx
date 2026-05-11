@@ -16,6 +16,7 @@ import { PromptNode } from './nodes/PromptNode';
 import { GhostNode } from './nodes/GhostNode';
 import { ChatInput } from './ChatInput';
 import { DebugPanel } from './DebugPanel';
+import { TimelineScrubber } from './TimelineScrubber';
 
 // Hooks and Store
 import { useCanvasStore } from '../store/useCanvasStore';
@@ -38,7 +39,13 @@ export default function EditorialCanvas() {
   const setEdges = useCanvasStore(state => state.setEdges);
   const setTrackedNodeId = useCanvasStore(state => state.setTrackedNodeId);
   const trackedNodeId = useCanvasStore(state => state.trackedNodeId);
+  const timeCursor = useCanvasStore(state => state.timeCursor);
   const rfInstance = useCanvasStore(state => state.rfInstance);
+
+  // Filter nodes and edges based on the timeline scrubber
+  const visibleNodes = timeCursor === null ? nodes : nodes.slice(0, timeCursor + 1);
+  const visibleNodeIds = new Set(visibleNodes.map(n => n.id));
+  const visibleEdges = edges.filter(e => visibleNodeIds.has(e.source) && visibleNodeIds.has(e.target));
 
   // Generic camera tracking effect
   useEffect(() => {
@@ -59,6 +66,16 @@ export default function EditorialCanvas() {
       };
     }
   }, [trackedNodeId, rfInstance, setTrackedNodeId]);
+
+  // Fit view when traveling through time
+  useEffect(() => {
+    if (rfInstance && timeCursor !== undefined) {
+      const timeoutId = setTimeout(() => {
+        rfInstance.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 });
+      }, 50);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [timeCursor, rfInstance]);
 
   // Activate custom hooks
   useEditorialPhysics();
@@ -109,8 +126,8 @@ export default function EditorialCanvas() {
   return (
     <div className="w-full h-screen bg-[var(--background)] relative">
       <ReactFlow
-        nodes={nodes}
-        edges={edges}
+        nodes={visibleNodes}
+        edges={visibleEdges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
@@ -131,6 +148,7 @@ export default function EditorialCanvas() {
       </ReactFlow>
 
       <DebugPanel />
+      <TimelineScrubber />
 
       <ChatInput
         input={input}
