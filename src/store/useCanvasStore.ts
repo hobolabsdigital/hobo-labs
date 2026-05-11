@@ -196,6 +196,7 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
       const newNode = createHeroNode(id, data, sourceNode);
 
       const newEdges = sourceNode ? [...state.edges, createEdge(sourceNode.id, id)] : state.edges;
+      return { nodes: [...state.nodes, newNode], edges: newEdges, lastPlacedNodeId: id, trackedNodeId: id };
     });
   },
 
