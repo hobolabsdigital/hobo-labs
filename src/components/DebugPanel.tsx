@@ -15,10 +15,10 @@ export function DebugPanel() {
   const setFluidConfig = useCanvasStore(state => state.setFluidConfig);
 
   return (
-    <div className={`fixed top-4 right-16 z-50 transition-transform duration-300 ease-out ${isDebugDrawerOpen ? 'translate-x-0' : 'translate-x-[calc(100%+4rem)]'}`}>
+    <div className={`fixed top-4 right-0 z-50 transition-transform duration-300 ease-out ${isDebugDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
       <button 
         onClick={() => setDebugDrawerOpen(!isDebugDrawerOpen)}
-        className={`bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-mono absolute right-[100%] top-0 hover:bg-opacity-80 transition-all duration-300 whitespace-nowrap ${isDebugDrawerOpen ? 'mr-4' : 'mr-20'}`}
+        className={`bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-mono absolute right-[100%] top-0 hover:bg-opacity-80 transition-all duration-300 whitespace-nowrap mr-4`}
       >
         [ PLAYGROUND ]
       </button>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Space_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@wrksz/themes/next";
+import { Logo } from "@/components/Logo";
 
 const spaceMono = Space_Mono({
   variable: "--font-space-mono",
@@ -30,6 +31,9 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+          <div className="fixed top-8 left-8 z-[100] pointer-events-none mix-blend-difference">
+            <Logo className="w-40 h-auto text-[var(--background)]" />
+          </div>
           {children}
         </ThemeProvider>
       </body>
