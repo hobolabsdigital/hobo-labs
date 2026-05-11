@@ -30,11 +30,22 @@ export interface CanvasState {
     linkIterations: number;
   };
   setPhysicsConfig: (config: Partial<CanvasState['physicsConfig']>) => void;
-  
+
   // D3 Simulation reference for drag events
   simulationRef: any | null;
   setSimulationRef: (ref: any) => void;
+
+  // Decoupled node creation
+  activeGhostId: string | null;
+  activeStreamingTextId: string | null;
+  lastPlacedNodeId: string | null;
+  addPrompt: (text: string) => void;
+  upsertActiveGhost: (text: string, isFinished?: boolean) => void;
+  addHero: (data: any, id: string) => void;
+  addText: (text: string, isFinished?: boolean) => void;
 }
+
+import { createPromptNode, createGhostNode, createHeroNode, createTextNode, createEdge } from './nodeFactories';
 
 export const useCanvasStore = create<CanvasState>((set, get) => ({
   nodes: [],
@@ -52,6 +63,10 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
     linkIterations: 10,
   },
   simulationRef: null,
+
+  activeGhostId: null,
+  activeStreamingTextId: null,
+  lastPlacedNodeId: null,
 
   setPhysicsConfig: (config) => set((state) => ({
     physicsConfig: { ...state.physicsConfig, ...config }
@@ -85,5 +100,153 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   setRfInstance: (instance) => set({ rfInstance: instance }),
   setTrackedNodeId: (id) => set({ trackedNodeId: id }),
   setMockApiEnabled: (enabled) => set({ isMockApiEnabled: enabled }),
-  setDebugDrawerOpen: (open) => set({ isDebugDrawerOpen: open })
+  setDebugDrawerOpen: (open) => set({ isDebugDrawerOpen: open }),
+
+  addPrompt: (text: string) => {
+    const id = `prompt-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+    const nodes = get().nodes;
+    const sourceNode = nodes.find(n => n.id === get().lastPlacedNodeId) || nodes[nodes.length - 1];
+    const newNode = createPromptNode(id, text, sourceNode);
+
+    set(state => {
+      const newEdges = sourceNode ? [...state.edges, createEdge(sourceNode.id, id)] : state.edges;
+      return {
+        nodes: [...state.nodes, newNode],
+        edges: newEdges,
+        lastPlacedNodeId: id,
+        trackedNodeId: id,
+        activeStreamingTextId: null // Reset text streaming state
+      };
+    });
+
+    const rf = get().rfInstance;
+    if (rf) setTimeout(() => rf.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 }), 50);
+    setTimeout(() => { if (get().trackedNodeId === id) set({ trackedNodeId: null }); }, 1500);
+  },
+
+  upsertActiveGhost: (text: string, isFinished = false) => {
+    let isNewGhost = false;
+    
+    set(state => {
+      let activeGhostId = state.activeGhostId;
+      
+      if (!activeGhostId && isFinished) {
+        return state;
+      }
+
+      let nodes = [...state.nodes];
+      let edges = [...state.edges];
+      let lastPlacedNodeId = state.lastPlacedNodeId;
+
+      if (!activeGhostId) {
+        isNewGhost = true;
+        activeGhostId = `ghost-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+        const sourceNode = nodes.find(n => n.id === lastPlacedNodeId) || nodes[nodes.length - 1];
+        const newGhost = createGhostNode(activeGhostId, sourceNode);
+
+        nodes.push(newGhost);
+        if (sourceNode) {
+          edges.push(createEdge(sourceNode.id, activeGhostId));
+        }
+        lastPlacedNodeId = activeGhostId;
+      }
+
+      nodes = nodes.map(n =>
+        n.id === activeGhostId
+          ? { ...n, data: { ...n.data, text, isFinished } }
+          : n
+      );
+
+      return {
+        nodes,
+        edges,
+        activeGhostId: isFinished ? null : activeGhostId,
+        // Crucial fix: ensure lastPlacedNodeId properly updates to the ghost node
+        // so subsequent nodes chain off it, instead of branching off the prompt!
+        lastPlacedNodeId: isNewGhost ? activeGhostId : lastPlacedNodeId,
+        trackedNodeId: isNewGhost ? activeGhostId : state.trackedNodeId 
+      };
+    });
+
+    // Trigger the actual camera pan if we just spawned the ghost
+    if (isNewGhost) {
+      const rf = get().rfInstance;
+      if (rf) setTimeout(() => rf.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 }), 50);
+      setTimeout(() => { if (get().trackedNodeId) set({ trackedNodeId: null }); }, 1500);
+    }
+  },
+
+  addHero: (data: any, id: string) => {
+    set(state => {
+      const sourceNode = state.nodes.find(n => n.id === state.activeGhostId) || state.nodes.find(n => n.id === state.lastPlacedNodeId);
+      console.log(`[DEBUG-FLOW] addHero | heroId=${id} | sourceNode=${sourceNode?.id} | activeGhostId=${state.activeGhostId}`);
+      const newNode = createHeroNode(id, data, sourceNode);
+
+      const newEdges = sourceNode ? [...state.edges, createEdge(sourceNode.id, id)] : state.edges;
+      return { nodes: [...state.nodes, newNode], edges: newEdges, lastPlacedNodeId: id, trackedNodeId: id };
+    });
+
+    const rf = get().rfInstance;
+    if (rf) setTimeout(() => rf.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 }), 50);
+    setTimeout(() => { if (get().trackedNodeId === id) set({ trackedNodeId: null }); }, 1500);
+  },
+
+  addText: (text: string, isFinished: boolean = false) => {
+    let newlyCreated = false;
+    let targetId: string | null = null;
+
+    set(state => {
+      let newNodes = [...state.nodes];
+      let newEdges = [...state.edges];
+      let lastPlacedId = state.lastPlacedNodeId;
+
+      // 1. If we are already streaming into a text node, just update it
+      if (state.activeStreamingTextId) {
+        newNodes = newNodes.map(n =>
+          n.id === state.activeStreamingTextId
+            ? { ...n, data: { ...n.data, text } }
+            : n
+        );
+        targetId = state.activeStreamingTextId;
+
+        return {
+          nodes: newNodes,
+          edges: newEdges,
+          activeStreamingTextId: state.activeStreamingTextId, // Keep it locked until next prompt!
+          lastPlacedNodeId: isFinished ? targetId : state.lastPlacedNodeId,
+          trackedNodeId: targetId
+        };
+      }
+
+      // 2. Fallback if no active streaming text exists
+      targetId = `text-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+      const sourceNode = state.nodes.find(n => n.id === state.lastPlacedNodeId);
+      const newNode = createTextNode(targetId, text, sourceNode);
+
+      newEdges = sourceNode ? [...state.edges, createEdge(sourceNode.id, targetId)] : state.edges;
+      newlyCreated = true;
+
+      return { 
+        nodes: [...newNodes, newNode], 
+        edges: newEdges, 
+        lastPlacedNodeId: isFinished ? targetId : state.lastPlacedNodeId,
+        activeStreamingTextId: targetId, // Lock the streaming text ID
+        trackedNodeId: targetId 
+      };
+    });
+
+    // Only pan the camera when the node is first created, not on every tick
+    if (newlyCreated) {
+      const rf = get().rfInstance;
+      if (rf) setTimeout(() => rf.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 }), 50);
+    }
+
+    // Grab the ID we just tracked
+    const trackedId = get().trackedNodeId;
+    if (trackedId) {
+      setTimeout(() => {
+        if (get().trackedNodeId === trackedId) set({ trackedNodeId: null });
+      }, 1500);
+    }
+  }
 }));

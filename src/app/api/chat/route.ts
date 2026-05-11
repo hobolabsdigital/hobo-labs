@@ -1,11 +1,9 @@
-import { createOpenAI } from '@ai-sdk/openai';
-import { streamText, tool } from 'ai';
+import { ollama } from 'ai-sdk-ollama';
+import {
+  streamText, tool, convertToModelMessages, wrapLanguageModel,
+  extractReasoningMiddleware
+} from 'ai';
 import { z } from 'zod';
-
-const ollama = createOpenAI({
-  baseURL: 'http://127.0.0.1:11434/v1',
-  apiKey: 'ollama', // API key is required but ignored by Ollama
-});
 
 export async function POST(req: Request) {
   try {
@@ -15,51 +13,90 @@ export async function POST(req: Request) {
         async start(controller) {
           const encoder = new TextEncoder();
           const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
-          
+
           controller.enqueue(encoder.encode('0:"Thinking about the design...\\n"\n'));
           await delay(1000);
-          
+
           const toolCall = {
             toolCallId: `call_${Date.now()}`,
             toolName: "createNode",
             args: { type: "hero", headline: "MOCK GENERATION", subline: "This node was spawned instantly via the Route Handler." }
           };
-          
+
           controller.enqueue(encoder.encode(`9:${JSON.stringify(toolCall)}\n`));
           await delay(500);
-          
+
           controller.enqueue(encoder.encode('0:"\\nNode generated successfully."\n'));
           controller.close();
         }
       });
-      
+
       return new Response(stream, {
         headers: {
           'Content-Type': 'text/plain; charset=utf-8',
-          'x-vercel-ai-data-stream': 'v1'
+          'Cache-Control': 'no-cache',
         }
       });
     }
 
-    const { messages } = await req.json();
+    console.log('Generating node...');
+    const body = await req.json();
+    const messages = Array.isArray(body) ? body : body.messages || [];
+    console.log("Raw messages from client:", JSON.stringify(messages, null, 2));
 
+    const safeMessages = messages.map((msg: any) => {
+      const sanitized = { ...msg };
+
+      if (Array.isArray(msg.parts)) {
+        sanitized.parts = msg.parts.filter((p: any) => p.type !== 'item_reference' && p.type !== 'unknown');
+      } else {
+        // Only polyfill parts for user messages or assistant text messages to prevent SDK map() crashes.
+        // Tool results are handled via assistant tool-invocation parts natively.
+        if (msg.role === 'user' || (msg.role === 'assistant' && !msg.toolInvocations)) {
+          sanitized.parts = [{ type: 'text', text: msg.content || '' }];
+        }
+      }
+
+      return sanitized;
+    });
+
+    const coreMessages = await convertToModelMessages(messages);
+    console.log("Core Messages:", JSON.stringify(coreMessages, null, 2));
+    const model = ollama('gemma4', {
+      think: true,
+      options: {
+        temperature: 0.7, // Sampling params go here
+      }
+    });
+    // 1. Wrap the model with the reasoning middleware.
+    // Gemma 4 usually uses 'think' or 'thought' as the tag name.
+    const modelWithReasoning = wrapLanguageModel({
+      model: model,
+      middleware: extractReasoningMiddleware({
+        tagName: 'think' // Change to 'thought' if your specific GGUF uses <|thought|>
+      }),
+    });
     const result = streamText({
-      model: ollama('deepseek-v4-pro:cloud'),
-      messages: messages,
-      system: "You are the creative AI assistant for an experimental design portfolio. " +
-              "Your job is to respond with brief, striking, brutalist insights. " +
-              "When appropriate, generate a new node for the canvas to illustrate your point using the createNode tool.",
+      model: modelWithReasoning,
+      messages: coreMessages,
+      providerOptions: {
+        ollama: { think: true }
+      },
+      system: "You are a creative AI assistant for an experimental design portfolio. Use <think> tags to reason step-by-step before your final answer." +
+        "Your job is to respond with brief, striking, brutalist insights. " +
+        "CRITICAL RULE: If you generate a Hero node, you MUST use `\\n` to break the headline into 2-3 visually stacked lines (e.g., 'DISRUPT\\nTHE PARADIGM'). Never output a single long horizontal headline. " +
+        "CRITICAL RULE: If you decide to generate a new node using the createNode tool, you MUST ONLY CALL IT EXACTLY ONCE per user message. Do not chain multiple nodes together. After generating a node, output a brief text reflection and then STOP.",
       tools: {
         createNode: tool({
           description: 'Create a new node on the editorial canvas',
           inputSchema: z.object({
             type: z.enum(['text', 'hero']).describe('The type of node to create'),
-            headline: z.string().optional().describe('Headline for hero nodes (use uppercase, use \\n for line breaks)'),
+            headline: z.string().optional().describe('Headline for hero nodes. CRITICAL: You MUST use \\n to break this text into 2-3 stacked lines (ALL CAPS).'),
             subline: z.string().optional().describe('Subline for hero nodes'),
             text: z.string().optional().describe('Content for text nodes'),
             label: z.string().optional().describe('Small label for text nodes (e.g. CONTEXT, INSIGHT)'),
             animationEffect: z.enum(['none', 'annotation', 'iris']).optional().describe('How to animate the text in'),
-            layoutIntent: z.enum(['center', 'top_left', 'top_right', 'bottom_left', 'bottom_right', 'far_right']).optional().describe('Where to spatially drop the node before physics takes over'),
+            layoutIntent: z.enum(['top_right', 'bottom_right', 'far_right']).optional().describe('Where to spatially drop the node before physics takes over'),
           })
         }),
       }

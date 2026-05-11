@@ -1,0 +1,1910 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "test-api-post-polyfill.js",
+      "file_type": "code",
+      "source_file": "test-api-post-polyfill.js",
+      "source_location": "L1",
+      "id": "test_api_post_polyfill_js",
+      "community": 10,
+      "norm_label": "test-api-post-polyfill.js"
+    },
+    {
+      "label": "messages",
+      "file_type": "code",
+      "source_file": "test-api-post-polyfill.js",
+      "source_location": "L1",
+      "id": "portfolio_test_api_post_polyfill_messages",
+      "community": 10,
+      "norm_label": "messages"
+    },
+    {
+      "label": "test-convert.js",
+      "file_type": "code",
+      "source_file": "test-convert.js",
+      "source_location": "L1",
+      "id": "test_convert_js",
+      "community": 11,
+      "norm_label": "test-convert.js"
+    },
+    {
+      "label": "messages",
+      "file_type": "code",
+      "source_file": "test-convert.js",
+      "source_location": "L3",
+      "id": "portfolio_test_convert_messages",
+      "community": 11,
+      "norm_label": "messages"
+    },
+    {
+      "label": "test-api.js",
+      "file_type": "code",
+      "source_file": "test-api.js",
+      "source_location": "L1",
+      "id": "test_api_js",
+      "community": 12,
+      "norm_label": "test-api.js"
+    },
+    {
+      "label": "messages",
+      "file_type": "code",
+      "source_file": "test-api.js",
+      "source_location": "L1",
+      "id": "portfolio_test_api_messages",
+      "community": 12,
+      "norm_label": "messages"
+    },
+    {
+      "label": "postcss.config.mjs",
+      "file_type": "code",
+      "source_file": "postcss.config.mjs",
+      "source_location": "L1",
+      "id": "postcss_config_mjs",
+      "community": 13,
+      "norm_label": "postcss.config.mjs"
+    },
+    {
+      "label": "config",
+      "file_type": "code",
+      "source_file": "postcss.config.mjs",
+      "source_location": "L1",
+      "id": "portfolio_postcss_config_config",
+      "community": 13,
+      "norm_label": "config"
+    },
+    {
+      "label": "test-ollama3.ts",
+      "file_type": "code",
+      "source_file": "test-ollama3.ts",
+      "source_location": "L1",
+      "id": "test_ollama3_ts",
+      "community": 5,
+      "norm_label": "test-ollama3.ts"
+    },
+    {
+      "label": "ollama",
+      "file_type": "code",
+      "source_file": "test-ollama3.ts",
+      "source_location": "L4",
+      "id": "portfolio_test_ollama3_ollama",
+      "community": 5,
+      "norm_label": "ollama"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "test-ollama3.ts",
+      "source_location": "L6",
+      "id": "portfolio_test_ollama3_main",
+      "community": 5,
+      "norm_label": "main()"
+    },
+    {
+      "label": "debug-ai-2.js",
+      "file_type": "code",
+      "source_file": "debug-ai-2.js",
+      "source_location": "L1",
+      "id": "debug_ai_2_js",
+      "community": 14,
+      "norm_label": "debug-ai-2.js"
+    },
+    {
+      "label": "messages",
+      "file_type": "code",
+      "source_file": "debug-ai-2.js",
+      "source_location": "L3",
+      "id": "portfolio_debug_ai_2_messages",
+      "community": 14,
+      "norm_label": "messages"
+    },
+    {
+      "label": "test-ollama2.ts",
+      "file_type": "code",
+      "source_file": "test-ollama2.ts",
+      "source_location": "L1",
+      "id": "test_ollama2_ts",
+      "community": 6,
+      "norm_label": "test-ollama2.ts"
+    },
+    {
+      "label": "ollama",
+      "file_type": "code",
+      "source_file": "test-ollama2.ts",
+      "source_location": "L3",
+      "id": "portfolio_test_ollama2_ollama",
+      "community": 6,
+      "norm_label": "ollama"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "test-ollama2.ts",
+      "source_location": "L5",
+      "id": "portfolio_test_ollama2_main",
+      "community": 6,
+      "norm_label": "main()"
+    },
+    {
+      "label": "next-env.d.ts",
+      "file_type": "code",
+      "source_file": "next-env.d.ts",
+      "source_location": "L1",
+      "id": "next_env_d_ts",
+      "community": 22,
+      "norm_label": "next-env.d.ts"
+    },
+    {
+      "label": "test-api-multi.js",
+      "file_type": "code",
+      "source_file": "test-api-multi.js",
+      "source_location": "L1",
+      "id": "test_api_multi_js",
+      "community": 15,
+      "norm_label": "test-api-multi.js"
+    },
+    {
+      "label": "messages",
+      "file_type": "code",
+      "source_file": "test-api-multi.js",
+      "source_location": "L1",
+      "id": "portfolio_test_api_multi_messages",
+      "community": 15,
+      "norm_label": "messages"
+    },
+    {
+      "label": "debug-ai.js",
+      "file_type": "code",
+      "source_file": "debug-ai.js",
+      "source_location": "L1",
+      "id": "debug_ai_js",
+      "community": 16,
+      "norm_label": "debug-ai.js"
+    },
+    {
+      "label": "messages",
+      "file_type": "code",
+      "source_file": "debug-ai.js",
+      "source_location": "L3",
+      "id": "portfolio_debug_ai_messages",
+      "community": 16,
+      "norm_label": "messages"
+    },
+    {
+      "label": "test-tool-result.js",
+      "file_type": "code",
+      "source_file": "test-tool-result.js",
+      "source_location": "L1",
+      "id": "test_tool_result_js",
+      "community": 7,
+      "norm_label": "test-tool-result.js"
+    },
+    {
+      "label": "messages",
+      "file_type": "code",
+      "source_file": "test-tool-result.js",
+      "source_location": "L3",
+      "id": "portfolio_test_tool_result_messages",
+      "community": 7,
+      "norm_label": "messages"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "test-tool-result.js",
+      "source_location": "L9",
+      "id": "portfolio_test_tool_result_main",
+      "community": 7,
+      "norm_label": "main()"
+    },
+    {
+      "label": "test-ollama.ts",
+      "file_type": "code",
+      "source_file": "test-ollama.ts",
+      "source_location": "L1",
+      "id": "test_ollama_ts",
+      "community": 8,
+      "norm_label": "test-ollama.ts"
+    },
+    {
+      "label": "ollama",
+      "file_type": "code",
+      "source_file": "test-ollama.ts",
+      "source_location": "L3",
+      "id": "portfolio_test_ollama_ollama",
+      "community": 8,
+      "norm_label": "ollama"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "test-ollama.ts",
+      "source_location": "L5",
+      "id": "portfolio_test_ollama_main",
+      "community": 8,
+      "norm_label": "main()"
+    },
+    {
+      "label": "eslint.config.mjs",
+      "file_type": "code",
+      "source_file": "eslint.config.mjs",
+      "source_location": "L1",
+      "id": "eslint_config_mjs",
+      "community": 17,
+      "norm_label": "eslint.config.mjs"
+    },
+    {
+      "label": "eslintConfig",
+      "file_type": "code",
+      "source_file": "eslint.config.mjs",
+      "source_location": "L5",
+      "id": "portfolio_eslint_config_eslintconfig",
+      "community": 17,
+      "norm_label": "eslintconfig"
+    },
+    {
+      "label": "test-api-multi-2.js",
+      "file_type": "code",
+      "source_file": "test-api-multi-2.js",
+      "source_location": "L1",
+      "id": "test_api_multi_2_js",
+      "community": 18,
+      "norm_label": "test-api-multi-2.js"
+    },
+    {
+      "label": "messages",
+      "file_type": "code",
+      "source_file": "test-api-multi-2.js",
+      "source_location": "L1",
+      "id": "portfolio_test_api_multi_2_messages",
+      "community": 18,
+      "norm_label": "messages"
+    },
+    {
+      "label": "next.config.ts",
+      "file_type": "code",
+      "source_file": "next.config.ts",
+      "source_location": "L1",
+      "id": "next_config_ts",
+      "community": 19,
+      "norm_label": "next.config.ts"
+    },
+    {
+      "label": "nextConfig",
+      "file_type": "code",
+      "source_file": "next.config.ts",
+      "source_location": "L3",
+      "id": "portfolio_next_config_nextconfig",
+      "community": 19,
+      "norm_label": "nextconfig"
+    },
+    {
+      "label": "layout.tsx",
+      "file_type": "code",
+      "source_file": "src/app/layout.tsx",
+      "source_location": "L1",
+      "id": "src_app_layout_tsx",
+      "community": 4,
+      "norm_label": "layout.tsx"
+    },
+    {
+      "label": "spaceMono",
+      "file_type": "code",
+      "source_file": "src/app/layout.tsx",
+      "source_location": "L5",
+      "id": "app_layout_spacemono",
+      "community": 4,
+      "norm_label": "spacemono"
+    },
+    {
+      "label": "metadata",
+      "file_type": "code",
+      "source_file": "src/app/layout.tsx",
+      "source_location": "L11",
+      "id": "app_layout_metadata",
+      "community": 4,
+      "norm_label": "metadata"
+    },
+    {
+      "label": "RootLayout()",
+      "file_type": "code",
+      "source_file": "src/app/layout.tsx",
+      "source_location": "L16",
+      "id": "app_layout_rootlayout",
+      "community": 4,
+      "norm_label": "rootlayout()"
+    },
+    {
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "src/app/page.tsx",
+      "source_location": "L1",
+      "id": "src_app_page_tsx",
+      "community": 20,
+      "norm_label": "page.tsx"
+    },
+    {
+      "label": "Home()",
+      "file_type": "code",
+      "source_file": "src/app/page.tsx",
+      "source_location": "L3",
+      "id": "app_page_home",
+      "community": 20,
+      "norm_label": "home()"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "src/app/api/chat/route.ts",
+      "source_location": "L1",
+      "id": "src_app_api_chat_route_ts",
+      "community": 9,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "ollama",
+      "file_type": "code",
+      "source_file": "src/app/api/chat/route.ts",
+      "source_location": "L5",
+      "id": "chat_route_ollama",
+      "community": 9,
+      "norm_label": "ollama"
+    },
+    {
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "src/app/api/chat/route.ts",
+      "source_location": "L10",
+      "id": "chat_route_post",
+      "community": 9,
+      "norm_label": "post()"
+    },
+    {
+      "label": "DebugPanel.tsx",
+      "file_type": "code",
+      "source_file": "src/components/DebugPanel.tsx",
+      "source_location": "L1",
+      "id": "src_components_debugpanel_tsx",
+      "community": 0,
+      "norm_label": "debugpanel.tsx"
+    },
+    {
+      "label": "DebugPanel()",
+      "file_type": "code",
+      "source_file": "src/components/DebugPanel.tsx",
+      "source_location": "L3",
+      "id": "components_debugpanel_debugpanel",
+      "community": 0,
+      "norm_label": "debugpanel()"
+    },
+    {
+      "label": "EditorialCanvas.tsx",
+      "file_type": "code",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L1",
+      "id": "src_components_editorialcanvas_tsx",
+      "community": 0,
+      "norm_label": "editorialcanvas.tsx"
+    },
+    {
+      "label": "nodeTypes",
+      "file_type": "code",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L26",
+      "id": "components_editorialcanvas_nodetypes",
+      "community": 0,
+      "norm_label": "nodetypes"
+    },
+    {
+      "label": "initialNodes",
+      "file_type": "code",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L28",
+      "id": "components_editorialcanvas_initialnodes",
+      "community": 0,
+      "norm_label": "initialnodes"
+    },
+    {
+      "label": "EditorialCanvas()",
+      "file_type": "code",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L50",
+      "id": "components_editorialcanvas_editorialcanvas",
+      "community": 0,
+      "norm_label": "editorialcanvas()"
+    },
+    {
+      "label": "ChatInput.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ChatInput.tsx",
+      "source_location": "L1",
+      "id": "src_components_chatinput_tsx",
+      "community": 1,
+      "norm_label": "chatinput.tsx"
+    },
+    {
+      "label": "ChatInputProps",
+      "file_type": "code",
+      "source_file": "src/components/ChatInput.tsx",
+      "source_location": "L7",
+      "id": "components_chatinput_chatinputprops",
+      "community": 1,
+      "norm_label": "chatinputprops"
+    },
+    {
+      "label": "ChatInput()",
+      "file_type": "code",
+      "source_file": "src/components/ChatInput.tsx",
+      "source_location": "L14",
+      "id": "components_chatinput_chatinput",
+      "community": 1,
+      "norm_label": "chatinput()"
+    },
+    {
+      "label": "iris-text.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/iris-text.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_iris_text_tsx",
+      "community": 2,
+      "norm_label": "iris-text.tsx"
+    },
+    {
+      "label": "IrisText()",
+      "file_type": "code",
+      "source_file": "src/components/ui/iris-text.tsx",
+      "source_location": "L5",
+      "id": "ui_iris_text_iristext",
+      "community": 2,
+      "norm_label": "iristext()"
+    },
+    {
+      "label": "annotation-text.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/annotation-text.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_annotation_text_tsx",
+      "community": 2,
+      "norm_label": "annotation-text.tsx"
+    },
+    {
+      "label": "AnnotationText()",
+      "file_type": "code",
+      "source_file": "src/components/ui/annotation-text.tsx",
+      "source_location": "L5",
+      "id": "ui_annotation_text_annotationtext",
+      "community": 2,
+      "norm_label": "annotationtext()"
+    },
+    {
+      "label": "button.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/button.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_button_tsx",
+      "community": 1,
+      "norm_label": "button.tsx"
+    },
+    {
+      "label": "buttonVariants",
+      "file_type": "code",
+      "source_file": "src/components/ui/button.tsx",
+      "source_location": "L6",
+      "id": "ui_button_buttonvariants",
+      "community": 1,
+      "norm_label": "buttonvariants"
+    },
+    {
+      "label": "Button()",
+      "file_type": "code",
+      "source_file": "src/components/ui/button.tsx",
+      "source_location": "L43",
+      "id": "ui_button_button",
+      "community": 1,
+      "norm_label": "button()"
+    },
+    {
+      "label": "input.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/input.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_input_tsx",
+      "community": 1,
+      "norm_label": "input.tsx"
+    },
+    {
+      "label": "Input()",
+      "file_type": "code",
+      "source_file": "src/components/ui/input.tsx",
+      "source_location": "L6",
+      "id": "ui_input_input",
+      "community": 1,
+      "norm_label": "input()"
+    },
+    {
+      "label": "PromptNode.tsx",
+      "file_type": "code",
+      "source_file": "src/components/nodes/PromptNode.tsx",
+      "source_location": "L1",
+      "id": "src_components_nodes_promptnode_tsx",
+      "community": 0,
+      "norm_label": "promptnode.tsx"
+    },
+    {
+      "label": "PromptNode()",
+      "file_type": "code",
+      "source_file": "src/components/nodes/PromptNode.tsx",
+      "source_location": "L7",
+      "id": "nodes_promptnode_promptnode",
+      "community": 0,
+      "norm_label": "promptnode()"
+    },
+    {
+      "label": "GhostNode.tsx",
+      "file_type": "code",
+      "source_file": "src/components/nodes/GhostNode.tsx",
+      "source_location": "L1",
+      "id": "src_components_nodes_ghostnode_tsx",
+      "community": 0,
+      "norm_label": "ghostnode.tsx"
+    },
+    {
+      "label": "GhostNode()",
+      "file_type": "code",
+      "source_file": "src/components/nodes/GhostNode.tsx",
+      "source_location": "L7",
+      "id": "nodes_ghostnode_ghostnode",
+      "community": 0,
+      "norm_label": "ghostnode()"
+    },
+    {
+      "label": "TextNode.tsx",
+      "file_type": "code",
+      "source_file": "src/components/nodes/TextNode.tsx",
+      "source_location": "L1",
+      "id": "src_components_nodes_textnode_tsx",
+      "community": 2,
+      "norm_label": "textnode.tsx"
+    },
+    {
+      "label": "TextNode()",
+      "file_type": "code",
+      "source_file": "src/components/nodes/TextNode.tsx",
+      "source_location": "L9",
+      "id": "nodes_textnode_textnode",
+      "community": 2,
+      "norm_label": "textnode()"
+    },
+    {
+      "label": "HeroNode.tsx",
+      "file_type": "code",
+      "source_file": "src/components/nodes/HeroNode.tsx",
+      "source_location": "L1",
+      "id": "src_components_nodes_heronode_tsx",
+      "community": 0,
+      "norm_label": "heronode.tsx"
+    },
+    {
+      "label": "HeroNode()",
+      "file_type": "code",
+      "source_file": "src/components/nodes/HeroNode.tsx",
+      "source_location": "L7",
+      "id": "nodes_heronode_heronode",
+      "community": 0,
+      "norm_label": "heronode()"
+    },
+    {
+      "label": "useEditorialPhysics.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/useEditorialPhysics.ts",
+      "source_location": "L1",
+      "id": "src_hooks_useeditorialphysics_ts",
+      "community": 0,
+      "norm_label": "useeditorialphysics.ts"
+    },
+    {
+      "label": "useEditorialPhysics()",
+      "file_type": "code",
+      "source_file": "src/hooks/useEditorialPhysics.ts",
+      "source_location": "L5",
+      "id": "hooks_useeditorialphysics_useeditorialphysics",
+      "community": 0,
+      "norm_label": "useeditorialphysics()"
+    },
+    {
+      "label": "useEdgeAnimations.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/useEdgeAnimations.ts",
+      "source_location": "L1",
+      "id": "src_hooks_useedgeanimations_ts",
+      "community": 0,
+      "norm_label": "useedgeanimations.ts"
+    },
+    {
+      "label": "useEdgeAnimations()",
+      "file_type": "code",
+      "source_file": "src/hooks/useEdgeAnimations.ts",
+      "source_location": "L4",
+      "id": "hooks_useedgeanimations_useedgeanimations",
+      "community": 0,
+      "norm_label": "useedgeanimations()"
+    },
+    {
+      "label": "useEditorialChat.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/useEditorialChat.ts",
+      "source_location": "L1",
+      "id": "src_hooks_useeditorialchat_ts",
+      "community": 0,
+      "norm_label": "useeditorialchat.ts"
+    },
+    {
+      "label": "useEditorialChat()",
+      "file_type": "code",
+      "source_file": "src/hooks/useEditorialChat.ts",
+      "source_location": "L7",
+      "id": "hooks_useeditorialchat_useeditorialchat",
+      "community": 0,
+      "norm_label": "useeditorialchat()"
+    },
+    {
+      "label": "utils.ts",
+      "file_type": "code",
+      "source_file": "src/lib/utils.ts",
+      "source_location": "L1",
+      "id": "src_lib_utils_ts",
+      "community": 1,
+      "norm_label": "utils.ts"
+    },
+    {
+      "label": "cn()",
+      "file_type": "code",
+      "source_file": "src/lib/utils.ts",
+      "source_location": "L4",
+      "id": "lib_utils_cn",
+      "community": 1,
+      "norm_label": "cn()"
+    },
+    {
+      "label": "useCanvasStore.ts",
+      "file_type": "code",
+      "source_file": "src/store/useCanvasStore.ts",
+      "source_location": "L1",
+      "id": "src_store_usecanvasstore_ts",
+      "community": 0,
+      "norm_label": "usecanvasstore.ts"
+    },
+    {
+      "label": "CanvasState",
+      "file_type": "code",
+      "source_file": "src/store/useCanvasStore.ts",
+      "source_location": "L4",
+      "id": "store_usecanvasstore_canvasstate",
+      "community": 0,
+      "norm_label": "canvasstate"
+    },
+    {
+      "label": "useCanvasStore",
+      "file_type": "code",
+      "source_file": "src/store/useCanvasStore.ts",
+      "source_location": "L39",
+      "id": "store_usecanvasstore_usecanvasstore",
+      "community": 0,
+      "norm_label": "usecanvasstore"
+    },
+    {
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "id": "readme_md",
+      "community": 3,
+      "norm_label": "readme.md"
+    },
+    {
+      "label": "Getting Started",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L3",
+      "id": "portfolio_readme_getting_started",
+      "community": 3,
+      "norm_label": "getting started"
+    },
+    {
+      "label": "code:bash (npm run dev)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L7",
+      "id": "portfolio_readme_codeblock_1",
+      "community": 3,
+      "norm_label": "code:bash (npm run dev)"
+    },
+    {
+      "label": "Learn More",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L23",
+      "id": "portfolio_readme_learn_more",
+      "community": 3,
+      "norm_label": "learn more"
+    },
+    {
+      "label": "Deploy on Vercel",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L32",
+      "id": "portfolio_readme_deploy_on_vercel",
+      "community": 3,
+      "norm_label": "deploy on vercel"
+    },
+    {
+      "label": "AGENTS.md",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": "L1",
+      "id": "agents_md",
+      "community": 21,
+      "norm_label": "agents.md"
+    },
+    {
+      "label": "This is NOT the Next.js you know",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": "L2",
+      "id": "portfolio_agents_this_is_not_the_next_js_you_know",
+      "community": 21,
+      "norm_label": "this is not the next.js you know"
+    },
+    {
+      "label": "CLAUDE.md",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "id": "claude_md",
+      "community": 23,
+      "norm_label": "claude.md"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test-api-post-polyfill.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "test_api_post_polyfill_js",
+      "target": "portfolio_test_api_post_polyfill_messages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test-convert.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "test_convert_js",
+      "target": "portfolio_test_convert_messages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test-api.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "test_api_js",
+      "target": "portfolio_test_api_messages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "postcss.config.mjs",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "postcss_config_mjs",
+      "target": "portfolio_postcss_config_config",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test-ollama3.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "test_ollama3_ts",
+      "target": "portfolio_test_ollama3_ollama",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test-ollama3.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "test_ollama3_ts",
+      "target": "portfolio_test_ollama3_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "test-ollama3.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "portfolio_test_ollama3_main",
+      "target": "portfolio_test_ollama3_ollama",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "debug-ai-2.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "debug_ai_2_js",
+      "target": "portfolio_debug_ai_2_messages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test-ollama2.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "test_ollama2_ts",
+      "target": "portfolio_test_ollama2_ollama",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test-ollama2.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "test_ollama2_ts",
+      "target": "portfolio_test_ollama2_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "test-ollama2.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "portfolio_test_ollama2_main",
+      "target": "portfolio_test_ollama2_ollama",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test-api-multi.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "test_api_multi_js",
+      "target": "portfolio_test_api_multi_messages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "debug-ai.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "debug_ai_js",
+      "target": "portfolio_debug_ai_messages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test-tool-result.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "test_tool_result_js",
+      "target": "portfolio_test_tool_result_messages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test-tool-result.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "test_tool_result_js",
+      "target": "portfolio_test_tool_result_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test-ollama.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "test_ollama_ts",
+      "target": "portfolio_test_ollama_ollama",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test-ollama.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "test_ollama_ts",
+      "target": "portfolio_test_ollama_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "test-ollama.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "portfolio_test_ollama_main",
+      "target": "portfolio_test_ollama_ollama",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "eslint.config.mjs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "eslint_config_mjs",
+      "target": "portfolio_eslint_config_eslintconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test-api-multi-2.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "test_api_multi_2_js",
+      "target": "portfolio_test_api_multi_2_messages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "next.config.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "next_config_ts",
+      "target": "portfolio_next_config_nextconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/layout.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_app_layout_tsx",
+      "target": "app_layout_spacemono",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/layout.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "src_app_layout_tsx",
+      "target": "app_layout_metadata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/layout.tsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "src_app_layout_tsx",
+      "target": "app_layout_rootlayout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/page.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_app_page_tsx",
+      "target": "src_components_editorialcanvas_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/page.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_app_page_tsx",
+      "target": "app_page_home",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/chat/route.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_app_api_chat_route_ts",
+      "target": "chat_route_ollama",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/chat/route.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "src_app_api_chat_route_ts",
+      "target": "chat_route_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/chat/route.ts",
+      "source_location": "L62",
+      "weight": 1.0,
+      "source": "chat_route_post",
+      "target": "chat_route_ollama",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DebugPanel.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_components_debugpanel_tsx",
+      "target": "src_store_usecanvasstore_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DebugPanel.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_components_debugpanel_tsx",
+      "target": "store_usecanvasstore_usecanvasstore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DebugPanel.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_components_debugpanel_tsx",
+      "target": "components_debugpanel_debugpanel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "src_components_debugpanel_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "components_debugpanel_debugpanel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/DebugPanel.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "components_debugpanel_debugpanel",
+      "target": "store_usecanvasstore_usecanvasstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "src_components_nodes_heronode_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "nodes_heronode_heronode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "src_components_nodes_textnode_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "nodes_textnode_textnode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "src_components_nodes_promptnode_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "nodes_promptnode_promptnode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "src_components_nodes_ghostnode_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "nodes_ghostnode_ghostnode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "src_components_chatinput_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "components_chatinput_chatinput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "src_store_usecanvasstore_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "store_usecanvasstore_usecanvasstore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "src_hooks_useeditorialphysics_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "hooks_useeditorialphysics_useeditorialphysics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "src_hooks_useeditorialchat_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "hooks_useeditorialchat_useeditorialchat",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "src_hooks_useedgeanimations_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "hooks_useedgeanimations_useedgeanimations",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "components_editorialcanvas_nodetypes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "components_editorialcanvas_initialnodes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "src_components_editorialcanvas_tsx",
+      "target": "components_editorialcanvas_editorialcanvas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "components_editorialcanvas_editorialcanvas",
+      "target": "store_usecanvasstore_usecanvasstore"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L69",
+      "weight": 1.0,
+      "source": "components_editorialcanvas_editorialcanvas",
+      "target": "hooks_useeditorialphysics_useeditorialphysics"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L70",
+      "weight": 1.0,
+      "source": "components_editorialcanvas_editorialcanvas",
+      "target": "hooks_useedgeanimations_useedgeanimations"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/EditorialCanvas.tsx",
+      "source_location": "L71",
+      "weight": 1.0,
+      "source": "components_editorialcanvas_editorialcanvas",
+      "target": "hooks_useeditorialchat_useeditorialchat"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ChatInput.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_components_chatinput_tsx",
+      "target": "src_components_ui_button_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ChatInput.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_components_chatinput_tsx",
+      "target": "ui_button_button",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ChatInput.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_components_chatinput_tsx",
+      "target": "src_components_ui_input_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ChatInput.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_components_chatinput_tsx",
+      "target": "ui_input_input",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ChatInput.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_components_chatinput_tsx",
+      "target": "components_chatinput_chatinputprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ChatInput.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "src_components_chatinput_tsx",
+      "target": "components_chatinput_chatinput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/iris-text.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_components_ui_iris_text_tsx",
+      "target": "ui_iris_text_iristext",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/nodes/TextNode.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_components_nodes_textnode_tsx",
+      "target": "src_components_ui_iris_text_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/nodes/TextNode.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_components_nodes_textnode_tsx",
+      "target": "ui_iris_text_iristext",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/annotation-text.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_components_ui_annotation_text_tsx",
+      "target": "ui_annotation_text_annotationtext",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/nodes/TextNode.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_components_nodes_textnode_tsx",
+      "target": "src_components_ui_annotation_text_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/nodes/TextNode.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_components_nodes_textnode_tsx",
+      "target": "ui_annotation_text_annotationtext",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/button.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_components_ui_button_tsx",
+      "target": "src_lib_utils_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/button.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_components_ui_button_tsx",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/button.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_components_ui_button_tsx",
+      "target": "ui_button_buttonvariants",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/button.tsx",
+      "source_location": "L43",
+      "weight": 1.0,
+      "source": "src_components_ui_button_tsx",
+      "target": "ui_button_button",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/button.tsx",
+      "source_location": "L52",
+      "weight": 1.0,
+      "source": "ui_button_button",
+      "target": "ui_button_buttonvariants",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/ui/button.tsx",
+      "source_location": "L52",
+      "weight": 1.0,
+      "source": "ui_button_button",
+      "target": "lib_utils_cn"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/input.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_components_ui_input_tsx",
+      "target": "src_lib_utils_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/input.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_components_ui_input_tsx",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/input.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_components_ui_input_tsx",
+      "target": "ui_input_input",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/ui/input.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "ui_input_input",
+      "target": "lib_utils_cn"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/nodes/PromptNode.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_components_nodes_promptnode_tsx",
+      "target": "nodes_promptnode_promptnode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/nodes/GhostNode.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_components_nodes_ghostnode_tsx",
+      "target": "nodes_ghostnode_ghostnode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/nodes/TextNode.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "src_components_nodes_textnode_tsx",
+      "target": "nodes_textnode_textnode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/nodes/HeroNode.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_components_nodes_heronode_tsx",
+      "target": "nodes_heronode_heronode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useEditorialPhysics.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_hooks_useeditorialphysics_ts",
+      "target": "src_store_usecanvasstore_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useEditorialPhysics.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_hooks_useeditorialphysics_ts",
+      "target": "store_usecanvasstore_usecanvasstore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useEditorialPhysics.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_hooks_useeditorialphysics_ts",
+      "target": "hooks_useeditorialphysics_useeditorialphysics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/useEditorialPhysics.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "hooks_useeditorialphysics_useeditorialphysics",
+      "target": "store_usecanvasstore_usecanvasstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useEdgeAnimations.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_hooks_useedgeanimations_ts",
+      "target": "src_store_usecanvasstore_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useEdgeAnimations.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_hooks_useedgeanimations_ts",
+      "target": "store_usecanvasstore_usecanvasstore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useEdgeAnimations.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_hooks_useedgeanimations_ts",
+      "target": "hooks_useedgeanimations_useedgeanimations",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/useEdgeAnimations.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "hooks_useedgeanimations_useedgeanimations",
+      "target": "store_usecanvasstore_usecanvasstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useEditorialChat.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_hooks_useeditorialchat_ts",
+      "target": "src_store_usecanvasstore_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useEditorialChat.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_hooks_useeditorialchat_ts",
+      "target": "store_usecanvasstore_usecanvasstore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useEditorialChat.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_hooks_useeditorialchat_ts",
+      "target": "hooks_useeditorialchat_useeditorialchat",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/useEditorialChat.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "hooks_useeditorialchat_useeditorialchat",
+      "target": "store_usecanvasstore_usecanvasstore"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/utils.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_lib_utils_ts",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/store/useCanvasStore.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_store_usecanvasstore_ts",
+      "target": "store_usecanvasstore_canvasstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/store/useCanvasStore.ts",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "src_store_usecanvasstore_ts",
+      "target": "store_usecanvasstore_usecanvasstore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "readme_md",
+      "target": "portfolio_readme_getting_started",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "readme_md",
+      "target": "portfolio_readme_learn_more",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "readme_md",
+      "target": "portfolio_readme_deploy_on_vercel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "portfolio_readme_getting_started",
+      "target": "portfolio_readme_codeblock_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "AGENTS.md",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "agents_md",
+      "target": "portfolio_agents_this_is_not_the_next_js_you_know",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "built_at_commit": "557c88a98a2a46426168f93a06a24b75b0bb04ee"
+}

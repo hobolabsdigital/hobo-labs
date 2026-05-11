@@ -1,0 +1,17 @@
+{
+  "status": "ready",
+  "lastMessage": {
+    "id": "XFOIe1YjpB7ge5sK",
+    "role": "assistant",
+    "parts": [
+      {
+        "type": "step-start"
+      },
+      {
+        "type": "text",
+        "text": "Everything's operational. The canvas is listening. What do you want to make?",
+        "state": "done"
+      }
+    ]
+  }
+}

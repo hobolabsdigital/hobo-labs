@@ -1,211 +1,147 @@
 import { useState, useEffect } from 'react';
 import { useChat } from '@ai-sdk/react';
-import { Node } from '@xyflow/react';
+import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls } from 'ai';
 import { useCanvasStore } from '../store/useCanvasStore';
 
 export function useEditorialChat() {
   const [input, setInput] = useState('');
   const isMockApiEnabled = useCanvasStore(state => state.isMockApiEnabled);
-  const setNodes = useCanvasStore(state => state.setNodes);
-  const setEdges = useCanvasStore(state => state.setEdges);
-  const setTrackedNodeId = useCanvasStore(state => state.setTrackedNodeId);
-  const rfInstance = useCanvasStore(state => state.rfInstance);
 
-  const { messages, append, status, stop } = useChat({
-    api: isMockApiEnabled ? '/api/chat?mock=true' : '/api/chat',
-    onToolCall: ({ toolCall }) => {
-      // Wrap in setTimeout to ensure state updates happen outside useChat's render cycle
+  const addPrompt = useCanvasStore(state => state.addPrompt);
+  const upsertActiveGhost = useCanvasStore(state => state.upsertActiveGhost);
+  const addHero = useCanvasStore(state => state.addHero);
+  const addText = useCanvasStore(state => state.addText);
+
+  const { messages, sendMessage, status, stop, addToolOutput } = useChat({
+    transport: new DefaultChatTransport({
+      api: isMockApiEnabled ? '/api/chat?mock=true' : '/api/chat',
+    }),
+    onFinish: (event) => {
+      return;
+      console.log('[DEBUG-FLOW] onFinish called with event:', JSON.stringify(event, null, 2));
+      const msg = (event as any).message || event;
+
+      // Parse using msg.parts
+      const reasoningParts = msg.parts?.filter((p: any) => p.type === 'reasoning') || [];
+      const textParts = msg.parts?.filter((p: any) => p.type === 'text') || [];
+      const toolPart = msg.parts?.find((p: any) => p.type?.startsWith('tool-'));
+
+      const finalReasoning = reasoningParts.map((p: any) => p.text).join('') || msg.reasoning || '';
+      const finalContent = textParts.map((p: any) => p.text).join('') || msg.content || '';
+      const hasToolCall = !!toolPart || !!msg.toolInvocations?.length;
+
+      let toolHeadline = '';
+      if (toolPart) {
+        toolHeadline = toolPart.input?.headline || toolPart.args?.headline || '';
+      } else if (msg.toolInvocations?.[0]) {
+        toolHeadline = msg.toolInvocations[0].args?.headline || msg.toolInvocations[0].args?.input?.headline || '';
+      }
+
+      // Spawning a text node only if there is no tool call
+      if (!hasToolCall && finalContent && finalContent.trim().length > 0) {
+        setTimeout(() => {
+          addText(finalContent);
+        }, 0);
+      }
+
       setTimeout(() => {
-        if (toolCall.toolName === 'createNode') {
-          const input = toolCall.input as any;
-          let xPos = 600;
-          let yPos = 400;
-
-          if (input.layoutIntent) {
-            switch (input.layoutIntent) {
-              case 'top_left': xPos = -400; yPos = -200; break;
-              case 'top_right': xPos = 1600; yPos = -200; break;
-              case 'bottom_left': xPos = -400; yPos = 1000; break;
-              case 'bottom_right': xPos = 1600; yPos = 1000; break;
-              case 'far_right': xPos = 2400; yPos = 400; break;
-              case 'center': xPos = 600; yPos = 400; break;
-            }
-          } else {
-            // Read state once
-            const currentNodes = useCanvasStore.getState().nodes;
-            const ghost = currentNodes.find(n => n.id === 'ghost-node');
-            if (ghost) {
-              xPos = ghost.position.x;
-              yPos = ghost.position.y;
-            } else {
-              const realNodes = currentNodes.filter(n => n.id !== 'ghost-node' && n.id !== toolCall.toolCallId);
-              if (realNodes.length > 0) {
-                const parent = realNodes[realNodes.length - 1];
-                xPos = parent.position.x + 150 + (Math.random() * 50);
-                yPos = parent.position.y + 100 + (Math.random() * 50 - 25);
-              } else {
-                xPos = 600 + (Math.random() * 400 - 200);
-                yPos = 400 + (Math.random() * 400 - 200);
-              }
-            }
-          }
-
-          setNodes((nds) => {
-            if (nds.some(n => n.id === toolCall.toolCallId)) return nds;
-
-            const newNode: Node = {
-              id: toolCall.toolCallId,
-              type: input.type === 'hero' ? 'hero' : 'text',
-              position: { x: xPos, y: yPos },
-              data: {
-                headline: input.headline,
-                subline: input.subline,
-                text: input.text,
-                label: input.label,
-                animationEffect: input.animationEffect
-              }
-            };
-
-            setTrackedNodeId(newNode.id);
-            setTimeout(() => { 
-              if (useCanvasStore.getState().trackedNodeId === newNode.id) {
-                setTrackedNodeId(null);
-              }
-            }, 1500);
-
-            return [...nds.filter(n => n.id !== 'ghost-node'), newNode];
-          });
-
-          setEdges((eds) => {
-            const currentNodes = useCanvasStore.getState().nodes;
-            const realNodes = currentNodes.filter(n => n.id !== 'ghost-node' && n.id !== toolCall.toolCallId);
-
-            if (realNodes.length > 0) {
-              const lastNodeId = realNodes[realNodes.length - 1].id;
-              const edgeId = `e-${lastNodeId}-${toolCall.toolCallId}`;
-
-              if (eds.some(e => e.id === edgeId)) return eds;
-              return [
-                ...eds.filter(e => e.target !== 'ghost-node'),
-                { id: edgeId, source: lastNodeId, target: toolCall.toolCallId }
-              ];
-            }
-            return eds.filter(e => e.target !== 'ghost-node');
-          });
-
-          const currentRfInstance = useCanvasStore.getState().rfInstance;
-          if (currentRfInstance) {
-            setTimeout(() => {
-              currentRfInstance.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 });
-            }, 50);
-          }
+        let finalGhostText = "Organizing thoughts...";
+        if (hasToolCall && toolHeadline) {
+          finalGhostText = toolHeadline;
+        } else if (!hasToolCall && finalContent && finalContent.trim().length > 0) {
+          finalGhostText = "Output generated.";
         }
-      }, 0);
+
+        upsertActiveGhost(finalGhostText, true); // true = isFinished
+      }, 50);
+    },
+    async onToolCall({ toolCall }) {
+      console.log('[DEBUG-STREAM] onToolCall FIRED!', JSON.stringify(toolCall, null, 2));
+
+      if (toolCall.toolName === 'createNode') {
+        let input: any = {};
+        try {
+          input = (toolCall as any).args || (toolCall as any).input || JSON.parse((toolCall as any).argsText || "{}");
+        } catch (e) {
+          console.error("Failed to parse tool args", e);
+        }
+        
+        // addHero handles BOTH 'hero' and 'text' types internally via createHeroNode
+        addHero(input, toolCall.toolCallId);
+        
+        // We MUST call addToolOutput here so the tool result is recorded in the local history.
+        // Without this, the Vercel AI SDK will throw a "Tool result is missing" error 
+        // when we send the NEXT user prompt.
+        addToolOutput({
+          tool: 'createNode',
+          toolCallId: toolCall.toolCallId,
+          output: { success: true }
+        });
+      }
     }
   });
 
   // Ghost node streaming sync
+  // Ghost node streaming sync
   useEffect(() => {
-    if (status === 'streaming' || status === 'submitted') {
-      const lastMessage = messages[messages.length - 1];
-      let ghostContent = "Organizing thoughts...";
+    const lastMessage = messages[messages.length - 1];
+    if (!lastMessage) return;
 
-      if (lastMessage && lastMessage.role === 'assistant') {
-        const msg = lastMessage as any;
-        const toolInvocation = msg.parts?.find((p: any) => p.type === 'tool-invocation')?.toolInvocation;
-        const streamingText = toolInvocation?.args?.text;
-
-        ghostContent = msg.parts?.find((p: any) => p.type === 'reasoning')?.reasoning ||
-          streamingText ||
-          msg.parts?.find((p: any) => p.type === 'text')?.text ||
-          msg.reasoning ||
-          msg.content ||
-          "Organizing thoughts...";
-      }
-
-      setNodes(nds => {
-        const hasGhost = nds.some(n => n.id === 'ghost-node');
-        if (!hasGhost) {
-          const dropX = 600 + (Math.random() * 200 - 100);
-          const dropY = 600 + (Math.random() * 200 - 100);
-          return [...nds, {
-            id: 'ghost-node',
-            type: 'ghost',
-            position: { x: dropX, y: dropY },
-            data: { text: ghostContent }
-          }];
-        } else {
-          return nds.map(n => n.id === 'ghost-node' ? { ...n, data: { text: ghostContent } } : n);
-        }
-      });
-
-      setEdges(eds => {
-        if (!eds.some(e => e.target === 'ghost-node')) {
-          const currentNodes = useCanvasStore.getState().nodes;
-          const lastReal = currentNodes.filter(n => n.id !== 'ghost-node').pop();
-          if (lastReal) {
-            return [...eds, { id: `e-ghost`, source: lastReal.id, target: 'ghost-node' }];
-          }
-        }
-        return eds;
-      });
-    } else {
-      setNodes(nds => nds.filter(n => n.id !== 'ghost-node'));
-      setEdges(eds => eds.filter(e => e.target !== 'ghost-node'));
+    // 1. If we're waiting for the AI to respond, spawn the ghost node immediately
+    if (lastMessage.role === 'user' && status === 'submitted') {
+      upsertActiveGhost("Organizing thoughts...", false);
+      return;
     }
-  }, [messages, status, setNodes, setEdges]);
+
+    // 2. If it's an assistant message, stream the reasoning
+    if (lastMessage.role === 'assistant') {
+      const reasoningParts = lastMessage.parts?.filter((p: any) => p.type === 'reasoning') || [];
+      const textParts = lastMessage.parts?.filter((p: any) => p.type === 'text') || [];
+      const toolParts = lastMessage.parts?.filter((p: any) => p.type?.startsWith('tool-')) || [];
+      
+      const isReasoningFinished = 
+        status !== 'streaming' || 
+        (reasoningParts.length > 0 && reasoningParts.every((p: any) => p.state === "done")) ||
+        textParts.length > 0 ||
+        toolParts.length > 0;
+
+      const combinedReasoning = reasoningParts.map((p: any) => p.text).join('');
+      
+      // Only upsert if we actually have reasoning or if we need to finish the ghost node
+      if (combinedReasoning.length > 0 || isReasoningFinished) {
+        upsertActiveGhost(combinedReasoning || "Organizing thoughts...", isReasoningFinished);
+      }
+    }
+
+  }, [messages, status, upsertActiveGhost]);
+
+  // Text node streaming sync
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    if (!lastMessage || lastMessage?.role === 'user') {
+      return
+    }
+
+    const textParts = lastMessage.parts?.filter((p: any) => p.type === 'text') || [];
+    if (textParts.length === 0) {
+      return;
+    }
+    
+    // Text stream is finished if the overall stream isn't streaming, or if the text part is done
+    const isTextFinished = status !== 'streaming' || textParts.every((p: any) => p.state === "done");
+    
+    const combinedText = textParts.map((p: any) => p.text).join('');
+    
+    if (combinedText.trim().length > 0) {
+      addText(combinedText, isTextFinished);
+    }
+  }, [messages, status, addText]);
 
   const handleSend = () => {
     if (!input.trim()) return;
 
-    const promptId = `prompt-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
-    
-    setNodes(nds => {
-      const lastNode = nds[nds.length - 1];
-      let dropX = 400 + (Math.random() * 200);
-      let dropY = 400 + (Math.random() * 200);
-
-      if (lastNode) {
-        dropX = lastNode.position.x + 150 + (Math.random() * 100);
-        dropY = lastNode.position.y + (Math.random() * 100 - 50);
-      }
-
-      const newNode = {
-        id: promptId,
-        type: 'prompt',
-        position: { x: dropX, y: dropY },
-        data: { text: input }
-      };
-
-      setTrackedNodeId(promptId);
-      setTimeout(() => { 
-        if (useCanvasStore.getState().trackedNodeId === promptId) {
-          setTrackedNodeId(null);
-        }
-      }, 1500);
-
-      return [...nds, newNode];
-    });
-    
-    setEdges(eds => {
-      const currentNodes = useCanvasStore.getState().nodes;
-      const lastNode = currentNodes[currentNodes.length - 2]; // before the prompt we just added
-      if (lastNode) {
-        const edgeId = `e-${lastNode.id}-${promptId}`;
-        if (eds.some(e => e.id === edgeId)) return eds;
-        return [...eds, { id: edgeId, source: lastNode.id, target: promptId }];
-      }
-      return eds;
-    });
-
-    const currentRfInstance = useCanvasStore.getState().rfInstance;
-    if (currentRfInstance) {
-      setTimeout(() => {
-        currentRfInstance.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 });
-      }, 50);
-    }
-
-    append({ role: 'user', content: input });
+    addPrompt(input);
+    sendMessage({ text: input });
     setInput('');
   };
 

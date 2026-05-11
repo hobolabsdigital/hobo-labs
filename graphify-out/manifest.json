@@ -1,0 +1,170 @@
+{
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/test-api-post-polyfill.js": {
+    "mtime": 1778431439.2930946,
+    "hash": "b7dbd5900e1eadb7cc16c6ce6f2547cd"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/test-convert.js": {
+    "mtime": 1778430882.1550791,
+    "hash": "8b73e177adb3e0926f0e25ced79889f7"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/test-api.js": {
+    "mtime": 1778430867.9204948,
+    "hash": "0666fa365d735ec615403ff5e80369e1"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/postcss.config.mjs": {
+    "mtime": 1778222130.661431,
+    "hash": "239f3ebf717465dc636818a1a619398d"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/test-ollama3.ts": {
+    "mtime": 1778233743.972189,
+    "hash": "c0ff7ef9815dfe42425cc036137bf17f"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/debug-ai-2.js": {
+    "mtime": 1778431346.7983062,
+    "hash": "7417e71bb01326c809993d7db08ff3dd"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/test-ollama2.ts": {
+    "mtime": 1778233714.5614412,
+    "hash": "317fd8a7ac8cf3d3b1015e87e40d696a"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/next-env.d.ts": {
+    "mtime": 1778224581.2371936,
+    "hash": "2a74d3909800ca5467fa83b0ab4a4890"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/test-api-multi.js": {
+    "mtime": 1778431459.799535,
+    "hash": "6d8a1d9558cbd1c0631b1d244a62de95"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/debug-ai.js": {
+    "mtime": 1778431328.4359205,
+    "hash": "9d358bba526ce473b4bef7d4cf9727d3"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/test-tool-result.js": {
+    "mtime": 1778427410.7450202,
+    "hash": "db364bc402b09a64408c073c9ecd4ec4"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/test-ollama.ts": {
+    "mtime": 1778232630.762401,
+    "hash": "6b1b706c0a27b8d92d943647153a5dbe"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/eslint.config.mjs": {
+    "mtime": 1778222130.6604478,
+    "hash": "dfa1f5f6a7037bf39dc510f30b180002"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/test-api-multi-2.js": {
+    "mtime": 1778431471.8564334,
+    "hash": "038055caf769ee0d27db5ae6c72e9d53"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/next.config.ts": {
+    "mtime": 1778222130.6612847,
+    "hash": "9b77af189a21a7a64e4bd7a426f64176"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/app/layout.tsx": {
+    "mtime": 1778420067.9439104,
+    "hash": "6501e07afdab07d37673976535804d62"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/app/page.tsx": {
+    "mtime": 1778222362.066151,
+    "hash": "f30811a7976cba42a9fcc8b0cbaa76d4"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/app/api/chat/route.ts": {
+    "mtime": 1778430982.3180988,
+    "hash": "f422db97264374052cf949f3379dd9bd"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/components/DebugPanel.tsx": {
+    "mtime": 1778423659.4454794,
+    "hash": "b29f6bc4585c3244d7ae8f858f2ab5b4"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/components/EditorialCanvas.tsx": {
+    "mtime": 1778421306.9287214,
+    "hash": "17743db2fb61a15ddba8c50cb3b69730"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/components/ChatInput.tsx": {
+    "mtime": 1778232757.507286,
+    "hash": "81f1c83a069a665ef3aa7cf597f243ad"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/components/ui/iris-text.tsx": {
+    "mtime": 1778229535.09616,
+    "hash": "684ad8f716d9ef4338566cdec4e83b9d"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/components/ui/annotation-text.tsx": {
+    "mtime": 1778229533.0858011,
+    "hash": "ffaa8abce1cbc975cfb7f6af8e0b62d7"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/components/ui/button.tsx": {
+    "mtime": 1778222255.8189156,
+    "hash": "705bf3552a39e0c722665ccbecb30654"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/components/ui/input.tsx": {
+    "mtime": 1778222259.2263467,
+    "hash": "0607b02d99a2e92f9509223f36ccc6ec"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/components/nodes/PromptNode.tsx": {
+    "mtime": 1778238270.6197622,
+    "hash": "0154aef9a044c0d3d542673fc294e892"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/components/nodes/GhostNode.tsx": {
+    "mtime": 1778238272.640179,
+    "hash": "8b9c247f048214fcbf1c1d8a944a5340"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/components/nodes/TextNode.tsx": {
+    "mtime": 1778238302.262214,
+    "hash": "fb82bf6f04073e65be3efc6bc3015d49"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/components/nodes/HeroNode.tsx": {
+    "mtime": 1778238274.669262,
+    "hash": "675afb283018875ee1939ab2e279f07a"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/hooks/useEditorialPhysics.ts": {
+    "mtime": 1778424317.4399157,
+    "hash": "61b35260ae52ff54bad61f3984b93cfd"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/hooks/useEdgeAnimations.ts": {
+    "mtime": 1778419498.5512776,
+    "hash": "55e7e341821271bff370b320e6327bbf"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/hooks/useEditorialChat.ts": {
+    "mtime": 1778431512.5715232,
+    "hash": "8a14826f1b3dad802ebc1d8878d2b0ab"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/lib/utils.ts": {
+    "mtime": 1778222255.8779614,
+    "hash": "5a6fd53fdcf2be529e9cc0b718fde352"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/src/store/useCanvasStore.ts": {
+    "mtime": 1778424321.2851682,
+    "hash": "8f9db566017f6cbfc213b4900ae2b2ef"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/README.md": {
+    "mtime": 1778222130.6603868,
+    "hash": "f15aaa42d5d299d091b1171097ea56ad"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/AGENTS.md": {
+    "mtime": 1778222165.9832985,
+    "hash": "9e09241799026ac05be315a2f0b50055"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/CLAUDE.md": {
+    "mtime": 1778222165.9834137,
+    "hash": "5c27369b226fcf2be8a6cfe52224e767"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/public/file.svg": {
+    "mtime": 1778222130.662025,
+    "hash": "d09f95206c3fa0bb9bd9fefabfd0ea71"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/public/vercel.svg": {
+    "mtime": 1778222130.6621146,
+    "hash": "c0af2f507b369b085b35ef4bbe3bcf1e"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/public/next.svg": {
+    "mtime": 1778222130.6619208,
+    "hash": "8e061864f388b47f33a1c3780831193e"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/public/globe.svg": {
+    "mtime": 1778222130.6629553,
+    "hash": "2aaafa6a49b6563925fe440891e32717"
+  },
+  "/Users/emile/Hobolabs/2026/website/apps/portfolio/public/window.svg": {
+    "mtime": 1778222130.6625934,
+    "hash": "a2760511c65806022ad20adf74370ff3"
+  }
+}
