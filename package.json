@@ -13,6 +13,7 @@
     "@ai-sdk/react": "^3.0.178",
     "@base-ui/react": "^1.4.1",
     "@react-three/fiber": "^9.6.1",
+    "@wrksz/themes": "^0.9.2",
     "@xyflow/react": "^12.10.2",
     "ai": "^6.0.176",
     "ai-sdk-ollama": "^3.8.3",
