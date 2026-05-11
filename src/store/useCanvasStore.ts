@@ -48,8 +48,28 @@ export interface CanvasState {
 import { createPromptNode, createGhostNode, createHeroNode, createTextNode, createEdge } from './nodeFactories';
 
 export const useCanvasStore = create<CanvasState>((set, get) => ({
-  nodes: [],
-  edges: [],
+  nodes: [
+    {
+      id: 'hero-1',
+      type: 'hero',
+      position: { x: 50, y: 50 },
+      data: {
+        headline: 'THE\nCREATIVE\nENGINE',
+        subline: 'I build experimental interfaces and AI-driven experiences.',
+        imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop'
+      },
+    },
+    {
+      id: 'text-1',
+      type: 'text',
+      position: { x: 800, y: 550 },
+      data: {
+        text: 'Exploring the intersection of brutalist design and generative AI. This canvas is alive.',
+        label: 'CONTEXT'
+      }
+    }
+  ],
+  edges: [{ id: 'e-hero-1-text-1', source: 'hero-1', target: 'text-1' }],
   rfInstance: null,
   trackedNodeId: null,
   isMockApiEnabled: false,
@@ -167,13 +187,6 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
         trackedNodeId: isNewGhost ? activeGhostId : state.trackedNodeId 
       };
     });
-
-    // Trigger the actual camera pan if we just spawned the ghost
-    if (isNewGhost) {
-      const rf = get().rfInstance;
-      if (rf) setTimeout(() => rf.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 }), 50);
-      setTimeout(() => { if (get().trackedNodeId) set({ trackedNodeId: null }); }, 1500);
-    }
   },
 
   addHero: (data: any, id: string) => {
@@ -183,12 +196,7 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
       const newNode = createHeroNode(id, data, sourceNode);
 
       const newEdges = sourceNode ? [...state.edges, createEdge(sourceNode.id, id)] : state.edges;
-      return { nodes: [...state.nodes, newNode], edges: newEdges, lastPlacedNodeId: id, trackedNodeId: id };
     });
-
-    const rf = get().rfInstance;
-    if (rf) setTimeout(() => rf.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 }), 50);
-    setTimeout(() => { if (get().trackedNodeId === id) set({ trackedNodeId: null }); }, 1500);
   },
 
   addText: (text: string, isFinished: boolean = false) => {
@@ -235,18 +243,6 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
       };
     });
 
-    // Only pan the camera when the node is first created, not on every tick
-    if (newlyCreated) {
-      const rf = get().rfInstance;
-      if (rf) setTimeout(() => rf.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 }), 50);
-    }
-
-    // Grab the ID we just tracked
-    const trackedId = get().trackedNodeId;
-    if (trackedId) {
-      setTimeout(() => {
-        if (get().trackedNodeId === trackedId) set({ trackedNodeId: null });
-      }, 1500);
-    }
+    });
   }
 }));

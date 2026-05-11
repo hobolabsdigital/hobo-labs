@@ -25,27 +25,8 @@ import { useEdgeAnimations } from '../hooks/useEdgeAnimations';
 
 const nodeTypes = { hero: HeroNode, text: TextNode, prompt: PromptNode, ghost: GhostNode };
 
-const initialNodes: Node[] = [
-  {
-    id: 'hero-1',
-    type: 'hero',
-    position: { x: 50, y: 50 },
-    data: {
-      headline: 'THE\nCREATIVE\nENGINE',
-      subline: 'I build experimental interfaces and AI-driven experiences.',
-      imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop'
-    },
-  },
-  {
-    id: 'text-1',
-    type: 'text',
-    position: { x: 800, y: 550 },
-    data: {
-      text: 'Exploring the intersection of brutalist design and generative AI. This canvas is alive.',
-      label: 'CONTEXT'
-    }
-  }
-];
+// We keep the node definitions here for easy reference, but initial state 
+// injection happens entirely in useCanvasStore.ts now.
 
 export default function EditorialCanvas() {
   const nodes = useCanvasStore(state => state.nodes);
@@ -54,16 +35,21 @@ export default function EditorialCanvas() {
   const onEdgesChange = useCanvasStore(state => state.onEdgesChange);
   const onConnect = useCanvasStore(state => state.onConnect);
   const setRfInstance = useCanvasStore(state => state.setRfInstance);
-  const setNodes = useCanvasStore(state => state.setNodes);
   const setEdges = useCanvasStore(state => state.setEdges);
+  const trackedNodeId = useCanvasStore(state => state.trackedNodeId);
+  const rfInstance = useCanvasStore(state => state.rfInstance);
 
-  // Initialize store if empty
+  // Generic camera tracking effect
   useEffect(() => {
-    if (useCanvasStore.getState().nodes.length === 0) {
-      setNodes(initialNodes);
-      setEdges([{ id: 'e-hero-1-text-1', source: 'hero-1', target: 'text-1' }]);
+    if (trackedNodeId && rfInstance) {
+      // Small delay to ensure node bounds are calculated by ReactFlow
+      const timeoutId = setTimeout(() => {
+        rfInstance.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 });
+      }, 50);
+      
+      return () => clearTimeout(timeoutId);
     }
-  }, [setNodes, setEdges]);
+  }, [trackedNodeId, rfInstance]);
 
   // Activate custom hooks
   useEditorialPhysics();
