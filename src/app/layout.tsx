@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Mono, Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@wrksz/themes/next";
 
 const spaceMono = Space_Mono({
   variable: "--font-space-mono",
