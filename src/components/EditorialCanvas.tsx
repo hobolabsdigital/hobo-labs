@@ -36,6 +36,7 @@ export default function EditorialCanvas() {
   const onConnect = useCanvasStore(state => state.onConnect);
   const setRfInstance = useCanvasStore(state => state.setRfInstance);
   const setEdges = useCanvasStore(state => state.setEdges);
+  const setTrackedNodeId = useCanvasStore(state => state.setTrackedNodeId);
   const trackedNodeId = useCanvasStore(state => state.trackedNodeId);
   const rfInstance = useCanvasStore(state => state.rfInstance);
 
@@ -47,9 +48,17 @@ export default function EditorialCanvas() {
         rfInstance.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 });
       }, 50);
       
-      return () => clearTimeout(timeoutId);
+      // Reset the tracking lock after the animation completes so D3 doesn't permanently lock the camera
+      const resetId = setTimeout(() => {
+        setTrackedNodeId(null);
+      }, 1500);
+
+      return () => {
+        clearTimeout(timeoutId);
+        clearTimeout(resetId);
+      };
     }
-  }, [trackedNodeId, rfInstance]);
+  }, [trackedNodeId, rfInstance, setTrackedNodeId]);
 
   // Activate custom hooks
   useEditorialPhysics();
@@ -66,8 +75,8 @@ export default function EditorialCanvas() {
       simNode.fx = node.position.x;
       simNode.fy = node.position.y;
       
-      // Gentle heat to make the mesh elastic
-      simulation.alphaTarget(0.3).restart();
+      // Gentle heat to make the mesh elastic without blowing it up
+      simulation.alphaTarget(0.05).restart();
     }
   }, []);
 
