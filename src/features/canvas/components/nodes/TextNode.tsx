@@ -3,8 +3,8 @@
 import React from 'react';
 import { Handle, Position } from "@xyflow/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AnnotationText } from '@/core/ui/ui/annotation-text';
-import { IrisText } from '@/core/ui/ui/iris-text';
+import { AnnotationText } from '@/core/ui/components/annotation-text';
+import { IrisText } from '@/core/ui/components/iris-text';
 import { useBeeStore } from '@/features/swarm/store/useBeeStore';
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 

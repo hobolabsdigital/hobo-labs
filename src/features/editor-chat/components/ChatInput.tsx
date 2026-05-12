@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from '@/core/ui/ui/button';
+import { Button } from '@/core/ui/components/button';
 
 import { SendIcon, LockIcon } from "lucide-react";
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';

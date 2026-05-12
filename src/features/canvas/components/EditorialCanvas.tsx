@@ -9,18 +9,10 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
-// Custom Nodes
 import { HeroNode } from '@/features/canvas/components/nodes/HeroNode';
 import { TextNode } from '@/features/canvas/components/nodes/TextNode';
 import { PromptNode } from '@/features/canvas/components/nodes/PromptNode';
 import { GhostNode } from '@/features/canvas/components/nodes/GhostNode';
-import { ChatInput } from '@/features/editor-chat/components/ChatInput';
-import { DebugPanel } from '@/features/canvas/components/DebugPanel';
-import { TimelineScrubber } from '@/features/timeline/components/TimelineScrubber';
-import { FluidBackground } from '@/features/fluid-bg/components/FluidBackground';
-import { InteractiveGrid } from '@/core/ui/InteractiveGrid';
-import { ThemeToggle } from '@/core/ui/ThemeToggle';
-import { Swarm } from '@/features/swarm/components/Swarm';
 import { useTheme } from '@/core/theme/theme-provider';
 
 // Hooks and Store
@@ -28,14 +20,13 @@ import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 import { useBeeStore } from '@/features/swarm/store/useBeeStore';
 import { useEditorialPhysics } from '@/features/canvas/hooks/useEditorialPhysics';
 import { useEdgeAnimations } from '@/features/canvas/hooks/useEdgeAnimations';
-import { SwarmTerminal } from '@/features/swarm/components/SwarmTerminal';
 
 const nodeTypes = { hero: HeroNode, text: TextNode, prompt: PromptNode, ghost: GhostNode };
 
 // We keep the node definitions here for easy reference, but initial state 
 // injection happens entirely in useCanvasStore.ts now.
 
-export default function EditorialCanvas() {
+export default function EditorialCanvas({ children }: { children?: React.ReactNode }) {
   const { theme } = useTheme();
   const nodes = useCanvasStore(state => state.nodes);
   const edges = useCanvasStore(state => state.edges);
@@ -156,19 +147,9 @@ export default function EditorialCanvas() {
         minZoom={0.5}
         maxZoom={2}
       >
-        <InteractiveGrid gap={24} size={2} color="var(--grid-color)" repelRadius={150} repelStrength={15} />
+        {children}
         <Controls className="fill-foreground stroke-foreground" />
       </ReactFlow>
-
-      <Swarm count={3} type="worker" />
-      <Swarm count={3} type="soldier" />
-      <SwarmTerminal />
-      <DebugPanel />
-      <TimelineScrubber />
-      <FluidBackground />
-      <ThemeToggle />
-
-      <ChatInput />
     </div>
   );
 }

@@ -3,6 +3,17 @@ import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls } from 'ai';
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 
+interface MessagePart {
+  type: string;
+  text?: string;
+  state?: string;
+  input?: any;
+  args?: any;
+  argsText?: string;
+  toolName?: string;
+  toolCallId?: string;
+}
+
 export function useEditorialChat() {
   const [input, setInput] = useState('');
   const isMockApiEnabled = useCanvasStore(state => state.isMockApiEnabled);
@@ -25,12 +36,12 @@ export function useEditorialChat() {
       const msg = (event as any).message || event;
 
       // Parse using msg.parts
-      const reasoningParts = msg.parts?.filter((p: any) => p.type === 'reasoning') || [];
-      const textParts = msg.parts?.filter((p: any) => p.type === 'text') || [];
-      const toolPart = msg.parts?.find((p: any) => p.type?.startsWith('tool-'));
+      const reasoningParts = msg.parts?.filter((p: MessagePart) => p.type === 'reasoning') || [];
+      const textParts = msg.parts?.filter((p: MessagePart) => p.type === 'text') || [];
+      const toolPart = msg.parts?.find((p: MessagePart) => p.type?.startsWith('tool-'));
 
-      const finalReasoning = reasoningParts.map((p: any) => p.text).join('') || msg.reasoning || '';
-      const finalContent = textParts.map((p: any) => p.text).join('') || msg.content || '';
+      const finalReasoning = reasoningParts.map((p: MessagePart) => p.text).join('') || msg.reasoning || '';
+      const finalContent = textParts.map((p: MessagePart) => p.text).join('') || msg.content || '';
       const hasToolCall = !!toolPart || !!msg.toolInvocations?.length;
 
       let toolHeadline = '';
@@ -98,17 +109,17 @@ export function useEditorialChat() {
 
     // 2. If it's an assistant message, stream the reasoning
     if (lastMessage.role === 'assistant') {
-      const reasoningParts = lastMessage.parts?.filter((p: any) => p.type === 'reasoning') || [];
-      const textParts = lastMessage.parts?.filter((p: any) => p.type === 'text') || [];
-      const toolParts = lastMessage.parts?.filter((p: any) => p.type?.startsWith('tool-')) || [];
+      const reasoningParts = lastMessage.parts?.filter((p: MessagePart) => p.type === 'reasoning') || [];
+      const textParts = lastMessage.parts?.filter((p: MessagePart) => p.type === 'text') || [];
+      const toolParts = lastMessage.parts?.filter((p: MessagePart) => p.type?.startsWith('tool-')) || [];
       
       const isReasoningFinished = 
         status !== 'streaming' || 
-        (reasoningParts.length > 0 && reasoningParts.every((p: any) => p.state === "done")) ||
+        (reasoningParts.length > 0 && reasoningParts.every((p: MessagePart) => p.state === "done")) ||
         textParts.length > 0 ||
         toolParts.length > 0;
 
-      const combinedReasoning = reasoningParts.map((p: any) => p.text).join('');
+      const combinedReasoning = reasoningParts.map((p: MessagePart) => p.text).join('');
       
       // Only upsert if we actually have reasoning or if we need to finish the ghost node
       if (combinedReasoning.length > 0 || isReasoningFinished) {
@@ -132,15 +143,15 @@ export function useEditorialChat() {
       return;
     }
 
-    const textParts = lastMessage.parts?.filter((p: any) => p.type === 'text') || [];
+    const textParts = lastMessage.parts?.filter((p: MessagePart) => p.type === 'text') || [];
     if (textParts.length === 0) {
       return;
     }
     
     // Text stream is finished if the overall stream isn't streaming, or if the text part is done
-    const isTextFinished = status !== 'streaming' || textParts.every((p: any) => p.state === "done");
+    const isTextFinished = status !== 'streaming' || textParts.every((p: MessagePart) => p.state === "done");
     
-    const combinedText = textParts.map((p: any) => p.text).join('');
+    const combinedText = textParts.map((p: MessagePart) => p.text).join('');
     
     if (combinedText.trim().length > 0) {
       addText(combinedText, isTextFinished);
