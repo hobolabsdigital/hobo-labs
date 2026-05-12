@@ -60,7 +60,7 @@ async function run() {
   if (fs.existsSync(dbPath)) {
     existingDb = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
     // Optionally filter out old project chunks if re-running
-    existingDb = existingDb.filter(c => c.metadata.type !== 'project_detail');
+    existingDb = existingDb.filter((c: any) => c.metadata.type !== 'project_detail');
   }
 
   const finalDb = [...existingDb, ...processedChunks];
