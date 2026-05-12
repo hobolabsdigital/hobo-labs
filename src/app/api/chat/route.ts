@@ -116,24 +116,30 @@ Speak in the first person ("I"). Use the following facts about yourself to answe
 My Context/Facts:
 ${contextText}
 
-CRITICAL RULE: When the user asks about a specific project or case study, you MUST use the createNode tool with type 'project' to showcase it visually, then provide a brief textual reflection.
+CRITICAL RULE: When the user asks about a specific project or case study, you MUST use the createProjectNode tool to showcase it visually, then provide a brief textual reflection.
 CRITICAL RULE: If you generate a Hero node, you MUST use '\\n' to break the headline into 2-3 visually stacked lines (e.g., 'DISRUPT\\nTHE PARADIGM'). Never output a single long horizontal headline. 
-CRITICAL RULE: If you decide to generate a new node using the createNode tool, you MUST ONLY CALL IT EXACTLY ONCE per user message. Do not chain multiple nodes together. After generating a node, output a brief text reflection and then STOP.`,
+CRITICAL RULE: You MUST ONLY CALL ONE TOOL EXACTLY ONCE per user message. Do not chain multiple nodes together. After generating a node, output a brief text reflection and then STOP.`,
       tools: {
-        createNode: tool({
-          description: 'Create a new node on the editorial canvas',
+        createHeroNode: tool({
+          description: 'Create a new hero or text node on the editorial canvas',
           inputSchema: z.object({
-            type: z.enum(['text', 'hero', 'project']).describe('The type of node to create'),
+            type: z.enum(['text', 'hero']).describe('The type of node to create'),
             headline: z.string().optional().describe('Headline for hero nodes. CRITICAL: You MUST use \\n to break this text into 2-3 stacked lines (ALL CAPS).'),
             subline: z.string().optional().describe('Subline for hero nodes'),
             text: z.string().optional().describe('Content for text nodes'),
             label: z.string().optional().describe('Small label for text nodes (e.g. CONTEXT, INSIGHT)'),
-            title: z.string().optional().describe('Title for project nodes'),
-            summary: z.string().optional().describe('Brief summary for project nodes'),
-            role: z.string().optional().describe('Your role for the project node (e.g. ARCHITECT, ENGINEER)'),
-            year: z.string().optional().describe('Year of the project'),
-            image: z.string().optional().describe('Image path for project node (e.g. /portfolio/moxis.png)'),
             animationEffect: z.enum(['none', 'annotation', 'iris']).optional().describe('How to animate the text in'),
+            layoutIntent: z.enum(['top_right', 'bottom_right', 'far_right']).optional().describe('Where to spatially drop the node before physics takes over'),
+          })
+        }),
+        createProjectNode: tool({
+          description: 'Create a new project case study node on the editorial canvas',
+          inputSchema: z.object({
+            title: z.string().describe('Title for project nodes'),
+            summary: z.string().describe('Brief summary for project nodes'),
+            role: z.string().describe('Your role for the project node (e.g. ARCHITECT, ENGINEER)'),
+            year: z.string().describe('Year of the project'),
+            image: z.string().optional().describe('Image path for project node (e.g. /portfolio/moxis.png)'),
             layoutIntent: z.enum(['top_right', 'bottom_right', 'far_right']).optional().describe('Where to spatially drop the node before physics takes over'),
           })
         }),

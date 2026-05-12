@@ -65,6 +65,7 @@ export interface CanvasState {
   addPrompt: (text: string) => void;
   upsertActiveGhost: (text: string, isFinished?: boolean) => void;
   addHero: (data: any, id: string) => void;
+  addProject: (data: any, id: string) => void;
   addText: (text: string, isFinished?: boolean) => void;
   truncateHistory: (cursorIndex: number) => void;
 }
@@ -248,13 +249,19 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   addHero: (data: any, id: string) => {
     set(state => {
       const sourceNode = state.nodes.find(n => n.id === state.activeGhostId) || state.nodes.find(n => n.id === state.lastPlacedNodeId);
-      console.log(`[DEBUG-FLOW] addHero | heroId=${id} | sourceNode=${sourceNode?.id} | activeGhostId=${state.activeGhostId}`);
-      let newNode;
-      if (data.type === 'project') {
-        newNode = createProjectNode(id, data, sourceNode);
-      } else {
-        newNode = createHeroNode(id, data, sourceNode);
-      }
+      console.log(`[DEBUG-FLOW] addHero | heroId=${id} | sourceNode=${sourceNode?.id}`);
+      const newNode = createHeroNode(id, data, sourceNode);
+
+      const newEdges = sourceNode ? [...state.edges, createEdge(sourceNode.id, id)] : state.edges;
+      return { nodes: [...state.nodes, newNode], edges: newEdges, lastPlacedNodeId: id, trackedNodeId: id };
+    });
+  },
+
+  addProject: (data: any, id: string) => {
+    set(state => {
+      const sourceNode = state.nodes.find(n => n.id === state.activeGhostId) || state.nodes.find(n => n.id === state.lastPlacedNodeId);
+      console.log(`[DEBUG-FLOW] addProject | projectId=${id} | sourceNode=${sourceNode?.id}`);
+      const newNode = createProjectNode(id, data, sourceNode);
 
       const newEdges = sourceNode ? [...state.edges, createEdge(sourceNode.id, id)] : state.edges;
       return { nodes: [...state.nodes, newNode], edges: newEdges, lastPlacedNodeId: id, trackedNodeId: id };

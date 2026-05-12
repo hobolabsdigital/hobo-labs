@@ -21,6 +21,7 @@ export function useEditorialChat() {
   const addPrompt = useCanvasStore(state => state.addPrompt);
   const upsertActiveGhost = useCanvasStore(state => state.upsertActiveGhost);
   const addHero = useCanvasStore(state => state.addHero);
+  const addProject = useCanvasStore(state => state.addProject);
   const addText = useCanvasStore(state => state.addText);
   const timeCursor = useCanvasStore(state => state.timeCursor);
   const truncateHistory = useCanvasStore(state => state.truncateHistory);
@@ -31,63 +32,30 @@ export function useEditorialChat() {
       api: isMockApiEnabled ? '/api/chat?mock=true' : '/api/chat',
     }),
     onFinish: (event) => {
+      // Disabled ghost node sync from onFinish since we handle text and reasoning continuously via state in the effects below.
       return;
-      console.log('[DEBUG-FLOW] onFinish called with event:', JSON.stringify(event, null, 2));
-      const msg = (event as any).message || event;
-
-      // Parse using msg.parts
-      const reasoningParts = msg.parts?.filter((p: MessagePart) => p.type === 'reasoning') || [];
-      const textParts = msg.parts?.filter((p: MessagePart) => p.type === 'text') || [];
-      const toolPart = msg.parts?.find((p: MessagePart) => p.type?.startsWith('tool-'));
-
-      const finalReasoning = reasoningParts.map((p: MessagePart) => p.text).join('') || msg.reasoning || '';
-      const finalContent = textParts.map((p: MessagePart) => p.text).join('') || msg.content || '';
-      const hasToolCall = !!toolPart || !!msg.toolInvocations?.length;
-
-      let toolHeadline = '';
-      if (toolPart) {
-        toolHeadline = toolPart.input?.headline || toolPart.input?.title || toolPart.args?.headline || toolPart.args?.title || '';
-      } else if (msg.toolInvocations?.[0]) {
-        toolHeadline = msg.toolInvocations[0].args?.headline || msg.toolInvocations[0].args?.title || msg.toolInvocations[0].args?.input?.headline || msg.toolInvocations[0].args?.input?.title || '';
-      }
-
-      // Spawning a text node only if there is no tool call
-      if (!hasToolCall && finalContent && finalContent.trim().length > 0) {
-        setTimeout(() => {
-          addText(finalContent);
-        }, 0);
-      }
-
-      setTimeout(() => {
-        let finalGhostText = "Organizing thoughts...";
-        if (hasToolCall && toolHeadline) {
-          finalGhostText = toolHeadline;
-        } else if (!hasToolCall && finalContent && finalContent.trim().length > 0) {
-          finalGhostText = "Output generated.";
-        }
-
-        upsertActiveGhost(finalGhostText, true); // true = isFinished
-      }, 50);
     },
     async onToolCall({ toolCall }) {
       console.log('[DEBUG-STREAM] onToolCall FIRED!', JSON.stringify(toolCall, null, 2));
 
-      if (toolCall.toolName === 'createNode') {
-        let input: any = {};
-        try {
-          input = (toolCall as any).args || (toolCall as any).input || JSON.parse((toolCall as any).argsText || "{}");
-        } catch (e) {
-          console.error("Failed to parse tool args", e);
-        }
-        
-        // addHero handles BOTH 'hero' and 'text' types internally via createHeroNode
+      let input: any = {};
+      try {
+        input = (toolCall as any).args || (toolCall as any).input || JSON.parse((toolCall as any).argsText || "{}");
+      } catch (e) {
+        console.error("Failed to parse tool args", e);
+      }
+
+      if (toolCall.toolName === 'createHeroNode' || toolCall.toolName === 'createNode') {
         addHero(input, toolCall.toolCallId);
-        
-        // We MUST call addToolOutput here so the tool result is recorded in the local history.
-        // Without this, the Vercel AI SDK will throw a "Tool result is missing" error 
-        // when we send the NEXT user prompt.
         addToolOutput({
-          tool: 'createNode',
+          tool: toolCall.toolName,
+          toolCallId: toolCall.toolCallId,
+          output: { success: true }
+        });
+      } else if (toolCall.toolName === 'createProjectNode') {
+        addProject(input, toolCall.toolCallId);
+        addToolOutput({
+          tool: toolCall.toolName,
           toolCallId: toolCall.toolCallId,
           output: { success: true }
         });
