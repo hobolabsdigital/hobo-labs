@@ -5,18 +5,20 @@ import { Handle, Position } from "@xyflow/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useBeeStore } from '../../store/useBeeStore';
 
-export function HeroNode({ data, id }: { data: any, id: string }) {
+const EMPTY_OBJECT = {};
+
+export const HeroNode = React.memo(function HeroNode({ data, id }: { data: any, id: string }) {
   const rawHeadline = data.headline || data.title || "THE\nCREATIVE\nENGINE";
   const headlineLines = rawHeadline.replace(/\\n/g, '\n').split('\n');
 
-  const themeOverrides = useBeeStore(state => state.themeOverrides);
-  const swarmTarget = useBeeStore(state => state.swarmTarget);
+  const workerTarget = useBeeStore(state => state.swarmTarget.worker);
+  const soldierTarget = useBeeStore(state => state.swarmTarget.soldier);
   
-  const isWorkerTarget = swarmTarget.worker === 'global' || swarmTarget.worker === id;
-  const isSoldierTarget = swarmTarget.soldier === 'global' || swarmTarget.soldier === id;
+  const isWorkerTarget = workerTarget === 'global' || workerTarget === id;
+  const isSoldierTarget = soldierTarget === 'global' || soldierTarget === id;
   
-  const workerStyles = isWorkerTarget ? themeOverrides.worker : {};
-  const soldierStyles = isSoldierTarget ? themeOverrides.soldier : {};
+  const workerStyles = useBeeStore(state => isWorkerTarget ? state.themeOverrides.worker : EMPTY_OBJECT);
+  const soldierStyles = useBeeStore(state => isSoldierTarget ? state.themeOverrides.soldier : EMPTY_OBJECT);
   
   const nodeStyles = { ...workerStyles, ...soldierStyles };
 
@@ -85,4 +87,4 @@ export function HeroNode({ data, id }: { data: any, id: string }) {
       </motion.div>
     </AnimatePresence>
   );
-}
+});

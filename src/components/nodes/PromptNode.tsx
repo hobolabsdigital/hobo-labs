@@ -4,7 +4,7 @@ import React from 'react';
 import { Handle, Position } from "@xyflow/react";
 import { motion } from "framer-motion";
 
-export function PromptNode({ data }: { data: any }) {
+export const PromptNode = React.memo(function PromptNode({ data }: { data: any }) {
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.5 }}
@@ -32,4 +32,4 @@ export function PromptNode({ data }: { data: any }) {
       </div>
     </motion.div>
   );
-}
+});

@@ -5,7 +5,7 @@ import { motion, useMotionValue, useSpring, useTransform, animate, useAnimationF
 import { useCanvasStore } from "@/store/useCanvasStore";
 
 export function TimelineScrubber() {
-  const nodes = useCanvasStore((state) => state.nodes);
+  const nodesLength = useCanvasStore((state) => state.nodes.length);
   const timeCursor = useCanvasStore((state) => state.timeCursor);
   const setTimeCursor = useCanvasStore((state) => state.setTimeCursor);
   const setTimelineHovered = useCanvasStore((state) => state.setTimelineHovered);
@@ -19,9 +19,9 @@ export function TimelineScrubber() {
   const isDraggingRef = useRef(false);
 
   // If there are less than 2 nodes, history scrubbing doesn't make much sense.
-  if (nodes.length <= 1) return null;
+  if (nodesLength <= 1) return null;
 
-  const maxIndex = nodes.length - 1;
+  const maxIndex = nodesLength - 1;
   const currentValue = timeCursor !== null ? timeCursor : maxIndex;
 
   const [containerHeight, setContainerHeight] = useState(0);
@@ -49,7 +49,7 @@ export function TimelineScrubber() {
   // As nodes are added, the "present" bulb creeps up the track.
   // We'll say the track visually "fills" over 20 nodes.
   const VISUAL_MAX_NODES = 20;
-  const fillRatio = Math.min(nodes.length / VISUAL_MAX_NODES, 1);
+  const fillRatio = Math.min(nodesLength / VISUAL_MAX_NODES, 1);
   // The "present" position (where the bulb sits when at the newest node)
   const presentY = maxY - (fillRatio * (maxY - paddingY));
   

@@ -27,7 +27,6 @@ import { useTheme } from '@/components/theme-provider';
 import { useCanvasStore } from '../store/useCanvasStore';
 import { useBeeStore } from '../store/useBeeStore';
 import { useEditorialPhysics } from '../hooks/useEditorialPhysics';
-import { useEditorialChat } from '../hooks/useEditorialChat';
 import { useEdgeAnimations } from '../hooks/useEdgeAnimations';
 import { SwarmTerminal } from './SwarmTerminal';
 
@@ -50,13 +49,16 @@ export default function EditorialCanvas() {
   const rfInstance = useCanvasStore(state => state.rfInstance);
 
   const activeMischief = useBeeStore(state => state.activeMischief);
-  const themeOverrides = useBeeStore(state => state.themeOverrides);
-  const swarmTarget = useBeeStore(state => state.swarmTarget);
 
   // Filter nodes and edges based on the timeline scrubber
-  const visibleNodes = timeCursor === null ? nodes : nodes.slice(0, timeCursor + 1);
-  const visibleNodeIds = new Set(visibleNodes.map(n => n.id));
-  const visibleEdges = edges.filter(e => visibleNodeIds.has(e.source) && visibleNodeIds.has(e.target));
+  const visibleNodes = React.useMemo(() => {
+    return timeCursor === null ? nodes : nodes.slice(0, timeCursor + 1);
+  }, [nodes, timeCursor]);
+
+  const visibleEdges = React.useMemo(() => {
+    const visibleNodeIds = new Set(visibleNodes.map(n => n.id));
+    return edges.filter(e => visibleNodeIds.has(e.source) && visibleNodeIds.has(e.target));
+  }, [edges, visibleNodes]);
 
   // Generic camera tracking effect
   useEffect(() => {
@@ -91,7 +93,6 @@ export default function EditorialCanvas() {
   // Activate custom hooks
   useEditorialPhysics();
   useEdgeAnimations();
-  const { input, setInput, handleSend, status } = useEditorialChat();
 
   const onNodeDragStart = useCallback((event: React.MouseEvent, node: Node) => {
     const simulation = useCanvasStore.getState().simulationRef;
@@ -167,12 +168,7 @@ export default function EditorialCanvas() {
       <FluidBackground />
       <ThemeToggle />
 
-      <ChatInput
-        input={input}
-        setInput={setInput}
-        onSubmit={(e) => { e.preventDefault(); handleSend(); }}
-        isLoading={status === 'submitted' || status === 'streaming'}
-      />
+      <ChatInput />
     </div>
   );
 }

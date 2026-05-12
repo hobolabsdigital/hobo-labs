@@ -1,13 +1,13 @@
-import { useEffect } from 'react';
+"use client";
+
+import React, { useEffect } from 'react';
 import { useBeeStore } from '../store/useBeeStore';
 import { BeeIcon } from './BeeIcon';
 
-export function PetBee({ id }: { id: string }) {
-  const bees = useBeeStore(state => state.bees);
+export const PetBee = React.memo(function PetBee({ id }: { id: string }) {
+  const bee = useBeeStore(state => state.bees[id]);
   const activeMischief = useBeeStore(state => state.activeMischief);
   const isSleeping = useBeeStore(state => state.isSleeping);
-  
-  const bee = bees[id];
 
   if (!bee) return null;
 
@@ -35,4 +35,4 @@ export function PetBee({ id }: { id: string }) {
       </div>
     </div>
   );
-}
+});

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from 'react';
 import { useBeeStore } from '../store/useBeeStore';
 import { motion, AnimatePresence } from 'framer-motion';

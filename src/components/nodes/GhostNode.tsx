@@ -3,10 +3,15 @@
 import React, { useState } from 'react';
 import { Handle, Position } from "@xyflow/react";
 import { motion } from "framer-motion";
+import { useCanvasStore } from '@/store/useCanvasStore';
 
-export function GhostNode({ data }: { data: any }) {
+export const GhostNode = React.memo(function GhostNode({ id, data }: { id: string, data: any }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const isFinished = data.isFinished;
+  
+  // Decoupled streaming state! Only re-renders this component!
+  const streamedText = useCanvasStore(state => state.activeGhostId === id ? state.activeGhostText : null);
+  const textToDisplay = streamedText !== null ? streamedText : data.text;
 
   return (
     <motion.div 
@@ -37,10 +42,10 @@ export function GhostNode({ data }: { data: any }) {
         
         {(!isFinished || isExpanded) && (
           <p className="text-lg font-mono text-foreground/50 leading-snug whitespace-pre-wrap break-words">
-            {data.text || "..."}
+            {textToDisplay || "..."}
           </p>
         )}
       </div>
     </motion.div>
   );
-}
+});

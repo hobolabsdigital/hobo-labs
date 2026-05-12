@@ -6,22 +6,30 @@ import { SendIcon, LockIcon } from "lucide-react";
 import { useCanvasStore } from "@/store/useCanvasStore";
 import { useBeeStore } from "@/store/useBeeStore";
 import { useEffect } from "react";
+import { useEditorialChat } from "@/hooks/useEditorialChat";
 
-interface ChatInputProps {
-  input: string;
-  setInput: (value: string) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  isLoading: boolean;
-}
-
-export function ChatInput({ input, setInput, onSubmit, isLoading }: ChatInputProps) {
+export function ChatInput() {
   const timeCursor = useCanvasStore((state) => state.timeCursor);
   const isHistoryMode = timeCursor !== null;
   const setIsSleeping = useBeeStore((state) => state.setIsSleeping);
+  
+  const { input, setInput, handleSend, status } = useEditorialChat();
+  const isLoading = status === 'submitted' || status === 'streaming';
 
   useEffect(() => {
     setIsSleeping(isLoading || input.length > 0);
-  }, [isLoading, input, setIsSleeping]);
+  }, [isLoading, setIsSleeping]); // removed input from deps to avoid running on every keystroke
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleSend();
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setInput(val);
+    setIsSleeping(isLoading || val.length > 0);
+  };
 
   return (
     <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-[100] pointer-events-auto transition-all duration-300">
@@ -35,7 +43,7 @@ export function ChatInput({ input, setInput, onSubmit, isLoading }: ChatInputPro
       >
         <input 
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleInputChange}
           placeholder={isHistoryMode ? "Type to branch off from this point in time..." : "Ask me about my work, process, or vision..."} 
           disabled={false}
           className="flex-1 border-0 bg-transparent text-white outline-none focus:outline-none focus:ring-0 px-4 text-base sm:text-lg transition-opacity placeholder:text-zinc-400"

@@ -71,20 +71,27 @@ export function useSwarmPhysics(type: BrainMode) {
           cohesionY -= bee.position.y;
         }
 
-        // Apply forces - tweaked weights for better swarm feel
-        bee.velocity.x += (alignX * 0.05) + (cohesionX * 0.005) + (sepX * 0.05);
-        bee.velocity.y += (alignY * 0.05) + (cohesionY * 0.005) + (sepY * 0.05);
-
         if (state.isSleeping) {
-          bee.velocity.x *= 0.95; // friction
+          bee.velocity.x *= 0.8; // increased air friction
           bee.velocity.y += 0.5; // gravity
           
           // bounce on the floor
           if (bee.position.y >= window.innerHeight - 30) {
             bee.position.y = window.innerHeight - 30;
             bee.velocity.y *= -0.3; // low bounce
+            
+            // Apply heavy friction to kill remaining velocity completely when on the floor
+            bee.velocity.x *= 0.5; 
+            
+            // Hard stop if velocity is very small to prevent micro-vibrations
+            if (Math.abs(bee.velocity.x) < 0.1) bee.velocity.x = 0;
+            if (Math.abs(bee.velocity.y) < 0.1) bee.velocity.y = 0;
           }
         } else {
+          // Apply flocking forces only when awake
+          bee.velocity.x += (alignX * 0.05) + (cohesionX * 0.005) + (sepX * 0.05);
+          bee.velocity.y += (alignY * 0.05) + (cohesionY * 0.005) + (sepY * 0.05);
+
           // Target gathering force - much stronger so they stick to nodes when panning
           if (targetPos) {
             const tx = targetPos.x - bee.position.x;

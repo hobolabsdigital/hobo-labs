@@ -1,4 +1,12 @@
-import EditorialCanvas from "@/components/EditorialCanvas";
+"use client";
+
+import dynamic from "next/dynamic";
+import { Preloader } from "@/components/Preloader";
+
+const EditorialCanvas = dynamic(() => import("@/components/EditorialCanvas"), {
+  ssr: false,
+  loading: () => <Preloader />,
+});
 
 export default function Home() {
   return (

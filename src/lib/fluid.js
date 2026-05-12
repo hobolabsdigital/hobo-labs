@@ -257,6 +257,7 @@ function e(e, t) {
 	let Y = Date.now(), X = 0;
 	De();
 	function De() {
+		if (t.DESTROYED) return;
 		let e = Oe();
 		ke() && W(), Ae(e), je(), t.PAUSED || Me(e), Ne(null), requestAnimationFrame(De);
 	}
@@ -347,35 +348,52 @@ function e(e, t) {
 		let t = n.width / n.height;
 		return t > 1 && (e *= t), e;
 	}
+	const ac = new AbortController();
+	const opts = { capture: true, signal: ac.signal };
+	const optsPassive = { passive: true, capture: true, signal: ac.signal };
+	
 	window.addEventListener("mousedown", (e) => {
 		let t = $(e.clientX), n = $(e.clientY), a = i.find((e) => e.id === -1);
 		a || (a = new r()), We(a, -1, t, n);
-	}, true), setTimeout(() => {
+	}, opts);
+	
+	let moveTimeout = setTimeout(() => {
 		window.addEventListener("mousemove", (e) => {
 			let t = $(e.clientX), n = $(e.clientY);
 			Ge(i[0], t, n);
-		}, true);
-	}, 500), window.addEventListener("mouseup", () => {
+		}, opts);
+	}, 500);
+	
+	window.addEventListener("mouseup", () => {
 		Ke(i[0]);
-	}, true), window.addEventListener("touchstart", (e) => {
+	}, opts);
+	
+	window.addEventListener("touchstart", (e) => {
 		let t = e.targetTouches;
 		for (; t.length >= i.length;) i.push(new r());
 		for (let e = 0; e < t.length; e++) {
 			let n = $(t[e].clientX), r = $(t[e].clientY);
 			We(i[e + 1], t[e].identifier, n, r);
 		}
-	}, { passive: true, capture: true }), window.addEventListener("touchmove", (e) => {
+	}, optsPassive);
+	
+	window.addEventListener("touchmove", (e) => {
 		let t = e.targetTouches;
 		for (let e = 0; e < t.length; e++) {
 			let n = $(t[e].clientX), r = $(t[e].clientY);
 			Ge(i[e + 1], n, r);
 		}
-	}, { passive: true, capture: true }), window.addEventListener("touchend", (e) => {
+	}, optsPassive);
+	
+	window.addEventListener("touchend", (e) => {
 		let t = e.changedTouches;
 		for (let e = 0; e < t.length; e++) Ke(i.find((n) => n.id === t[e].identifier));
-	}), window.addEventListener("keydown", (e) => {
+	}, { signal: ac.signal });
+	
+	window.addEventListener("keydown", (e) => {
 		e.code === "KeyP" && (t.PAUSED = !t.PAUSED), e.key === " " && a.push(Number.parseInt(Math.random() * 20) + 5);
-	});
+	}, { signal: ac.signal });
+
 	function We(e, r, i, a) {
 		e.id = r, e.down = !0, e.moved = !1, e.texcoordX = i / n.width, e.texcoordY = 1 - a / n.height, e.prevTexcoordX = e.texcoordX, e.prevTexcoordY = e.texcoordY, e.deltaX = 0, e.deltaY = 0, t.COLORFUL && (e.color = Z());
 	}
@@ -466,7 +484,15 @@ function e(e, t) {
 		let t = window.devicePixelRatio || 1;
 		return Math.floor(e * t);
 	}
-	return { config: t, destroy: () => { t.PAUSED = true; } };
+	return { 
+		config: t, 
+		destroy: () => { 
+			t.DESTROYED = true; 
+			t.PAUSED = true; 
+			ac.abort();
+			clearTimeout(moveTimeout);
+		} 
+	};
 	function et(e) {
 		if (e.length === 0) return 0;
 		let t = 0;

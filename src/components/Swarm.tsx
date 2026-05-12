@@ -4,8 +4,10 @@ import { PetBee } from './PetBee';
 import { useSwarmAgent } from '../hooks/useSwarmAgent';
 import { useSwarmPhysics } from '../hooks/useSwarmPhysics';
 
+import { useShallow } from 'zustand/react/shallow';
+
 export function Swarm({ count = 3, type = 'worker' }: { count?: number, type?: BrainMode }) {
-  const bees = useBeeStore(state => state.bees);
+  const instanceBeeIds = useBeeStore(useShallow(state => Object.values(state.bees).filter(b => b.type === type).map(b => b.id)));
   const addBees = useBeeStore(state => state.addBees);
   const initialized = useRef(false);
 
@@ -42,14 +44,12 @@ export function Swarm({ count = 3, type = 'worker' }: { count?: number, type?: B
     }
   }, [forceTickCount, executeTick]);
 
-  const instanceBees = Object.values(bees).filter(b => b.type === type);
-
   return (
     <>
-      {instanceBees.map(bee => (
+      {instanceBeeIds.map(id => (
         <PetBee 
-          key={bee.id} 
-          id={bee.id} 
+          key={id} 
+          id={id} 
         />
       ))}
     </>

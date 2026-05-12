@@ -1,3 +1,5 @@
+"use client";
+
 import { useCanvasStore } from '../store/useCanvasStore';
 import { useBeeStore, MischiefType } from '../store/useBeeStore';
 

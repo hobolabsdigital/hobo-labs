@@ -58,7 +58,9 @@ export interface CanvasState {
 
   // Decoupled node creation
   activeGhostId: string | null;
+  activeGhostText: string | null;
   activeStreamingTextId: string | null;
+  activeStreamingText: string | null;
   lastPlacedNodeId: string | null;
   addPrompt: (text: string) => void;
   upsertActiveGhost: (text: string, isFinished?: boolean) => void;
@@ -123,7 +125,9 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   simulationRef: null,
 
   activeGhostId: null,
+  activeGhostText: null,
   activeStreamingTextId: null,
+  activeStreamingText: null,
   lastPlacedNodeId: null,
 
   setPhysicsConfig: (config) => set((state) => ({
@@ -195,8 +199,6 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   },
 
   upsertActiveGhost: (text: string, isFinished = false) => {
-    let isNewGhost = false;
-    
     set(state => {
       let activeGhostId = state.activeGhostId;
       
@@ -207,13 +209,14 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
       let nodes = [...state.nodes];
       let edges = [...state.edges];
       let lastPlacedNodeId = state.lastPlacedNodeId;
+      let isNewGhost = false;
 
       if (!activeGhostId) {
         isNewGhost = true;
         activeGhostId = `ghost-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
         const sourceNode = nodes.find(n => n.id === lastPlacedNodeId) || nodes[nodes.length - 1];
         const newGhost = createGhostNode(activeGhostId, sourceNode);
-
+        newGhost.data.text = text;
         nodes.push(newGhost);
         if (sourceNode) {
           edges.push(createEdge(sourceNode.id, activeGhostId));
@@ -221,16 +224,19 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
         lastPlacedNodeId = activeGhostId;
       }
 
-      nodes = nodes.map(n =>
-        n.id === activeGhostId
-          ? { ...n, data: { ...n.data, text, isFinished } }
-          : n
-      );
+      if (isFinished) {
+        nodes = nodes.map(n =>
+          n.id === activeGhostId
+            ? { ...n, data: { ...n.data, text, isFinished } }
+            : n
+        );
+      }
 
       return {
-        nodes,
-        edges,
+        nodes: isNewGhost || isFinished ? nodes : state.nodes,
+        edges: isNewGhost ? edges : state.edges,
         activeGhostId: isFinished ? null : activeGhostId,
+        activeGhostText: isFinished ? null : text,
         // Crucial fix: ensure lastPlacedNodeId properly updates to the ghost node
         // so subsequent nodes chain off it, instead of branching off the prompt!
         lastPlacedNodeId: isNewGhost ? activeGhostId : lastPlacedNodeId,
@@ -251,33 +257,33 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   },
 
   addText: (text: string, isFinished: boolean = false) => {
-    let newlyCreated = false;
     let targetId: string | null = null;
 
     set(state => {
       let newNodes = [...state.nodes];
       let newEdges = [...state.edges];
-      let lastPlacedId = state.lastPlacedNodeId;
+      let newlyCreated = false;
 
-      // 1. If we are already streaming into a text node, just update it
       if (state.activeStreamingTextId) {
-        newNodes = newNodes.map(n =>
-          n.id === state.activeStreamingTextId
-            ? { ...n, data: { ...n.data, text } }
-            : n
-        );
         targetId = state.activeStreamingTextId;
+        
+        if (isFinished) {
+          newNodes = newNodes.map(n =>
+            n.id === targetId
+              ? { ...n, data: { ...n.data, text } }
+              : n
+          );
+        }
 
         return {
-          nodes: newNodes,
-          edges: newEdges,
-          activeStreamingTextId: state.activeStreamingTextId, // Keep it locked until next prompt!
+          nodes: isFinished ? newNodes : state.nodes,
+          activeStreamingTextId: isFinished ? null : targetId,
+          activeStreamingText: isFinished ? null : text,
           lastPlacedNodeId: isFinished ? targetId : state.lastPlacedNodeId,
-          trackedNodeId: targetId
+          trackedNodeId: isFinished ? targetId : state.trackedNodeId
         };
       }
 
-      // 2. Fallback if no active streaming text exists
       targetId = `text-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
       const sourceNode = state.nodes.find(n => n.id === state.lastPlacedNodeId);
       const newNode = createTextNode(targetId, text, sourceNode);
@@ -289,7 +295,8 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
         nodes: [...newNodes, newNode], 
         edges: newEdges, 
         lastPlacedNodeId: isFinished ? targetId : state.lastPlacedNodeId,
-        activeStreamingTextId: targetId, // Lock the streaming text ID
+        activeStreamingTextId: isFinished ? null : targetId,
+        activeStreamingText: isFinished ? null : text,
         trackedNodeId: targetId 
       };
     });

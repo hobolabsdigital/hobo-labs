@@ -6,18 +6,22 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AnnotationText } from "../ui/annotation-text";
 import { IrisText } from "../ui/iris-text";
 import { useBeeStore } from '../../store/useBeeStore';
+import { useCanvasStore } from '@/store/useCanvasStore';
 
-export function TextNode({ data, id }: { data: any, id: string }) {
-  const content = data.text || "Text content";
+const EMPTY_OBJECT = {};
 
-  const themeOverrides = useBeeStore(state => state.themeOverrides);
-  const swarmTarget = useBeeStore(state => state.swarmTarget);
+export const TextNode = React.memo(function TextNode({ data, id }: { data: any, id: string }) {
+  const streamedText = useCanvasStore(state => state.activeStreamingTextId === id ? state.activeStreamingText : null);
+  const content = streamedText !== null ? streamedText : (data.text || "Text content");
+
+  const workerTarget = useBeeStore(state => state.swarmTarget.worker);
+  const soldierTarget = useBeeStore(state => state.swarmTarget.soldier);
   
-  const isWorkerTarget = swarmTarget.worker === 'global' || swarmTarget.worker === id;
-  const isSoldierTarget = swarmTarget.soldier === 'global' || swarmTarget.soldier === id;
+  const isWorkerTarget = workerTarget === 'global' || workerTarget === id;
+  const isSoldierTarget = soldierTarget === 'global' || soldierTarget === id;
   
-  const workerStyles = isWorkerTarget ? themeOverrides.worker : {};
-  const soldierStyles = isSoldierTarget ? themeOverrides.soldier : {};
+  const workerStyles = useBeeStore(state => isWorkerTarget ? state.themeOverrides.worker : EMPTY_OBJECT);
+  const soldierStyles = useBeeStore(state => isSoldierTarget ? state.themeOverrides.soldier : EMPTY_OBJECT);
   
   const nodeStyles = { ...workerStyles, ...soldierStyles };
 
@@ -93,4 +97,4 @@ export function TextNode({ data, id }: { data: any, id: string }) {
       </motion.div>
     </AnimatePresence>
   );
-}
+});

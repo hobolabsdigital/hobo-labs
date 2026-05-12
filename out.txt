@@ -1,0 +1,13 @@
+data: {"type":"start"}
+
+data: {"type":"start-step"}
+
+data: {"type":"tool-input-available","toolCallId":"f6574b5d-18b4-47f8-8866-2bf1dc994161","toolName":"applyImpeccableDesign","input":{}}
+
+data: {"type":"finish-step"}
+
+data: {"type":"finish","finishReason":"stop"}
+
+data: [DONE]
+
+

@@ -1,0 +1,34 @@
+<h2>Design: Impeccable Bees via Prompt Injection</h2>
+<p class="subtitle">Here's how we'll upgrade the swarm's brain.</p>
+
+<div class="mockup">
+  <div class="mockup-header">1. The New AI Persona (api/bee/decide/route.ts)</div>
+  <div class="mockup-body" style="padding: 16px;">
+    <p>We will rewrite the Gemma 4 system prompt to include core <strong>Impeccable Design Laws</strong>:</p>
+    <ul>
+      <li><strong>Color:</strong> Use OKLCH. Never use pure #000 or #fff. Tint every neutral toward the brand hue.</li>
+      <li><strong>Typography:</strong> Ensure strong hierarchy through scale and weight contrast (&ge;1.25 ratio). Cap line lengths to 65-75ch.</li>
+      <li><strong>Aesthetic:</strong> Strict bans on side-stripe borders, gradient text, and default glassmorphism. Push for bold, editorial, magazine-like layouts.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="mockup" style="margin-top: 16px;">
+  <div class="mockup-header">2. The Target Mechanics (Swarm.tsx & useBeeStore.ts)</div>
+  <div class="mockup-body" style="padding: 16px;">
+    <p>We will explicitly instruct the AI to target specific nodes. The AI will output a JSON payload like this:</p>
+    <pre style="background: #f4f4f4; padding: 8px; border-radius: 4px;"><code>{
+  "mischief": "theme_hack",
+  "targetNodeId": "hero-1",
+  "cssVars": "--bg: oklch(25% 0.05 250); --fg: oklch(95% 0.01 250);"
+}</code></pre>
+    <p>The Swarm will read this, fly to <code>hero-1</code>, and inject the variables scoped <em>only</em> to that node.</p>
+  </div>
+</div>
+
+<div class="mockup" style="margin-top: 16px;">
+  <div class="mockup-header">3. Node Implementation</div>
+  <div class="mockup-body" style="padding: 16px;">
+    <p>We will ensure that the React Flow node components (like <code>HeroNode</code> and <code>TextNode</code>) actually use the injected CSS variables for their background colors, text colors, and fonts.</p>
+  </div>
+</div>

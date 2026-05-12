@@ -1,0 +1,775 @@
+data: {"type":"start"}
+
+data: {"type":"start-step"}
+
+data: {"type":"text-start","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"**("}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"The"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" swarm"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" analyzes"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" the"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" node"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" design"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" A"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" collective"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" high"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"-"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"pitched"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" wh"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"ir"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"ring"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" sound"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" eman"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"ates"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" from"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" the"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" corner"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" signifying"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" critical"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" disapproval"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":".)"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"**"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"\n\n"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"**"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"Crit"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"ique"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":":**"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"\n\n"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"**"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"Design"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" Law"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" Violation"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" Report"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":":"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" Critical"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"!"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"**"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"\n\n"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"Design"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"ers"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" what"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" we"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" see"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" before"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" us"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" is"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" not"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" a"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" \""}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"node"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" design"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"\"—"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"it"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" is"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" an"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" *"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"void"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"*."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" It"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" possesses"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" zero"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" structure"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" zero"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" information"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" hierarchy"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" and"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" zero"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" visual"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" direction"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" This"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" is"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" an"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" architectural"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" failure"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"!"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" A"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" blank"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" canvas"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" is"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" not"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" a"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" design"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":";"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" it"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" is"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" a"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" derel"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"iction"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" of"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" duty"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"\n\n"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"1"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" **"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"Typography"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" ("}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"Failure"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"):"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"**"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" There"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" is"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" no"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" typography"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" By"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" the"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" Im"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"pe"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"cc"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"able"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" Design"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" Laws"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" every"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" node"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" *"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"must"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"*"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" establish"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" a"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" strong"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" informational"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" hierarchy"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" We"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" require"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" at"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" least"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" two"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" levels"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" of"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" text"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"—"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"a"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" primary"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" focus"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" and"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" supporting"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" details"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"—"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"to"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" ensure"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" a"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" contrast"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" ratio"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" of"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" "}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"1"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"2"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"5"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":":"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"1"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" or"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" greater"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" The"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" current"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" state"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" fails"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" this"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" law"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" catast"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"roph"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"ically"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"\n"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"2"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" **"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"A"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"esthetics"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" ("}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"Failure"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"):"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"**"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" While"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" the"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" background"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" color"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" is"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" a"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" deep"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" muted"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" tone"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" its"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" application"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" without"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" structure"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" is"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" meaningless"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" Furthermore"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" spacing"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" is"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" non"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"-"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"existent"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" We"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" must"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" enforce"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" elegant"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" purposeful"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" negative"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" space"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"\n"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"3"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" **"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"Color"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" ("}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"Potential"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" Violation"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"):"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"**"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" While"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" the"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" background"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" color"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" itself"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" is"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" acceptable"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" ("}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"a"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" deep"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" rich"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" tone"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" that"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" can"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" be"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" mapped"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" to"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" OK"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"L"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"CH"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"),"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" we"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" must"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" ensure"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" that"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" any"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" text"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" or"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" accent"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" colors"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" used"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" are"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" also"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" strictly"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" OK"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"L"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"CH"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" derivatives"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" and"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" absolutely"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" no"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" pure"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" achromatic"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" values"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" are"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" permitted"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"\n\n"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"**"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"The"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" Correction"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":":**"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"\n\n"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"Since"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" the"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" provided"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" node"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" is"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" empty"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" we"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" must"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" introduce"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" a"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" fundamental"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" impeccable"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" structure"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" to"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" demonstrate"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" proper"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" adherence"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" to"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" the"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" laws"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" We"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" will"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" enforce"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" a"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" clean"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" modern"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" editorial"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" layout"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" using"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" a"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" placeholder"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" title"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" and"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" body"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" copy"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" ensuring"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" the"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" required"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" hierarchical"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" contrast"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" and"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" spacious"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" elegance"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"\n\n"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"We"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" will"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" set"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" the"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" primary"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" color"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" ("}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"text"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":")"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" to"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" a"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" dark"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" sophisticated"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" shade"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" using"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" OK"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"L"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"CH"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" and"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" the"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" background"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" to"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" a"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" slightly"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" des"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"aturated"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" complementary"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" tone"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":","}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" maintaining"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" massive"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" white"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" space"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" to"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" guide"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" the"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":" eye"}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"."}
+
+data: {"type":"text-delta","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e","delta":"\n\n"}
+
+data: {"type":"text-end","id":"f7acd2f4-9a8b-446a-93d9-ef658a89e83e"}
+
+data: {"type":"finish-step"}
+
+data: {"type":"finish","finishReason":"stop"}
+
+data: [DONE]
+
+
