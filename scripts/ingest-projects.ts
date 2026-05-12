@@ -29,6 +29,10 @@ async function run() {
       let chunkContent = section;
       let topic = i === 0 ? "Introduction" : section.split('\n')[0].trim();
       
+      if (topic === 'AI Trigger Keyword') {
+        continue;
+      }
+      
       newChunks.push({
         content: `Project: ${title}\nSection: ${topic}\n\n${chunkContent}`,
         metadata: {
