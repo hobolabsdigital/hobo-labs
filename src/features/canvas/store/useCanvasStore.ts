@@ -69,7 +69,7 @@ export interface CanvasState {
   truncateHistory: (cursorIndex: number) => void;
 }
 
-import { createPromptNode, createGhostNode, createHeroNode, createTextNode, createEdge } from './nodeFactories';
+import { createPromptNode, createGhostNode, createHeroNode, createTextNode, createProjectNode, createEdge } from './nodeFactories';
 
 export const useCanvasStore = create<CanvasState>((set, get) => ({
   nodes: [
@@ -249,7 +249,12 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
     set(state => {
       const sourceNode = state.nodes.find(n => n.id === state.activeGhostId) || state.nodes.find(n => n.id === state.lastPlacedNodeId);
       console.log(`[DEBUG-FLOW] addHero | heroId=${id} | sourceNode=${sourceNode?.id} | activeGhostId=${state.activeGhostId}`);
-      const newNode = createHeroNode(id, data, sourceNode);
+      let newNode;
+      if (data.type === 'project') {
+        newNode = createProjectNode(id, data, sourceNode);
+      } else {
+        newNode = createHeroNode(id, data, sourceNode);
+      }
 
       const newEdges = sourceNode ? [...state.edges, createEdge(sourceNode.id, id)] : state.edges;
       return { nodes: [...state.nodes, newNode], edges: newEdges, lastPlacedNodeId: id, trackedNodeId: id };

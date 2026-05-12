@@ -46,9 +46,9 @@ export function useEditorialChat() {
 
       let toolHeadline = '';
       if (toolPart) {
-        toolHeadline = toolPart.input?.headline || toolPart.args?.headline || '';
+        toolHeadline = toolPart.input?.headline || toolPart.input?.title || toolPart.args?.headline || toolPart.args?.title || '';
       } else if (msg.toolInvocations?.[0]) {
-        toolHeadline = msg.toolInvocations[0].args?.headline || msg.toolInvocations[0].args?.input?.headline || '';
+        toolHeadline = msg.toolInvocations[0].args?.headline || msg.toolInvocations[0].args?.title || msg.toolInvocations[0].args?.input?.headline || msg.toolInvocations[0].args?.input?.title || '';
       }
 
       // Spawning a text node only if there is no tool call
