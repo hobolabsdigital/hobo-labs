@@ -1,4 +1,5 @@
 import { useCanvasStore } from '../store/useCanvasStore';
+import { useBeeStore, MischiefType } from '../store/useBeeStore';
 
 export function DebugPanel() {
   const isDebugDrawerOpen = useCanvasStore(state => state.isDebugDrawerOpen);
@@ -14,6 +15,11 @@ export function DebugPanel() {
   const fluidConfig = useCanvasStore(state => state.fluidConfig);
   const setFluidConfig = useCanvasStore(state => state.setFluidConfig);
 
+  const activeMischief = useBeeStore(state => state.activeMischief);
+  const setMischief = useBeeStore(state => state.setMischief);
+  const swarmTarget = useBeeStore(state => state.swarmTarget);
+  const setSwarmTarget = useBeeStore(state => state.setSwarmTarget);
+
   return (
     <div className={`fixed top-4 right-0 z-50 transition-transform duration-300 ease-out ${isDebugDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
       <button 
@@ -24,6 +30,32 @@ export function DebugPanel() {
       </button>
 
       <div className="bg-[var(--background)] border border-[var(--foreground)] border-r-0 p-4 shadow-2xl flex flex-col gap-4 font-mono w-80 h-auto max-h-[90vh] overflow-y-auto">
+          
+          <div className="flex flex-col gap-2 border-b border-[var(--foreground)] pb-4">
+            <h3 className="text-xs uppercase tracking-wider font-bold mb-2">Swarm Controls</h3>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {(['none', 'invert', 'float_nodes', 'buzz_text', 'theme_hack'] as MischiefType[]).map(mischief => (
+                <button
+                  key={mischief}
+                  className={`px-2 py-1 text-[10px] uppercase font-bold border hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-colors ${activeMischief === mischief ? 'bg-[var(--foreground)] text-[var(--background)]' : 'border-[var(--foreground)] text-[var(--foreground)]'}`}
+                  onClick={() => setMischief(mischief)}
+                >
+                  {mischief}
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-col gap-1 text-[10px]">
+              <label>Swarm Target (Node ID or 'global')</label>
+              <input 
+                type="text" 
+                value={swarmTarget || ''} 
+                onChange={(e) => setSwarmTarget(e.target.value || null)}
+                placeholder="null"
+                className="bg-transparent border border-[var(--foreground)] p-1 text-[var(--foreground)] focus:outline-none"
+              />
+            </div>
+          </div>
+
           <div className="flex flex-col gap-2 border-b border-[var(--foreground)] pb-4">
             <h3 className="text-xs uppercase tracking-wider font-bold mb-2">Node Physics</h3>
             

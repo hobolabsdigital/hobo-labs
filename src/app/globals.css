@@ -72,4 +72,14 @@
       linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
   }
+
+  .animate-wing-flap {
+    animation: wing-flap 0.15s ease-in-out infinite;
+    transform-origin: center;
+  }
+}
+
+@keyframes wing-flap {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(-0.6); }
 }

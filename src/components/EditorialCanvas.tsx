@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
   ReactFlow,
   Controls,
   Node,
+  useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -19,13 +20,16 @@ import { TimelineScrubber } from './TimelineScrubber';
 import { FluidBackground } from './FluidBackground';
 import { InteractiveGrid } from './InteractiveGrid';
 import { ThemeToggle } from './ThemeToggle';
+import { Swarm } from './Swarm';
 import { useTheme } from '@/components/theme-provider';
 
 // Hooks and Store
 import { useCanvasStore } from '../store/useCanvasStore';
+import { useBeeStore } from '../store/useBeeStore';
 import { useEditorialPhysics } from '../hooks/useEditorialPhysics';
 import { useEditorialChat } from '../hooks/useEditorialChat';
 import { useEdgeAnimations } from '../hooks/useEdgeAnimations';
+import { SwarmTerminal } from './SwarmTerminal';
 
 const nodeTypes = { hero: HeroNode, text: TextNode, prompt: PromptNode, ghost: GhostNode };
 
@@ -40,11 +44,14 @@ export default function EditorialCanvas() {
   const onEdgesChange = useCanvasStore(state => state.onEdgesChange);
   const onConnect = useCanvasStore(state => state.onConnect);
   const setRfInstance = useCanvasStore(state => state.setRfInstance);
-  const setEdges = useCanvasStore(state => state.setEdges);
   const setTrackedNodeId = useCanvasStore(state => state.setTrackedNodeId);
   const trackedNodeId = useCanvasStore(state => state.trackedNodeId);
   const timeCursor = useCanvasStore(state => state.timeCursor);
   const rfInstance = useCanvasStore(state => state.rfInstance);
+
+  const activeMischief = useBeeStore(state => state.activeMischief);
+  const themeOverrides = useBeeStore(state => state.themeOverrides);
+  const swarmTarget = useBeeStore(state => state.swarmTarget);
 
   // Filter nodes and edges based on the timeline scrubber
   const visibleNodes = timeCursor === null ? nodes : nodes.slice(0, timeCursor + 1);
@@ -58,7 +65,7 @@ export default function EditorialCanvas() {
       const timeoutId = setTimeout(() => {
         rfInstance.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 });
       }, 50);
-      
+
       // Reset the tracking lock after the animation completes so D3 doesn't permanently lock the camera
       const resetId = setTimeout(() => {
         setTrackedNodeId(null);
@@ -89,13 +96,13 @@ export default function EditorialCanvas() {
   const onNodeDragStart = useCallback((event: React.MouseEvent, node: Node) => {
     const simulation = useCanvasStore.getState().simulationRef;
     if (!simulation) return;
-    
+
     // Find the internal node
     const simNode = simulation.nodes().find((n: any) => n.id === node.id);
     if (simNode) {
       simNode.fx = node.position.x;
       simNode.fy = node.position.y;
-      
+
       // Gentle heat to make the mesh elastic without blowing it up
       simulation.alphaTarget(0.05).restart();
     }
@@ -104,7 +111,7 @@ export default function EditorialCanvas() {
   const onNodeDrag = useCallback((event: React.MouseEvent, node: Node) => {
     const simulation = useCanvasStore.getState().simulationRef;
     if (!simulation) return;
-    
+
     const simNode = simulation.nodes().find((n: any) => n.id === node.id);
     if (simNode) {
       simNode.fx = node.position.x;
@@ -115,7 +122,7 @@ export default function EditorialCanvas() {
   const onNodeDragStop = useCallback((event: React.MouseEvent, node: Node) => {
     const simulation = useCanvasStore.getState().simulationRef;
     if (!simulation) return;
-    
+
     const simNode = simulation.nodes().find((n: any) => n.id === node.id);
     if (simNode) {
       if (node.id !== 'hero-1') {
@@ -128,7 +135,7 @@ export default function EditorialCanvas() {
   }, []);
 
   return (
-    <div className="w-full h-screen bg-[var(--background)] relative">
+    <div className={`w-full h-screen bg-[var(--background)] relative ${activeMischief === 'invert' ? 'filter invert duration-500' : 'duration-500'}`}>
       <ReactFlow
         nodes={visibleNodes}
         edges={visibleEdges}
@@ -152,6 +159,17 @@ export default function EditorialCanvas() {
         <Controls className="fill-foreground stroke-foreground" />
       </ReactFlow>
 
+      {themeOverrides && (
+        <style>
+          {swarmTarget && swarmTarget !== 'global' 
+            ? `.react-flow__node[data-id="${swarmTarget}"] { ${themeOverrides} }`
+            : `:root { ${themeOverrides} }`
+          }
+        </style>
+      )}
+
+      <Swarm count={6} />
+      <SwarmTerminal />
       <DebugPanel />
       <TimelineScrubber />
       <FluidBackground />
@@ -166,3 +184,4 @@ export default function EditorialCanvas() {
     </div>
   );
 }
+
