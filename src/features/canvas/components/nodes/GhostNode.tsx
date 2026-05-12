@@ -5,13 +5,23 @@ import { Handle, Position } from "@xyflow/react";
 import { motion } from "framer-motion";
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 
+const GhostText = React.memo(function GhostText({ id, fallbackText, isFinished, isExpanded }: { id: string, fallbackText: string, isFinished: boolean, isExpanded: boolean }) {
+  // Decoupled streaming state! Only re-renders this tiny text component, saving Framer Motion from dying!
+  const streamedText = useCanvasStore(state => state.activeGhostId === id ? state.activeGhostText : null);
+  const textToDisplay = streamedText !== null ? streamedText : fallbackText;
+
+  if (isFinished && !isExpanded) return null;
+
+  return (
+    <p className="text-lg font-mono text-foreground/50 leading-snug whitespace-pre-wrap break-words">
+      {textToDisplay || "..."}
+    </p>
+  );
+});
+
 export const GhostNode = React.memo(function GhostNode({ id, data }: { id: string, data: any }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const isFinished = data.isFinished;
-  
-  // Decoupled streaming state! Only re-renders this component!
-  const streamedText = useCanvasStore(state => state.activeGhostId === id ? state.activeGhostText : null);
-  const textToDisplay = streamedText !== null ? streamedText : data.text;
 
   return (
     <motion.div 
@@ -40,11 +50,7 @@ export const GhostNode = React.memo(function GhostNode({ id, data }: { id: strin
           {isFinished ? (isExpanded ? '[ - REASONING ]' : '[ + REASONING ]') : '[ THINKING... ]'}
         </motion.div>
         
-        {(!isFinished || isExpanded) && (
-          <p className="text-lg font-mono text-foreground/50 leading-snug whitespace-pre-wrap break-words">
-            {textToDisplay || "..."}
-          </p>
-        )}
+        <GhostText id={id} fallbackText={data.text} isFinished={isFinished} isExpanded={isExpanded} />
       </div>
     </motion.div>
   );

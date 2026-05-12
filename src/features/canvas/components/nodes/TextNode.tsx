@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Handle, Position } from "@xyflow/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnnotationText } from '@/core/ui/components/annotation-text';
@@ -10,10 +10,53 @@ import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 
 const EMPTY_OBJECT = {};
 
-export const TextNode = React.memo(function TextNode({ data, id }: { data: any, id: string }) {
-  const streamedText = useCanvasStore(state => state.activeStreamingTextId === id ? state.activeStreamingText : null);
-  const content = streamedText !== null ? streamedText : (data.text || "Text content");
+const typewriterContainer = {
+  hidden: { opacity: 1 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.05 } }
+};
 
+const typewriterChar = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.01 } }
+};
+
+const StreamingTextContent = React.memo(function StreamingTextContent({ id, fallbackText, animationEffect }: { id: string, fallbackText: string, animationEffect?: string }) {
+  const streamedText = useCanvasStore(state => state.activeStreamingTextId === id ? state.activeStreamingText : null);
+  const content = streamedText !== null ? streamedText : (fallbackText || "Text content");
+
+  // Memoize the character array to prevent insane GC pressure when adding one character at a time
+  const chars = useMemo(() => content.split(''), [content]);
+
+  if (animationEffect === 'annotation') {
+    return (
+      <p className="text-2xl font-sans text-foreground leading-snug whitespace-pre-wrap">
+        <AnnotationText type="underline" delay={0.5}>{content}</AnnotationText>
+      </p>
+    );
+  } else if (animationEffect === 'iris') {
+    return (
+      <p className="text-2xl font-sans text-foreground leading-snug whitespace-pre-wrap">
+        <IrisText text={content} delay={0.2} />
+      </p>
+    );
+  }
+
+  // Standard typewriter effect
+  return (
+    <motion.p 
+      variants={typewriterContainer}
+      initial="hidden"
+      animate="visible"
+      className="text-2xl font-sans text-foreground leading-snug whitespace-pre-wrap"
+    >
+      {chars.map((char: string, charIdx: number) => (
+        <motion.span key={charIdx} variants={typewriterChar}>{char}</motion.span>
+      ))}
+    </motion.p>
+  );
+});
+
+export const TextNode = React.memo(function TextNode({ data, id }: { data: any, id: string }) {
   const workerTarget = useBeeStore(state => state.swarmTarget.worker);
   const soldierTarget = useBeeStore(state => state.swarmTarget.soldier);
   
@@ -24,43 +67,6 @@ export const TextNode = React.memo(function TextNode({ data, id }: { data: any, 
   const soldierStyles = useBeeStore(state => isSoldierTarget ? state.themeOverrides.soldier : EMPTY_OBJECT);
   
   const nodeStyles = { ...workerStyles, ...soldierStyles };
-
-  const typewriterContainer = {
-    hidden: { opacity: 1 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.05 } }
-  };
-  
-  const typewriterChar = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.01 } }
-  };
-
-  let renderText = (
-    <motion.p 
-      variants={typewriterContainer}
-      initial="hidden"
-      animate="visible"
-      className="text-2xl font-sans text-foreground leading-snug whitespace-pre-wrap"
-    >
-      {content.split('').map((char: string, charIdx: number) => (
-        <motion.span key={charIdx} variants={typewriterChar}>{char}</motion.span>
-      ))}
-    </motion.p>
-  );
-
-  if (data.animationEffect === 'annotation') {
-    renderText = (
-      <p className="text-2xl font-sans text-foreground leading-snug whitespace-pre-wrap">
-        <AnnotationText type="underline" delay={0.5}>{content}</AnnotationText>
-      </p>
-    );
-  } else if (data.animationEffect === 'iris') {
-    renderText = (
-      <p className="text-2xl font-sans text-foreground leading-snug whitespace-pre-wrap">
-        <IrisText text={content} delay={0.2} />
-      </p>
-    );
-  }
 
   return (
     <AnimatePresence mode="wait">
@@ -92,7 +98,7 @@ export const TextNode = React.memo(function TextNode({ data, id }: { data: any, 
             </motion.div>
           )}
           
-          {renderText}
+          <StreamingTextContent id={id} fallbackText={data.text} animationEffect={data.animationEffect} />
         </div>
       </motion.div>
     </AnimatePresence>
