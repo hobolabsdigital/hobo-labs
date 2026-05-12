@@ -152,7 +152,8 @@ CRITICAL RULE: You MUST ONLY CALL ONE TOOL EXACTLY ONCE per user message. Do not
           inputSchema: z.object({
             title: z.string().describe('Title for project nodes'),
             summary: z.string().describe('A catchy, bold sub-headline or short summary'),
-            content: z.string().optional().describe('A detailed, multi-paragraph magazine article explaining the architecture, UX, and impact of the project.'),
+            content: z.string().optional().describe('A detailed, high-quality editorial article explaining the architecture, UX, and impact of the project. Write this like a feature in a design magazine.'),
+            techStack: z.array(z.string()).optional().describe('An array of 3-6 core technologies or tools used (e.g. ["Unreal Engine 5", "Node.js", "Generative AI"]).'),
             role: z.string().optional().describe('Your role for the project node (e.g. ARCHITECT, ENGINEER). If not explicitly stated, omit this.'),
             year: z.string().optional().describe('Year of the project. If not explicitly stated, omit this.'),
             image: z.string().optional().describe('Main image path for project node (e.g. /portfolio/moxis.png)'),

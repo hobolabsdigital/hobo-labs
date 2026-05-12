@@ -12,75 +12,110 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id }: { data:
   const year = data.year;
   const image = data.image || null;
   const gallery = data.gallery || [];
+  const techStack = data.techStack || [];
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: -20 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="relative bg-[var(--background)] origin-top-left border-4 border-foreground shadow-[16px_16px_0px_0px_var(--foreground)]"
-        style={{ width: '900px' }}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -30 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="relative bg-[var(--background)] origin-center border border-foreground/20 shadow-2xl"
+        style={{ width: '1000px' }}
       >
-        {/* Top Header - Bauhaus inverted block */}
-        <div className="border-b-4 border-foreground p-8 flex justify-between items-end bg-foreground text-background">
-          <h2 className="text-7xl font-sans font-bold leading-[0.85] tracking-tighter uppercase w-2/3 break-words">
-            {title}
-          </h2>
-          <div className="flex flex-col text-right font-mono text-sm tracking-widest uppercase gap-2">
-            {role && <span>ROLE // {role}</span>}
-            {year && <span>YEAR // {year}</span>}
+        {/* Magazine Cover / Header Section */}
+        <div className="grid grid-cols-12 gap-0 border-b border-foreground/20">
+          {/* Title Area */}
+          <div className="col-span-8 p-12 flex flex-col justify-between">
+            <div>
+              <p className="font-mono text-xs tracking-[0.2em] text-foreground/50 uppercase mb-4">
+                Selected Case Study — {year || new Date().getFullYear()}
+              </p>
+              <h2 className="text-6xl md:text-7xl font-serif font-medium leading-[0.9] tracking-tight uppercase mb-6 break-words">
+                {title}
+              </h2>
+              <h3 className="text-2xl font-sans font-light text-foreground/80 leading-snug max-w-2xl">
+                {summary}
+              </h3>
+            </div>
+            
+            {(role || techStack.length > 0) && (
+              <div className="mt-12 flex flex-wrap gap-x-12 gap-y-6 border-t border-foreground/10 pt-6">
+                {role && (
+                  <div>
+                    <p className="font-mono text-[10px] tracking-[0.15em] text-foreground/40 mb-2">ROLE</p>
+                    <p className="font-sans text-sm uppercase tracking-wider">{role}</p>
+                  </div>
+                )}
+                {techStack.length > 0 && (
+                  <div>
+                    <p className="font-mono text-[10px] tracking-[0.15em] text-foreground/40 mb-2">TECH STACK</p>
+                    <div className="flex flex-wrap gap-2">
+                      {techStack.map((tech: string, i: number) => (
+                        <span key={i} className="px-2 py-1 bg-foreground/5 text-foreground/70 font-mono text-[10px] tracking-widest uppercase">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          
+          {/* Main Hero Image */}
+          <div className="col-span-4 border-l border-foreground/20 relative overflow-hidden bg-foreground/5 min-h-[300px]">
+            {image ? (
+              <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center font-mono text-xs text-foreground/30">[NO IMAGE]</div>
+            )}
           </div>
         </div>
 
+        {/* Editorial Body */}
         <div className="grid grid-cols-12 gap-0">
-          {/* Left Column: Main Content */}
-          <div className="col-span-8 border-r-4 border-foreground flex flex-col">
-            {image && (
-              <div className="w-full aspect-[16/9] border-b-4 border-foreground overflow-hidden bg-muted">
-                <img src={image} alt={title} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
-              </div>
-            )}
-            
-            <div className="p-8">
-              <h3 className="text-3xl font-serif font-medium leading-tight mb-8">
-                {summary}
-              </h3>
-              {content ? (
-                <div className="columns-2 gap-8 text-foreground/80 font-sans text-sm leading-relaxed">
-                  {content.split('\n\n').map((para: string, i: number) => (
-                    <p key={i} className="mb-4">{para}</p>
-                  ))}
+          {/* Left Column: Article Text */}
+          <div className="col-span-7 p-12 pr-16 border-r border-foreground/20">
+             {content ? (
+                <div className="prose prose-invert max-w-none">
+                  {content.split('\n\n').map((para: string, i: number) => {
+                    const isFirst = i === 0;
+                    return (
+                      <p key={i} className={`font-sans text-base text-foreground/80 leading-[1.8] mb-6 font-light ${isFirst ? 'mt-2' : ''}`}>
+                        {isFirst && para.length > 0 ? (
+                          <span className="float-left text-6xl font-serif leading-[0.8] mr-3 mt-1 text-foreground">{para.charAt(0)}</span>
+                        ) : null}
+                        {isFirst ? para.substring(1) : para}
+                      </p>
+                    );
+                  })}
                 </div>
               ) : (
-                <div className="w-full h-32 bg-foreground/5 flex items-center justify-center">
-                  <span className="font-mono text-xs uppercase tracking-widest text-foreground/50">[NO ARTICLE CONTENT]</span>
+                <div className="w-full h-32 flex items-center">
+                  <span className="font-mono text-xs uppercase tracking-widest text-foreground/50">[NO ARTICLE CONTENT PROVIDED]</span>
                 </div>
               )}
-            </div>
           </div>
 
-          {/* Right Column: Sidebar & Gallery */}
-          <div className="col-span-4 flex flex-col bg-muted/10 relative">
-            {/* Geometric Bauhaus accent block */}
-            <div className="w-full h-24 bg-[#E03C31] border-b-4 border-foreground" />
-            
+          {/* Right Column: Image Gallery Layout */}
+          <div className="col-span-5 flex flex-col bg-foreground/[0.02]">
             {gallery.length > 0 ? (
-              gallery.map((img: string, i: number) => (
-                <div key={i} className="w-full aspect-square border-b-4 border-foreground overflow-hidden">
-                  <img src={img} alt={`Gallery ${i}`} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
-                </div>
-              ))
+              <div className="grid grid-cols-1 grid-rows-[repeat(auto-fit,minmax(250px,1fr))] h-full">
+                {gallery.slice(0, 3).map((img: string, i: number) => (
+                  <div key={i} className={`relative min-h-[250px] overflow-hidden ${i !== gallery.length - 1 ? 'border-b border-foreground/20' : ''}`}>
+                    <img src={img} alt={`Gallery ${i}`} className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-105 hover:scale-100" />
+                  </div>
+                ))}
+              </div>
             ) : (
-              // Filler block if no gallery
-              <div className="w-full aspect-square border-b-4 border-foreground flex items-center justify-center p-8 bg-muted/20">
-                 <div className="w-32 h-32 rounded-full bg-[#00509E]" />
+              <div className="flex-1 flex items-center justify-center p-12">
+                <p className="font-mono text-[10px] tracking-widest text-foreground/40 text-center uppercase leading-loose border border-foreground/10 p-6">
+                  [RESERVED FOR VISUAL ASSETS]
+                </p>
               </div>
             )}
-            
-            <div className="flex-1 min-h-[100px]" />
-            <div className="w-full h-16 bg-[#F9D616] border-t-4 border-foreground" />
           </div>
         </div>
 
