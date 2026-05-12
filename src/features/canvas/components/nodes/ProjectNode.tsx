@@ -34,7 +34,14 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id }: { data:
     }
   }
 
+  // Parse content to show everything
   const displayContent = content || summary;
+  const paragraphs = displayContent.split('\n\n').filter((p: string) => p.trim().length > 0);
+  
+  // Distribute paragraphs for the zigzag layout
+  const block1Paras = paragraphs.slice(0, 2);
+  const block2Paras = paragraphs.slice(2, 4);
+  const block3Paras = paragraphs.slice(4);
 
   return (
     <AnimatePresence mode="wait">
@@ -43,104 +50,126 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id }: { data:
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -30 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="relative bg-transparent origin-center flex flex-col"
-        style={{ width: '1000px' }}
+        className="relative bg-transparent origin-center flex flex-col gap-12"
+        style={{ width: '1100px' }}
       >
-        {/* Top Architectural Meta Bar */}
-        <div className="flex items-center justify-between border-b border-foreground/20 pb-4 mb-10">
-          <div className="flex gap-8 font-mono text-[9px] tracking-[0.2em] text-foreground/50 uppercase">
-            <span>STUDIO / {year || new Date().getFullYear()}</span>
-            <span>INDEX N° 26</span>
-            <span>TYPE: <strong className="text-foreground">CASE_STUDY</strong></span>
-          </div>
-          <div className="flex gap-8 font-mono text-[9px] tracking-[0.2em] text-foreground/50 uppercase">
-            <span>LAT. 52.5200° N</span>
-            <span>LON. 13.4050° E</span>
-          </div>
-        </div>
-
-        {/* Main Grid Spread */}
-        <div className="grid grid-cols-12 gap-10 relative">
-          
-          {/* Left Column: Typography & Article */}
-          <div className="col-span-6 flex flex-col pt-4">
-            <h2 className="text-6xl md:text-[5.5rem] font-serif leading-[0.9] tracking-tight mb-8 text-foreground" style={{ hyphens: 'auto' }}>
-              {title}<span className="text-[#E03C31]">.</span>
+        {/* HEADER: Continuous Sans-Serif Typography */}
+        <div className="flex flex-col gap-8">
+          <div className="flex justify-between items-end border-b border-foreground/20 pb-6">
+            <h2 className="text-7xl md:text-[6.5rem] font-sans font-medium uppercase tracking-tighter leading-[0.85] text-foreground max-w-[80%]">
+              {title}
             </h2>
-
-            <h3 className="text-2xl font-serif italic text-foreground/80 mb-10 leading-snug pr-8 border-l-2 border-[#E03C31] pl-6 ml-1">
+            <div className="text-right">
+              <p className="font-mono text-[10px] tracking-[0.2em] text-foreground/50 uppercase mb-2">
+                SELECTED WORK — {year || new Date().getFullYear()}
+              </p>
+              {role && (
+                <p className="font-sans text-xs uppercase tracking-widest text-foreground/70 font-medium">
+                  {role}
+                </p>
+              )}
+            </div>
+          </div>
+          
+          <div className="flex flex-col md:flex-row gap-12 justify-between">
+            <h3 className="text-2xl md:text-3xl font-sans font-light text-foreground/90 max-w-2xl leading-[1.3] tracking-tight">
               {summary}
             </h3>
-
-            <div className="text-sm font-sans font-light text-foreground/80 leading-[1.8] border-t border-foreground/20 pt-8 max-w-md">
-              {displayContent.split('\n\n').slice(0, 2).map((para: string, i: number) => (
-                 <p key={i} className="mb-6">{para}</p>
-              ))}
-            </div>
-            
-            {/* Tech Stack integrated into the left column to anchor it */}
             {techStack.length > 0 && (
-              <div className="mt-8 border-t border-foreground/20 pt-8 max-w-md">
-                <h4 className="text-[9px] font-mono tracking-widest text-foreground/50 mb-6 uppercase">SYSTEMS & ARCHITECTURE</h4>
-                <div className="flex flex-wrap gap-2">
-                  {techStack.map((tech: string, i: number) => (
-                    <span key={i} className="px-3 py-1 bg-foreground/5 border border-foreground/10 text-foreground/80 font-mono text-[9px] tracking-widest uppercase">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+              <div className="flex flex-wrap justify-end gap-2 max-w-xs h-fit">
+                {techStack.map((tech: string, i: number) => (
+                  <span key={i} className="px-3 py-1.5 rounded-full border border-foreground/20 text-foreground/80 font-mono text-[9px] tracking-widest uppercase bg-background/50 backdrop-blur-sm">
+                    {tech}
+                  </span>
+                ))}
               </div>
             )}
           </div>
+        </div>
 
-          {/* Right Column: Graphic Hero Image */}
-          <div className="col-span-6 relative flex flex-col justify-start">
-            
-            <div className="relative w-full max-w-[440px] ml-auto">
-              {/* Solid Geometric Offset Block */}
-              <div className="absolute top-8 -left-8 w-full h-full bg-[#E03C31] opacity-90" />
-              
-              {/* Fine Wireframe Box Offset */}
-              <div className="absolute -top-6 -right-6 w-full h-full border border-foreground/30" />
-
-              {/* Main Image (No padding, sits seamlessly) */}
+        {/* ZIGZAG ROW 1: Main Image (Left) + Text Block 1 (Right) */}
+        <div className="grid grid-cols-12 gap-12 items-center mt-6">
+          <div className="col-span-8">
+            <div className="w-full aspect-video overflow-hidden rounded-[2rem] shadow-2xl relative group">
               {image ? (
-                <div className="relative z-10 w-full aspect-[4/5] bg-muted border border-foreground/10 shadow-xl overflow-hidden">
-                  <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
-                </div>
+                <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
               ) : (
-                <div className="relative z-10 w-full aspect-[4/5] border border-dashed border-foreground/30 flex items-center justify-center font-mono text-xs text-foreground/30 bg-foreground/5">
+                <div className="absolute inset-0 flex items-center justify-center border border-dashed border-foreground/30 font-mono text-xs text-foreground/30">
                   [ VISUAL ASSET PENDING ]
                 </div>
               )}
-              
-              {/* Image Annotations */}
-              <div className="absolute -bottom-6 left-0 font-mono text-[9px] tracking-[0.2em] text-foreground/50 uppercase">
-                FIG. 01 — {title.toUpperCase()}
-              </div>
+            </div>
+          </div>
+          <div className="col-span-4">
+            <div className="prose prose-invert max-w-none">
+              {block1Paras.map((para: string, i: number) => (
+                <p key={i} className="font-sans text-base text-foreground/70 leading-[1.8] mb-6 font-light">
+                  {para}
+                </p>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Lower Grid: Gallery */}
-        {resolvedGallery.length > 0 && (
-          <div className="mt-20 pt-10 border-t border-foreground/20">
-            <div className="flex items-center gap-4 mb-8">
-              <span className="font-mono text-[9px] tracking-[0.2em] text-foreground/50 uppercase">VISUAL ARCHIVE</span>
-              <div className="flex-1 h-[1px] bg-foreground/10" />
+        {/* ZIGZAG ROW 2: Text Block 2 (Left) + Gallery Image 1 (Right) */}
+        {(block2Paras.length > 0 || resolvedGallery.length > 0) && (
+          <div className="grid grid-cols-12 gap-12 items-center mt-12">
+            <div className="col-span-5">
+              <div className="prose prose-invert max-w-none">
+                {block2Paras.length > 0 ? (
+                  block2Paras.map((para: string, i: number) => (
+                    <p key={i} className="font-sans text-base text-foreground/70 leading-[1.8] mb-6 font-light">
+                      {para}
+                    </p>
+                  ))
+                ) : (
+                  <div className="h-full border-t border-foreground/10 pt-4 font-mono text-[10px] text-foreground/30 uppercase tracking-widest">
+                    [ END OF ARTICLE ]
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="col-span-7">
+              {resolvedGallery[0] && (
+                <div className="w-full aspect-video overflow-hidden rounded-[2rem] shadow-2xl relative group">
+                  <img src={resolvedGallery[0]} alt={`${title} Gallery 1`} className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ZIGZAG ROW 3: Remaining Content & Gallery Images */}
+        {(block3Paras.length > 0 || resolvedGallery.length > 1) && (
+          <div className="grid grid-cols-12 gap-12 items-start mt-12 mb-12">
+            <div className="col-span-6 flex flex-col gap-12">
+              {resolvedGallery[1] && (
+                <div className="w-full aspect-video overflow-hidden rounded-[2rem] shadow-2xl relative group">
+                  <img src={resolvedGallery[1]} alt={`${title} Gallery 2`} className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
+                </div>
+              )}
+              {block3Paras.length > 0 && (
+                <div className="prose prose-invert max-w-none mt-4">
+                  {block3Paras.map((para: string, i: number) => (
+                    <p key={i} className="font-sans text-base text-foreground/70 leading-[1.8] mb-6 font-light">
+                      {para}
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
             
-            <div className="grid grid-cols-4 gap-6">
-              {resolvedGallery.slice(0, 4).map((img: string, i: number) => (
-                <div key={i} className="flex flex-col gap-3 group">
-                  <div className="relative w-full aspect-square border border-foreground/10 overflow-hidden bg-muted">
-                    <img src={img} alt={`Gallery ${i}`} className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
-                  </div>
-                  <div className="flex justify-between items-center border-b border-foreground/10 pb-2">
-                    <span className="font-mono text-[9px] tracking-widest text-foreground/50 uppercase">PLATE {String(i + 1).padStart(2, '0')}</span>
-                  </div>
+            <div className="col-span-6 flex flex-col gap-12">
+              {resolvedGallery[2] && (
+                <div className="w-full aspect-video overflow-hidden rounded-[2rem] shadow-2xl relative group mt-24">
+                  <img src={resolvedGallery[2]} alt={`${title} Gallery 3`} className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
                 </div>
-              ))}
+              )}
+              {resolvedGallery[3] && (
+                <div className="w-full aspect-video overflow-hidden rounded-[2rem] shadow-2xl relative group">
+                  <img src={resolvedGallery[3]} alt={`${title} Gallery 4`} className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
+                </div>
+              )}
             </div>
           </div>
         )}
