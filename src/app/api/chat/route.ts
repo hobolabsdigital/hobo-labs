@@ -80,8 +80,13 @@ export async function POST(req: Request) {
             model: ollama.embedding('nomic-embed-text'),
             value: lastUserMessage.content,
           });
-          const topChunks = findSimilarChunks(embedding, db, 2);
-          contextText = topChunks.map((c: any) => c.content).join('\n\n');
+          const topChunks = findSimilarChunks(embedding, db, 5);
+          contextText = topChunks.map((c: any) => {
+            if (c.metadata?.type === 'project_detail') {
+              return `[PROJECT CASE STUDY]\nTitle: ${c.metadata.title}\nRole: ${c.metadata.role || 'Unknown'}\nYear: ${c.metadata.year || 'Unknown'}\nImage: ${c.metadata.image}\nContent:\n${c.content}`;
+            }
+            return c.content;
+          }).join('\n\n---\n\n');
           console.log("Retrieved RAG Context:", contextText);
         }
       } catch (e) {
@@ -137,8 +142,8 @@ CRITICAL RULE: You MUST ONLY CALL ONE TOOL EXACTLY ONCE per user message. Do not
           inputSchema: z.object({
             title: z.string().describe('Title for project nodes'),
             summary: z.string().describe('Brief summary for project nodes'),
-            role: z.string().describe('Your role for the project node (e.g. ARCHITECT, ENGINEER)'),
-            year: z.string().describe('Year of the project'),
+            role: z.string().optional().describe('Your role for the project node (e.g. ARCHITECT, ENGINEER). If not explicitly stated, omit this.'),
+            year: z.string().optional().describe('Year of the project. If not explicitly stated, omit this.'),
             image: z.string().optional().describe('Image path for project node (e.g. /portfolio/moxis.png)'),
             layoutIntent: z.enum(['top_right', 'bottom_right', 'far_right']).optional().describe('Where to spatially drop the node before physics takes over'),
           })

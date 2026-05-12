@@ -7,8 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 export const ProjectNode = React.memo(function ProjectNode({ data, id }: { data: any, id: string }) {
   const title = data.title || "UNTITLED PROJECT";
   const summary = data.summary || "Project summary not provided.";
-  const role = data.role || "ENGINEER";
-  const year = data.year || "2024";
+  const role = data.role;
+  const year = data.year;
   const image = data.image || null;
 
   return (
@@ -35,14 +35,20 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id }: { data:
           <div className="p-6">
             <h3 className="font-serif text-3xl font-medium tracking-tight mb-4 uppercase">{title}</h3>
             
-            <div className="flex gap-4 mb-4">
-              <span className="font-mono text-[10px] text-[var(--muted-foreground)] uppercase tracking-[0.12em] border border-[var(--border)] px-2 py-1">
-                ROLE: {role}
-              </span>
-              <span className="font-mono text-[10px] text-[var(--muted-foreground)] uppercase tracking-[0.12em] border border-[var(--border)] px-2 py-1">
-                YEAR: {year}
-              </span>
-            </div>
+            {(role || year) && (
+              <div className="flex gap-4 mb-4">
+                {role && (
+                  <span className="font-mono text-[10px] text-[var(--muted-foreground)] uppercase tracking-[0.12em] border border-[var(--border)] px-2 py-1">
+                    ROLE: {role}
+                  </span>
+                )}
+                {year && (
+                  <span className="font-mono text-[10px] text-[var(--muted-foreground)] uppercase tracking-[0.12em] border border-[var(--border)] px-2 py-1">
+                    YEAR: {year}
+                  </span>
+                )}
+              </div>
+            )}
 
             <p className="font-sans text-sm leading-relaxed text-[var(--foreground)]/80">
               {summary}
