@@ -50,8 +50,6 @@ export async function POST(req: Request) {
       if (Array.isArray(msg.parts)) {
         sanitized.parts = msg.parts.filter((p: any) => p.type !== 'item_reference' && p.type !== 'unknown');
       } else {
-        // Only polyfill parts for user messages or assistant text messages to prevent SDK map() crashes.
-        // Tool results are handled via assistant tool-invocation parts natively.
         if (msg.role === 'user' || (msg.role === 'assistant' && !msg.toolInvocations)) {
           sanitized.parts = [{ type: 'text', text: msg.content || '' }];
         }
@@ -62,6 +60,35 @@ export async function POST(req: Request) {
 
     const coreMessages = await convertToModelMessages(messages);
     console.log("Core Messages:", JSON.stringify(coreMessages, null, 2));
+
+    // --- NEW: Semantic RAG Retrieval ---
+    // Extract the last user message text for embedding
+    const lastUserMessage = [...coreMessages].reverse().find(m => m.role === 'user');
+    let contextText = '';
+    
+    if (lastUserMessage && typeof lastUserMessage.content === 'string') {
+      try {
+        const { embed } = require('ai');
+        const { findSimilarChunks } = require('@/lib/vectorStore');
+        const fs = require('fs');
+        const path = require('path');
+        
+        const dbPath = path.join(process.cwd(), 'docs', 'persona-vector-db.json');
+        if (fs.existsSync(dbPath)) {
+          const db = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
+          const { embedding } = await embed({
+            model: ollama.embedding('nomic-embed-text'),
+            value: lastUserMessage.content,
+          });
+          const topChunks = findSimilarChunks(embedding, db, 2);
+          contextText = topChunks.map((c: any) => c.content).join('\n\n');
+          console.log("Retrieved RAG Context:", contextText);
+        }
+      } catch (e) {
+        console.error("RAG Retrieval Error:", e);
+      }
+    }
+    // -----------------------------------
     const model = ollama('gemma4', {
       think: true,
       options: {
@@ -82,10 +109,15 @@ export async function POST(req: Request) {
       providerOptions: {
         ollama: { think: true }
       },
-      system: "You are a creative AI assistant for an experimental design portfolio. Use <think> tags to reason step-by-step before your final answer." +
-        "Your job is to respond with brief, striking, brutalist insights. " +
-        "CRITICAL RULE: If you generate a Hero node, you MUST use `\\n` to break the headline into 2-3 visually stacked lines (e.g., 'DISRUPT\\nTHE PARADIGM'). Never output a single long horizontal headline. " +
-        "CRITICAL RULE: If you decide to generate a new node using the createNode tool, you MUST ONLY CALL IT EXACTLY ONCE per user message. Do not chain multiple nodes together. After generating a node, output a brief text reflection and then STOP.",
+      system: `You are the Digital Twin of Emile Harmel, an editorial designer and developer. Use <think> tags to reason step-by-step before your final answer.
+Your job is to respond with brief, striking, brutalist insights. 
+Speak in the first person ("I"). Use the following facts about yourself to answer the user's questions accurately. Do NOT invent experiences outside of this context.
+
+My Context/Facts:
+${contextText}
+
+CRITICAL RULE: If you generate a Hero node, you MUST use '\\n' to break the headline into 2-3 visually stacked lines (e.g., 'DISRUPT\\nTHE PARADIGM'). Never output a single long horizontal headline. 
+CRITICAL RULE: If you decide to generate a new node using the createNode tool, you MUST ONLY CALL IT EXACTLY ONCE per user message. Do not chain multiple nodes together. After generating a node, output a brief text reflection and then STOP.`,
       tools: {
         createNode: tool({
           description: 'Create a new node on the editorial canvas',
