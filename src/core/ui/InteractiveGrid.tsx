@@ -24,6 +24,12 @@ export function InteractiveGrid({
   const { resolvedTheme } = useTheme();
   
   const mouseRef = useRef({ x: -1000, y: -1000 });
+  const viewportRef = useRef({ x, y, zoom });
+
+  // Update viewport ref without triggering effect teardown
+  useEffect(() => {
+    viewportRef.current = { x, y, zoom };
+  }, [x, y, zoom]);
 
   useEffect(() => {
     const handlePointerMove = (e: PointerEvent) => {
@@ -68,9 +74,11 @@ export function InteractiveGrid({
       
       ctx.clearRect(0, 0, width, height);
       
-      const scaledGap = gap * zoom;
-      const offsetX = x % scaledGap;
-      const offsetY = y % scaledGap;
+      const { x: vx, y: vy, zoom: vzoom } = viewportRef.current;
+      
+      const scaledGap = gap * vzoom;
+      const offsetX = vx % scaledGap;
+      const offsetY = vy % scaledGap;
       
       const startX = offsetX - scaledGap;
       const endX = width + scaledGap;
@@ -80,7 +88,7 @@ export function InteractiveGrid({
       const mx = mouseRef.current.x;
       const my = mouseRef.current.y;
       
-      const dotSize = size * zoom;
+      const dotSize = size * vzoom;
       
       ctx.beginPath();
       for (let px = startX; px < endX; px += scaledGap) {
@@ -97,12 +105,12 @@ export function InteractiveGrid({
             const force = Math.pow((repelRadius - dist) / repelRadius, 2); 
             
             // Displacement
-            drawX += (dx / dist) * force * repelStrength * zoom;
-            drawY += (dy / dist) * force * repelStrength * zoom;
+            drawX += (dx / dist) * force * repelStrength * vzoom;
+            drawY += (dy / dist) * force * repelStrength * vzoom;
             
             // Iron filing rotation/stretch
             const angle = Math.atan2(dy, dx);
-            const stretch = force * 8 * zoom; // Stretch amount
+            const stretch = force * 8 * vzoom; // Stretch amount
             const lx = Math.cos(angle) * stretch;
             const ly = Math.sin(angle) * stretch;
             
@@ -130,7 +138,7 @@ export function InteractiveGrid({
       cancelAnimationFrame(animationFrameId);
       resizeObserver.disconnect();
     };
-  }, [x, y, zoom, gap, size, repelRadius, repelStrength, color, resolvedTheme]);
+  }, [gap, size, repelRadius, repelStrength, color, resolvedTheme]);
 
   return (
     <canvas 
