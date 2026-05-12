@@ -45,21 +45,24 @@ export function useEditorialChat() {
         console.error("Failed to parse tool args", e);
       }
 
-      if (toolCall.toolName === 'createHeroNode' || toolCall.toolName === 'createNode') {
-        addHero(input, toolCall.toolCallId);
-        addToolOutput({
-          tool: toolCall.toolName,
-          toolCallId: toolCall.toolCallId,
-          output: { success: true }
-        });
-      } else if (toolCall.toolName === 'createProjectNode') {
-        addProject(input, toolCall.toolCallId);
-        addToolOutput({
-          tool: toolCall.toolName,
-          toolCallId: toolCall.toolCallId,
-          output: { success: true }
-        });
+      switch (toolCall.toolName) {
+        case 'createHeroNode':
+        case 'createNode':
+          addHero(input, toolCall.toolCallId);
+          break;
+        case 'createProjectNode':
+          addProject(input, toolCall.toolCallId);
+          break;
+        default:
+          console.warn(`Unhandled tool call: ${toolCall.toolName}`);
+          return;
       }
+
+      addToolOutput({
+        tool: toolCall.toolName,
+        toolCallId: toolCall.toolCallId,
+        output: { success: true }
+      });
     }
   });
 

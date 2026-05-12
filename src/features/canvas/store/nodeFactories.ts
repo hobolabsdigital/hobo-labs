@@ -26,11 +26,11 @@ export const createGhostNode = (id: string, sourceNode?: Node): Node => {
   return { id, type: 'ghost', position: { x, y }, data: { text: "Organizing thoughts...", isFinished: false } };
 };
 
-export const createHeroNode = (id: string, data: any, sourceNode?: Node): Node => {
+export const calculateNodePosition = (data: any, sourceNode?: Node, defaultOffset: number = 150) => {
   let x = 600;
   let y = 400;
 
-  if (data.layoutIntent) {
+  if (data?.layoutIntent) {
     switch (data.layoutIntent) {
       case 'top_left': x = -400; y = -200; break;
       case 'top_right': x = 1600; y = -200; break;
@@ -40,12 +40,18 @@ export const createHeroNode = (id: string, data: any, sourceNode?: Node): Node =
       case 'center': x = 600; y = 400; break;
     }
   } else if (sourceNode) {
-    x = sourceNode.position.x + 150 + Math.random() * 50;
+    x = sourceNode.position.x + defaultOffset + Math.random() * 50;
     y = sourceNode.position.y + 100 + (Math.random() * 50 - 25);
   } else {
     x = getRandomOffset(600, 400);
     y = getRandomOffset(400, 400);
   }
+
+  return { x, y };
+};
+
+export const createHeroNode = (id: string, data: any, sourceNode?: Node): Node => {
+  const { x, y } = calculateNodePosition(data, sourceNode, 150);
 
   return {
     id,
@@ -74,25 +80,7 @@ export const createTextNode = (id: string, text: string, sourceNode?: Node): Nod
 };
 
 export const createProjectNode = (id: string, data: any, sourceNode?: Node): Node => {
-  let x = 600;
-  let y = 400;
-
-  if (data.layoutIntent) {
-    switch (data.layoutIntent) {
-      case 'top_left': x = -400; y = -200; break;
-      case 'top_right': x = 1600; y = -200; break;
-      case 'bottom_left': x = -400; y = 1000; break;
-      case 'bottom_right': x = 1600; y = 1000; break;
-      case 'far_right': x = 2400; y = 400; break;
-      case 'center': x = 600; y = 400; break;
-    }
-  } else if (sourceNode) {
-    x = sourceNode.position.x + 200 + Math.random() * 50;
-    y = sourceNode.position.y + 100 + (Math.random() * 50 - 25);
-  } else {
-    x = getRandomOffset(600, 400);
-    y = getRandomOffset(400, 400);
-  }
+  const { x, y } = calculateNodePosition(data, sourceNode, 200);
 
   return {
     id,
