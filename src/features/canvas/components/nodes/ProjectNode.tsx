@@ -17,107 +17,89 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id }: { data:
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -30 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="relative bg-[var(--background)] origin-center border border-foreground/20 shadow-2xl"
-        style={{ width: '1000px' }}
+        initial={{ opacity: 0, scale: 0.95, y: 40 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: -40 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="relative bg-transparent origin-center flex flex-col gap-16"
+        style={{ width: '900px' }}
       >
-        {/* Magazine Cover / Header Section */}
-        <div className="grid grid-cols-12 gap-0 border-b border-foreground/20">
-          {/* Title Area */}
-          <div className="col-span-8 p-12 flex flex-col justify-between">
-            <div>
-              <p className="font-mono text-xs tracking-[0.2em] text-foreground/50 uppercase mb-4">
-                Selected Case Study — {year || new Date().getFullYear()}
-              </p>
-              <h2 className="text-6xl md:text-7xl font-serif font-medium leading-[0.9] tracking-tight uppercase mb-6 break-words">
-                {title}
-              </h2>
-              <h3 className="text-2xl font-sans font-light text-foreground/80 leading-snug max-w-2xl">
-                {summary}
-              </h3>
-            </div>
-            
-            {(role || techStack.length > 0) && (
-              <div className="mt-12 flex flex-wrap gap-x-12 gap-y-6 border-t border-foreground/10 pt-6">
-                {role && (
-                  <div>
-                    <p className="font-mono text-[10px] tracking-[0.15em] text-foreground/40 mb-2">ROLE</p>
-                    <p className="font-sans text-sm uppercase tracking-wider">{role}</p>
-                  </div>
-                )}
-                {techStack.length > 0 && (
-                  <div>
-                    <p className="font-mono text-[10px] tracking-[0.15em] text-foreground/40 mb-2">TECH STACK</p>
-                    <div className="flex flex-wrap gap-2">
-                      {techStack.map((tech: string, i: number) => (
-                        <span key={i} className="px-2 py-1 bg-foreground/5 text-foreground/70 font-mono text-[10px] tracking-widest uppercase">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
+        {/* Floating Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-12">
+          <div className="flex-1">
+            <p className="font-mono text-[10px] tracking-[0.3em] text-foreground/40 uppercase mb-6">
+              {year ? `SELECTED WORK — ${year}` : 'SELECTED WORK'}
+            </p>
+            <h2 className="text-7xl md:text-8xl font-sans font-medium leading-[0.85] tracking-tighter uppercase break-words text-foreground">
+              {title}
+            </h2>
           </div>
           
-          {/* Main Hero Image */}
-          <div className="col-span-4 border-l border-foreground/20 relative overflow-hidden bg-foreground/5 min-h-[300px]">
-            {image ? (
-              <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center font-mono text-xs text-foreground/30">[NO IMAGE]</div>
-            )}
-          </div>
+          {(role || techStack.length > 0) && (
+            <div className="flex flex-col gap-6 text-right pb-2">
+              {role && (
+                <div>
+                  <p className="font-mono text-[9px] tracking-[0.2em] text-foreground/30 mb-2">ROLE</p>
+                  <p className="font-sans text-sm font-medium uppercase tracking-widest text-foreground">{role}</p>
+                </div>
+              )}
+              {techStack.length > 0 && (
+                <div className="flex flex-wrap justify-end gap-2 max-w-[280px]">
+                  {techStack.map((tech: string, i: number) => (
+                    <span key={i} className="px-4 py-1.5 rounded-full border border-foreground/10 text-foreground/80 font-mono text-[9px] tracking-widest uppercase bg-foreground/5 backdrop-blur-md">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
-        {/* Editorial Body */}
-        <div className="grid grid-cols-12 gap-0">
-          {/* Left Column: Article Text */}
-          <div className="col-span-7 p-12 pr-16 border-r border-foreground/20">
-             {content ? (
+        {/* Main Floating Organic Image */}
+        {image && (
+          <div 
+            className="w-full h-[500px] relative overflow-hidden shadow-2xl"
+            style={{ borderRadius: "30% 70% 50% 50% / 50% 30% 70% 50%" }}
+          >
+            <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover scale-105 hover:scale-100 hover:grayscale-0 grayscale transition-all duration-1000 ease-out" />
+          </div>
+        )}
+
+        {/* Floating Asymmetric Text Columns */}
+        <div className="grid grid-cols-12 gap-16 items-start">
+          <div className="col-span-5">
+            <h3 className="text-3xl md:text-4xl font-serif font-light text-foreground leading-[1.2] tracking-tight">
+              {summary}
+            </h3>
+          </div>
+          
+          <div className="col-span-7">
+             {content && (
                 <div className="prose prose-invert max-w-none">
-                  {content.split('\n\n').map((para: string, i: number) => {
-                    const isFirst = i === 0;
-                    return (
-                      <p key={i} className={`font-sans text-base text-foreground/80 leading-[1.8] mb-6 font-light ${isFirst ? 'mt-2' : ''}`}>
-                        {isFirst && para.length > 0 ? (
-                          <span className="float-left text-6xl font-serif leading-[0.8] mr-3 mt-1 text-foreground">{para.charAt(0)}</span>
-                        ) : null}
-                        {isFirst ? para.substring(1) : para}
-                      </p>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="w-full h-32 flex items-center">
-                  <span className="font-mono text-xs uppercase tracking-widest text-foreground/50">[NO ARTICLE CONTENT PROVIDED]</span>
+                  {content.split('\n\n').map((para: string, i: number) => (
+                    <p key={i} className="font-sans text-lg text-foreground/70 leading-[1.8] mb-8 font-light">
+                      {para}
+                    </p>
+                  ))}
                 </div>
               )}
           </div>
-
-          {/* Right Column: Image Gallery Layout */}
-          <div className="col-span-5 flex flex-col bg-foreground/[0.02]">
-            {gallery.length > 0 ? (
-              <div className="grid grid-cols-1 grid-rows-[repeat(auto-fit,minmax(250px,1fr))] h-full">
-                {gallery.slice(0, 3).map((img: string, i: number) => (
-                  <div key={i} className={`relative min-h-[250px] overflow-hidden ${i !== gallery.length - 1 ? 'border-b border-foreground/20' : ''}`}>
-                    <img src={img} alt={`Gallery ${i}`} className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-105 hover:scale-100" />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="flex-1 flex items-center justify-center p-12">
-                <p className="font-mono text-[10px] tracking-widest text-foreground/40 text-center uppercase leading-loose border border-foreground/10 p-6">
-                  [RESERVED FOR VISUAL ASSETS]
-                </p>
-              </div>
-            )}
-          </div>
         </div>
+
+        {/* Floating Asymmetric Gallery */}
+        {gallery.length > 0 && (
+          <div className="grid grid-cols-3 gap-8 mt-12 mb-12">
+            {gallery.map((img: string, i: number) => (
+              <div 
+                key={i} 
+                className={`relative overflow-hidden shadow-xl aspect-[4/5] rounded-[2rem] ${i === 1 ? 'mt-24' : i === 2 ? 'mt-12' : ''}`}
+              >
+                <img src={img} alt={`Gallery ${i}`} className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-105" />
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Connection Handles */}
         {['top', 'right', 'bottom', 'left'].map(pos => {
