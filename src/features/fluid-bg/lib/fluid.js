@@ -390,10 +390,7 @@ function e(e, t) {
 		for (let e = 0; e < t.length; e++) Ke(i.find((n) => n.id === t[e].identifier));
 	}, { signal: ac.signal });
 	
-	window.addEventListener("keydown", (e) => {
-		e.code === "KeyP" && (t.PAUSED = !t.PAUSED), e.key === " " && a.push(Number.parseInt(Math.random() * 20) + 5);
-	}, { signal: ac.signal });
-
+	// Removed rogue keydown listener that was pausing the fluid on 'p' and spawning splats on spacebar
 	function We(e, r, i, a) {
 		e.id = r, e.down = !0, e.moved = !1, e.texcoordX = i / n.width, e.texcoordY = 1 - a / n.height, e.prevTexcoordX = e.texcoordX, e.prevTexcoordY = e.texcoordY, e.deltaX = 0, e.deltaY = 0, t.COLORFUL && (e.color = Z());
 	}
