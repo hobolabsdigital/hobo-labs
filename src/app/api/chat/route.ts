@@ -158,6 +158,9 @@ CRITICAL RULE: You MUST ONLY CALL ONE TOOL EXACTLY ONCE per user message. Do not
             year: z.string().optional().describe('Year of the project. If not explicitly stated, omit this.'),
             image: z.string().optional().describe('Main image path for project node (e.g. /portfolio/moxis.png)'),
             gallery: z.array(z.string()).optional().describe('Array of 2-3 additional image paths to create a gallery spread. You can guess these based on the title, e.g. /portfolio/Monstory-01.png, /portfolio/Monstory-02.png'),
+            problem: z.string().optional().describe('A specific problem or challenge that was overcome in this project.'),
+            solution: z.string().optional().describe('The specific solution implemented to solve the problem.'),
+            quote: z.string().optional().describe('A highly impactful quote or metric from the project, suitable for large callout text.'),
             layoutIntent: z.enum(['top_right', 'bottom_right', 'far_right']).optional().describe('Where to spatially drop the node before physics takes over'),
           })
         }),
