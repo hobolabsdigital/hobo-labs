@@ -19,6 +19,7 @@ export function DebugPanel() {
   const setMischief = useBeeStore(state => state.setMischief);
   const swarmTarget = useBeeStore(state => state.swarmTarget);
   const setSwarmTarget = useBeeStore(state => state.setSwarmTarget);
+  const brainMode = useBeeStore(state => state.brainMode);
 
   return (
     <div className={`fixed top-4 right-0 z-50 transition-transform duration-300 ease-out ${isDebugDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
@@ -33,6 +34,40 @@ export function DebugPanel() {
           
           <div className="flex flex-col gap-2 border-b border-[var(--foreground)] pb-4">
             <h3 className="text-xs uppercase tracking-wider font-bold mb-2">Swarm Controls</h3>
+            
+            <div className="flex items-center justify-between pt-1 pb-2">
+              <label htmlFor="manual-override" className="text-[10px] uppercase tracking-wider">Manual Override</label>
+              <input
+                type="checkbox"
+                id="manual-override"
+                checked={useBeeStore(state => state.manualOverride)}
+                onChange={(e) => useBeeStore.getState().setManualOverride(e.target.checked)}
+                className="w-3 h-3 accent-[var(--foreground)]"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1 text-[10px] mb-2">
+              <label>Brain Mode</label>
+              <div className="flex gap-2">
+                {(['worker', 'soldier'] as const).map(mode => (
+                  <button
+                    key={mode}
+                    className={`px-2 py-1 text-[10px] uppercase font-bold border transition-colors flex-1 ${useBeeStore(state => state.brainMode) === mode ? 'bg-[var(--foreground)] text-[var(--background)]' : 'border-[var(--foreground)] text-[var(--foreground)] hover:bg-[var(--foreground)] hover:text-[var(--background)]'}`}
+                    onClick={() => useBeeStore.getState().setBrainMode(mode)}
+                  >
+                    {mode}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button
+              onClick={() => useBeeStore.getState().triggerForceTick(useBeeStore.getState().brainMode)}
+              className="w-full py-2 bg-[var(--foreground)] text-[var(--background)] text-[10px] font-bold uppercase hover:bg-opacity-80 transition-opacity mb-2"
+            >
+              Force Brain Tick
+            </button>
+
             <div className="flex flex-wrap gap-2 mb-2">
               {(['none', 'invert', 'float_nodes', 'buzz_text', 'theme_hack'] as MischiefType[]).map(mischief => (
                 <button
@@ -43,16 +78,6 @@ export function DebugPanel() {
                   {mischief}
                 </button>
               ))}
-            </div>
-            <div className="flex flex-col gap-1 text-[10px]">
-              <label>Swarm Target (Node ID or 'global')</label>
-              <input 
-                type="text" 
-                value={swarmTarget || ''} 
-                onChange={(e) => setSwarmTarget(e.target.value || null)}
-                placeholder="null"
-                className="bg-transparent border border-[var(--foreground)] p-1 text-[var(--foreground)] focus:outline-none"
-              />
             </div>
           </div>
 
@@ -97,6 +122,19 @@ export function DebugPanel() {
                 <span>{physicsConfig.linkIterations}</span>
               </div>
               <input type="range" min="1" max="30" step="1" value={physicsConfig.linkIterations} onChange={(e) => setPhysicsConfig({ linkIterations: parseInt(e.target.value) })} className="w-full accent-[var(--foreground)]" />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 pt-2 border-b border-[var(--foreground)] pb-4">
+            <h3 className="text-xs uppercase tracking-wider font-bold mb-2">Swarm Target</h3>
+            <div className="flex gap-2">
+              <input 
+                type="text"
+                value={swarmTarget[brainMode] || ''} 
+                onChange={(e) => setSwarmTarget(brainMode, e.target.value || null)}
+                placeholder="null"
+                className="w-full bg-transparent border border-[var(--foreground)] p-1 text-[var(--foreground)] focus:outline-none text-[10px]"
+              />
             </div>
           </div>
 

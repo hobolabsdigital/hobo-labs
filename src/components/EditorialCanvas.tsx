@@ -159,16 +159,8 @@ export default function EditorialCanvas() {
         <Controls className="fill-foreground stroke-foreground" />
       </ReactFlow>
 
-      {themeOverrides && (
-        <style>
-          {swarmTarget && swarmTarget !== 'global' 
-            ? `.react-flow__node[data-id="${swarmTarget}"] { ${themeOverrides} }`
-            : `:root { ${themeOverrides} }`
-          }
-        </style>
-      )}
-
-      <Swarm count={6} />
+      <Swarm count={3} type="worker" />
+      <Swarm count={3} type="soldier" />
       <SwarmTerminal />
       <DebugPanel />
       <TimelineScrubber />

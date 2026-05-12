@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 
 import { SendIcon, LockIcon } from "lucide-react";
 import { useCanvasStore } from "@/store/useCanvasStore";
+import { useBeeStore } from "@/store/useBeeStore";
+import { useEffect } from "react";
 
 interface ChatInputProps {
   input: string;
@@ -15,6 +17,11 @@ interface ChatInputProps {
 export function ChatInput({ input, setInput, onSubmit, isLoading }: ChatInputProps) {
   const timeCursor = useCanvasStore((state) => state.timeCursor);
   const isHistoryMode = timeCursor !== null;
+  const setIsSleeping = useBeeStore((state) => state.setIsSleeping);
+
+  useEffect(() => {
+    setIsSleeping(isLoading || input.length > 0);
+  }, [isLoading, input, setIsSleeping]);
 
   return (
     <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-[100] pointer-events-auto transition-all duration-300">

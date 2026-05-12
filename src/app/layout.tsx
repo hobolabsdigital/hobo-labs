@@ -32,7 +32,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <div className="fixed top-8 left-8 z-[100] pointer-events-none mix-blend-difference">
-            <Logo className="w-40 h-auto text-[var(--background)]" />
+            <Logo className="w-40 h-auto text-white" />
           </div>
           {children}
         </ThemeProvider>
