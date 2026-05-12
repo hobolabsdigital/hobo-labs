@@ -148,13 +148,15 @@ CRITICAL RULE: You MUST ONLY CALL ONE TOOL EXACTLY ONCE per user message. Do not
           })
         }),
         createProjectNode: tool({
-          description: 'Create a new project case study node on the editorial canvas',
+          description: 'Create a new Bauhaus-style magazine project node on the editorial canvas',
           inputSchema: z.object({
             title: z.string().describe('Title for project nodes'),
-            summary: z.string().describe('Brief summary for project nodes'),
+            summary: z.string().describe('A catchy, bold sub-headline or short summary'),
+            content: z.string().optional().describe('A detailed, multi-paragraph magazine article explaining the architecture, UX, and impact of the project.'),
             role: z.string().optional().describe('Your role for the project node (e.g. ARCHITECT, ENGINEER). If not explicitly stated, omit this.'),
             year: z.string().optional().describe('Year of the project. If not explicitly stated, omit this.'),
-            image: z.string().optional().describe('Image path for project node (e.g. /portfolio/moxis.png)'),
+            image: z.string().optional().describe('Main image path for project node (e.g. /portfolio/moxis.png)'),
+            gallery: z.array(z.string()).optional().describe('Array of 2-3 additional image paths to create a gallery spread. You can guess these based on the title, e.g. /portfolio/Monstory-01.png, /portfolio/Monstory-02.png'),
             layoutIntent: z.enum(['top_right', 'bottom_right', 'far_right']).optional().describe('Where to spatially drop the node before physics takes over'),
           })
         }),
