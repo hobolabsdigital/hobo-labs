@@ -19,7 +19,8 @@ async function run() {
     { content: "Emile's preferred tools are Figma, Blender, Unreal Engine, Antigravity, Claude Code, VS Code, and Docker.", metadata: { type: "skills", topic: "tools" } },
     { content: "Emile's educational background includes an HND in Multimedia Design and an ND in Art Foundation with Mathematics from City College Manchester.", metadata: { type: "education", topic: "college" } },
     { content: "Case Study highlight: Building Moxis, an AI-Powered Document Intelligence Platform using a hybrid AI pipeline (geometric CV + Vision Language Models) shipped as a source-code license to enterprises.", metadata: { type: "projects", topic: "Moxis" } },
-    { content: "Case Study highlight: Hermes, a Multi-Agent AI Operating System for Autonomous Content Production using a hub-and-spoke pattern on GCP with ComfyUI and LTX-Video to generate animated shorts from character references.", metadata: { type: "projects", topic: "Hermes" } }
+    { content: "Case Study highlight: Hermes, a Multi-Agent AI Operating System for Autonomous Content Production using a hub-and-spoke pattern on GCP with ComfyUI and LTX-Video to generate animated shorts from character references.", metadata: { type: "projects", topic: "Hermes" } },
+    { content: "Case Study highlight: Editorial Canvas Portfolio (This Website). An experimental, AI-native interactive portfolio where users chat with Emile's Digital Twin. Built using Next.js, React Flow, Vercel AI SDK, and Local RAG with Ollama, featuring autonomous node spawning and Brutalist aesthetics.", metadata: { type: "projects", topic: "Editorial Canvas" } }
   ];
 
   const { embeddings } = await embedMany({
