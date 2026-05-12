@@ -86,11 +86,20 @@ export function FluidBackground() {
         const c = fluidConfigRef.current;
         const config = fluidRef.current.config;
 
-        // Calculate normalized velocity
-        velocityX = (mouseX - lastMouseX);
-        velocityY = (mouseY - lastMouseY);
+        // Calculate raw velocity
+        const rawVelX = mouseX - lastMouseX;
+        const rawVelY = mouseY - lastMouseY;
         lastMouseX = mouseX;
         lastMouseY = mouseY;
+
+        // Clamp velocity to prevent massive screen tearing during frame drops
+        const maxVel = 0.02;
+        const clampedVelX = Math.max(-maxVel, Math.min(maxVel, rawVelX));
+        const clampedVelY = Math.max(-maxVel, Math.min(maxVel, rawVelY));
+
+        // Smoothly interpolate the velocity so it doesn't jump
+        velocityX += (clampedVelX - velocityX) * 0.1;
+        velocityY += (clampedVelY - velocityY) * 0.1;
 
         // Pass velocity and aberration to the patched fluid shader
         config.mouseX = velocityX;
