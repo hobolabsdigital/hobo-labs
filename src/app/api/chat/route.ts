@@ -132,7 +132,7 @@ CRITICAL RULE: If you decide to generate a new node using the createNode tool, y
             summary: z.string().optional().describe('Brief summary for project nodes'),
             role: z.string().optional().describe('Your role for the project node (e.g. ARCHITECT, ENGINEER)'),
             year: z.string().optional().describe('Year of the project'),
-            image: z.string().optional().describe('Image path for project node (e.g. /portfolio/moxis.jpg)'),
+            image: z.string().optional().describe('Image path for project node (e.g. /portfolio/moxis.png)'),
             animationEffect: z.enum(['none', 'annotation', 'iris']).optional().describe('How to animate the text in'),
             layoutIntent: z.enum(['top_right', 'bottom_right', 'far_right']).optional().describe('Where to spatially drop the node before physics takes over'),
           })

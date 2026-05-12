@@ -37,7 +37,7 @@ async function run() {
           topic: topic,
           projectId: projectId,
           title: title,
-          image: `/portfolio/${projectId}.jpg`
+          image: `/portfolio/${projectId}.png`
         }
       });
     }
