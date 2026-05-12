@@ -1,9 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Preloader } from "@/components/Preloader";
+import { Preloader } from '@/core/ui/Preloader';
 
-const EditorialCanvas = dynamic(() => import("@/components/EditorialCanvas"), {
+const EditorialCanvas = dynamic(() => import("@/features/canvas/components/EditorialCanvas"), {
   ssr: false,
   loading: () => <Preloader />,
 });
