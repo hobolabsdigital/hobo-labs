@@ -62,11 +62,19 @@ export async function POST(req: Request) {
     console.log("Core Messages:", JSON.stringify(coreMessages, null, 2));
 
     // --- NEW: Semantic RAG Retrieval ---
-    // Extract the last user message text for embedding
     const lastUserMessage = [...coreMessages].reverse().find(m => m.role === 'user');
     let contextText = '';
     
-    if (lastUserMessage && typeof lastUserMessage.content === 'string') {
+    let userQuery = '';
+    if (lastUserMessage) {
+      if (typeof lastUserMessage.content === 'string') {
+        userQuery = lastUserMessage.content;
+      } else if (Array.isArray(lastUserMessage.content)) {
+        userQuery = lastUserMessage.content.filter((p: any) => p.type === 'text').map((p: any) => p.text).join(' ');
+      }
+    }
+
+    if (userQuery) {
       try {
         const { embed } = require('ai');
         const { findSimilarChunks } = require('@/lib/vectorStore');
@@ -78,7 +86,7 @@ export async function POST(req: Request) {
           const db = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
           const { embedding } = await embed({
             model: ollama.embedding('nomic-embed-text'),
-            value: lastUserMessage.content,
+            value: userQuery,
           });
           const topChunks = findSimilarChunks(embedding, db, 5);
           contextText = topChunks.map((c: any) => {
@@ -88,6 +96,8 @@ export async function POST(req: Request) {
             return c.content;
           }).join('\n\n---\n\n');
           console.log("Retrieved RAG Context:", contextText);
+        } else {
+          console.error("RAG ERROR: Vector DB file not found at", dbPath);
         }
       } catch (e) {
         console.error("RAG Retrieval Error:", e);
