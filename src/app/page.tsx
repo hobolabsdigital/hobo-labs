@@ -27,9 +27,11 @@ export default function Home() {
           <InteractiveGrid gap={24} size={2} color="var(--grid-color)" repelRadius={150} repelStrength={15} />
         </EditorialCanvas>
         
+        {/* Swarm disabled temporarily to save GPU 
         <Swarm count={3} type="worker" />
         <Swarm count={3} type="soldier" />
         <SwarmTerminal />
+        */}
         <DebugPanel />
         <TimelineScrubber />
         <FluidBackground />
