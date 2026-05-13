@@ -5,15 +5,9 @@ import { Button } from '@/core/ui/components/button';
 import { SendIcon, SparklesIcon } from "lucide-react";
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 import { useBeeStore } from '@/features/swarm/store/useBeeStore';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useEditorialChat } from '@/features/editor-chat/hooks/useEditorialChat';
-
-const PROMPT_SUGGESTIONS = [
-  "Show me your latest project",
-  "What is your tech stack?",
-  "Tell me about your process"
-];
 
 export function ChatInput() {
   const timeCursor = useCanvasStore((state) => state.timeCursor);
@@ -22,6 +16,22 @@ export function ChatInput() {
   
   const { input, setInput, handleSend, status } = useEditorialChat();
   const isLoading = status === 'submitted' || status === 'streaming';
+
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/suggestions')
+      .then(res => res.json())
+      .then(data => {
+        if (mounted && data.suggestions) {
+          setSuggestions(data.suggestions);
+        }
+      })
+      .catch(console.error);
+    
+    return () => { mounted = false; };
+  }, []);
 
   useEffect(() => {
     setIsSleeping(isLoading || input.length > 0);
@@ -42,7 +52,7 @@ export function ChatInput() {
     <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-[100] pointer-events-auto transition-all duration-300 flex flex-col gap-3">
       
       {/* Quick Prompt Suggestions */}
-      {!isHistoryMode && input.length === 0 && !isLoading && (
+      {!isHistoryMode && input.length === 0 && !isLoading && suggestions.length > 0 && (
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -50,19 +60,21 @@ export function ChatInput() {
           className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 px-2"
         >
           <SparklesIcon className="w-4 h-4 text-zinc-500 shrink-0 mr-1" />
-          {PROMPT_SUGGESTIONS.map((suggestion, i) => (
-            <button
+          {suggestions.map((suggestion, i) => (
+            <Button
               key={i}
               type="button"
+              variant="secondary"
+              size="sm"
               onClick={() => {
                 setInput(suggestion);
                 setIsSleeping(true);
               }}
-              className="whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 text-xs font-medium text-zinc-300 hover:bg-zinc-700 hover:text-white hover:border-zinc-600 transition-all"
+              className="rounded-full whitespace-nowrap text-xs font-normal"
             >
-              {i === 0 && <span className="text-blue-400">✨</span>}
+              {i === 0 && <span className="text-blue-400 mr-1.5">✨</span>}
               {suggestion}
-            </button>
+            </Button>
           ))}
         </motion.div>
       )}
