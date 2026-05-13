@@ -2,7 +2,7 @@
 
 import { Button } from '@/core/ui/components/button';
 
-import { SendIcon, SparklesIcon } from "lucide-react";
+import { SendIcon } from "lucide-react";
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 import { useBeeStore } from '@/features/swarm/store/useBeeStore';
 import { useEffect, useState } from "react";
@@ -18,20 +18,38 @@ export function ChatInput() {
   const isLoading = status === 'submitted' || status === 'streaming';
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [isFetchingSuggestions, setIsFetchingSuggestions] = useState(false);
   
   useEffect(() => {
     let mounted = true;
-    fetch('/api/suggestions')
-      .then(res => res.json())
-      .then(data => {
+    
+    const fetchSuggestions = async (count: number) => {
+      setIsFetchingSuggestions(true);
+      try {
+        const res = await fetch(`/api/suggestions?count=${count}`);
+        const data = await res.json();
         if (mounted && data.suggestions) {
-          setSuggestions(data.suggestions);
+          setSuggestions(prev => {
+            const next = [...prev];
+            data.suggestions.forEach((s: string) => {
+              if (!next.includes(s)) next.push(s);
+            });
+            return next;
+          });
         }
-      })
-      .catch(console.error);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (mounted) setIsFetchingSuggestions(false);
+      }
+    };
+
+    if (suggestions.length < 3 && !isFetchingSuggestions && !isLoading) {
+      fetchSuggestions(3 - suggestions.length);
+    }
     
     return () => { mounted = false; };
-  }, []);
+  }, [suggestions.length, isFetchingSuggestions, isLoading]);
 
   useEffect(() => {
     setIsSleeping(isLoading || input.length > 0);
@@ -59,20 +77,17 @@ export function ChatInput() {
           exit={{ opacity: 0, y: 10 }}
           className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 px-2"
         >
-          <SparklesIcon className="w-4 h-4 text-zinc-500 shrink-0 mr-1" />
           {suggestions.map((suggestion, i) => (
             <Button
               key={i}
               type="button"
-              variant="secondary"
-              size="sm"
               onClick={() => {
                 setInput(suggestion);
                 setIsSleeping(true);
+                setSuggestions(prev => prev.filter(s => s !== suggestion));
               }}
-              className="rounded-full whitespace-nowrap text-xs font-normal"
+              className="rounded-full whitespace-nowrap text-xs font-medium px-4 py-1.5 bg-foreground text-background hover:bg-foreground/90 border-none transition-all shadow-md"
             >
-              {i === 0 && <span className="text-blue-400 mr-1.5">✨</span>}
               {suggestion}
             </Button>
           ))}
