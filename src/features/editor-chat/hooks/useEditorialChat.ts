@@ -72,7 +72,9 @@ export function useEditorialChat() {
     if (!hasInitialized.current && messages.length === 0) {
       hasInitialized.current = true;
       sendMessage({
-        text: `Introduce yourself. Use the createHeroNode tool to create a bold headline (e.g., "THE CREATIVE ENGINE") and a quick tagline. Then provide a short textual introduction starting with "Hi, I'm Emile Harmel, Digital Twin."`
+        text: `Introduce yourself.
+1. Use the createHeroNode tool to create a bold headline (e.g., "THE CREATIVE ENGINE") and a quick tagline.
+2. CRITICAL: After the tool call, you MUST output a short text message starting with "Hi, I'm Emile Harmel, Digital Twin."`
       });
     }
   }, [sendMessage, messages.length]);
@@ -93,15 +95,15 @@ export function useEditorialChat() {
       const reasoningParts = lastMessage.parts?.filter((p: MessagePart) => p.type === 'reasoning') || [];
       const textParts = lastMessage.parts?.filter((p: MessagePart) => p.type === 'text') || [];
       const toolParts = lastMessage.parts?.filter((p: MessagePart) => p.type?.startsWith('tool-')) || [];
-      
-      const isReasoningFinished = 
-        status !== 'streaming' || 
+
+      const isReasoningFinished =
+        status !== 'streaming' ||
         (reasoningParts.length > 0 && reasoningParts.every((p: MessagePart) => p.state === "done")) ||
         textParts.length > 0 ||
         toolParts.length > 0;
 
       const combinedReasoning = reasoningParts.map((p: MessagePart) => p.text).join('');
-      
+
       // Only upsert if we actually have reasoning or if we need to finish the ghost node
       if (combinedReasoning.length > 0 || isReasoningFinished) {
         upsertActiveGhost(combinedReasoning || "Organizing thoughts...", isReasoningFinished);
@@ -128,12 +130,12 @@ export function useEditorialChat() {
     if (textParts.length === 0) {
       return;
     }
-    
+
     // Text stream is finished if the overall stream isn't streaming, or if the text part is done
     const isTextFinished = status !== 'streaming' || textParts.every((p: MessagePart) => p.state === "done");
-    
+
     const combinedText = textParts.map((p: MessagePart) => p.text).join('');
-    
+
     if (combinedText.trim().length > 0) {
       addText(combinedText, isTextFinished);
       if (isTextFinished) {
@@ -149,14 +151,14 @@ export function useEditorialChat() {
       // Branching from history!
       // 1. Truncate visual canvas
       truncateHistory(timeCursor);
-      
+
       // 2. Truncate AI SDK messages
       // We map the remaining nodes to approximate how many messages should be kept.
       // A simple approximation: keep messages that correspond to the kept nodes.
       // Since it's hard to map exactly, a reliable approach for a portfolio is to count user prompts.
       const nodesToKeep = nodes.slice(0, timeCursor + 1);
       const userPromptCount = nodesToKeep.filter(n => n.type === 'prompt').length;
-      
+
       let promptIndex = 0;
       let cutIndex = messages.length;
       for (let i = 0; i < messages.length; i++) {
@@ -168,7 +170,7 @@ export function useEditorialChat() {
           }
         }
       }
-      
+
       setMessages(messages.slice(0, cutIndex));
     }
 
