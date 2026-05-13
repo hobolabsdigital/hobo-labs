@@ -153,7 +153,7 @@ ${contextText}
         createHeroNode: tool({
           description: 'Create a new hero or text node on the editorial canvas',
           inputSchema: z.object({
-            type: z.enum(['text', 'hero']).describe('The type of node to create'),
+            type: z.enum(['text', 'hero']).optional().default('hero').describe('The type of node to create. Defaults to "hero" if omitted.'),
             headline: z.string().optional().describe('Headline for hero nodes. CRITICAL: You MUST use \\n to break this text into 2-3 stacked lines (ALL CAPS).'),
             subline: z.string().optional().describe('Subline for hero nodes'),
             text: z.string().optional().describe('Content for text nodes'),

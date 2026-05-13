@@ -18,8 +18,6 @@ export function TimelineScrubber() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
 
-  // If there are less than 2 nodes, history scrubbing doesn't make much sense.
-  if (nodesLength <= 1) return null;
 
   const maxIndex = nodesLength - 1;
   const currentValue = timeCursor !== null ? timeCursor : maxIndex;
@@ -136,6 +134,9 @@ export function TimelineScrubber() {
       }
     }
   }, [timeCursor, maxIndex, y, containerHeight, presentY, maxY]);
+
+  // If there are less than 2 nodes, history scrubbing doesn't make much sense.
+  if (nodesLength <= 1) return null;
 
   return (
     <div 
