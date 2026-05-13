@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useTheme } from '@/core/theme/theme-provider';
-import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
+import { useCanvasStore, INTRO_REVEAL_CLASSES } from '@/features/canvas/store/useCanvasStore';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -25,7 +25,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className={`fixed bottom-4 left-4 z-50 bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-mono transition-all duration-1000 uppercase hover:bg-opacity-80 ${
+      className={`fixed bottom-4 left-4 z-50 bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-mono uppercase hover:bg-opacity-80 ${INTRO_REVEAL_CLASSES} ${
         isIntroAnimationFinished ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
       }`}
     >

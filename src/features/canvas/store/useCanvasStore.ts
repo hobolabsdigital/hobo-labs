@@ -76,6 +76,8 @@ export interface CanvasState {
 
 import { createPromptNode, createGhostNode, createHeroNode, createTextNode, createProjectNode, createEdge } from './nodeFactories';
 
+export const INTRO_REVEAL_CLASSES = "transition-all duration-1000 ease-out";
+
 export const useCanvasStore = create<CanvasState>((set, get) => ({
   nodes: [],
   edges: [],
@@ -197,7 +199,7 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
       }
 
       let nodes = [...state.nodes];
-      let edges = [...state.edges];
+      const edges = [...state.edges];
       let lastPlacedNodeId = state.lastPlacedNodeId;
       let isNewGhost = false;
 

@@ -3,7 +3,7 @@
 import { Button } from '@/core/ui/components/button';
 
 import { SendIcon } from "lucide-react";
-import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
+import { useCanvasStore, INTRO_REVEAL_CLASSES } from '@/features/canvas/store/useCanvasStore';
 import { useBeeStore } from '@/features/swarm/store/useBeeStore';
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
@@ -72,7 +72,7 @@ export function ChatInput() {
   const isIntroAnimationFinished = useCanvasStore((state) => state.isIntroAnimationFinished);
 
   return (
-    <div className={`absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-[100] pointer-events-auto transition-all duration-1000 flex flex-col gap-3 ${
+    <div className={`absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-[100] pointer-events-auto ${INTRO_REVEAL_CLASSES} flex flex-col gap-3 ${
       isIntroAnimationFinished ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0'
     }`}>
       

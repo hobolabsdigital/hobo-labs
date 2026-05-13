@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion, useMotionValue, useSpring, useTransform, animate, useAnimationFrame } from "framer-motion";
-import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
+import { motion, useMotionValue, useSpring, animate, useAnimationFrame } from "framer-motion";
+import { useCanvasStore, INTRO_REVEAL_CLASSES } from '@/features/canvas/store/useCanvasStore';
 
 export function TimelineScrubber() {
   const nodesLength = useCanvasStore((state) => state.nodes.length);
@@ -142,7 +142,7 @@ export function TimelineScrubber() {
 
   return (
     <div 
-      className={`fixed top-[10vh] h-[80vh] w-16 z-[60] mix-blend-difference transition-all duration-1000 ease-out ${
+      className={`fixed top-[10vh] h-[80vh] w-16 z-[60] mix-blend-difference ${INTRO_REVEAL_CLASSES} ${
         !isIntroAnimationFinished ? 'translate-x-[150%] opacity-0 pointer-events-none' : 'translate-x-0 opacity-100 pointer-events-auto'
       } ${
         isDebugDrawerOpen ? 'right-[340px]' : 'right-8'

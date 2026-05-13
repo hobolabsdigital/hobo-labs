@@ -1,6 +1,6 @@
 "use client";
 
-import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
+import { useCanvasStore, INTRO_REVEAL_CLASSES } from '@/features/canvas/store/useCanvasStore';
 import { useBeeStore, MischiefType } from '@/features/swarm/store/useBeeStore';
 
 export function DebugPanel() {
@@ -25,7 +25,7 @@ export function DebugPanel() {
   const isIntroAnimationFinished = useCanvasStore(state => state.isIntroAnimationFinished);
 
   return (
-    <div className={`fixed top-4 right-0 z-50 transition-all duration-1000 ease-out ${
+    <div className={`fixed top-4 right-0 z-50 ${INTRO_REVEAL_CLASSES} ${
       !isIntroAnimationFinished ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
     } ${isDebugDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
       <button 

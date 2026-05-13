@@ -163,7 +163,7 @@ export function FluidBackground() {
     // JS State
     const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     const points = Array.from({ length: NUM_POINTS }, () => ({ ...target }));
-    let velocity = { x: 0, y: 0 };
+    const velocity = { x: 0, y: 0 };
     let currentRadius = 0;
     let currentSmin = 100;
 
@@ -203,7 +203,7 @@ export function FluidBackground() {
       const c = controlsRef.current;
 
       let tx = target.x;
-      let ty = target.y;
+      const ty = target.y;
 
       if (isTimelineHoveredRef.current) {
         tx = window.innerWidth - 32;

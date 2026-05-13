@@ -9,7 +9,7 @@ async function run() {
   const projectsDir = path.join(process.cwd(), 'docs', 'projects');
   const files = fs.readdirSync(projectsDir).filter(f => f.endsWith('.md'));
   
-  let newChunks = [];
+  const newChunks = [];
 
   for (const file of files) {
     const filePath = path.join(projectsDir, file);
@@ -26,8 +26,8 @@ async function run() {
     for (let i = 0; i < sections.length; i++) {
       const section = sections[i].trim();
       // If it's the first split and it has the # title, it's the intro. Otherwise it's a section.
-      let chunkContent = section;
-      let topic = i === 0 ? "Introduction" : section.split('\n')[0].trim();
+      const chunkContent = section;
+      const topic = i === 0 ? "Introduction" : section.split('\n')[0].trim();
       
       if (topic === 'AI Trigger Keyword') {
         continue;

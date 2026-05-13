@@ -63,7 +63,7 @@ export function EnterLab({ onAnimationComplete }: { onAnimationComplete?: () => 
   }, { scope: containerRef });
 
   return (
-    <div ref={containerRef} style={{ opacity: 0, height: '500px' }} className="pointer-events-none relative flex w-full flex-col items-center justify-center px-6 text-4xl font-extrabold font-sans tracking-tight whitespace-normal text-zinc-900 md:w-[60vw] md:px-0 md:text-6xl dark:text-zinc-100">
+    <div ref={containerRef} style={{ opacity: 0 }} className="min-h-[500px] pointer-events-none relative flex w-full flex-col items-center justify-center px-6 text-4xl font-extrabold font-sans tracking-tight whitespace-normal text-zinc-900 md:w-[60vw] md:px-0 md:text-6xl dark:text-zinc-100">
       
       {/* BLOCK 1 */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-12">
