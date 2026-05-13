@@ -66,9 +66,12 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
   }, [nodes, timeCursor, isIntroActive]);
 
   const visibleEdges = React.useMemo(() => {
+    // Build an O(1) lookup map for node indices to drastically improve scrubbing performance
+    const nodeIndexMap = new Map(nodes.map((n, i) => [n.id, i]));
+    
     return edges.map(edge => {
-      const sourceNodeIndex = nodes.findIndex(n => n.id === edge.source);
-      const targetNodeIndex = nodes.findIndex(n => n.id === edge.target);
+      const sourceNodeIndex = nodeIndexMap.get(edge.source) ?? -1;
+      const targetNodeIndex = nodeIndexMap.get(edge.target) ?? -1;
       const isPastCursor = timeCursor !== null && (sourceNodeIndex > timeCursor || targetNodeIndex > timeCursor);
       const isHidden = isIntroActive || isPastCursor;
       
