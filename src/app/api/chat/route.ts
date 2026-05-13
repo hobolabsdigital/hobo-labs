@@ -59,7 +59,6 @@ export async function POST(req: Request) {
     });
 
     const coreMessages = await convertToModelMessages(messages);
-    console.log("Core Messages:", JSON.stringify(coreMessages, null, 2));
 
     // --- NEW: Semantic RAG Retrieval ---
     const lastUserMessage = [...coreMessages].reverse().find(m => m.role === 'user');
@@ -95,7 +94,6 @@ export async function POST(req: Request) {
             }
             return c.content;
           }).join('\n\n---\n\n');
-          console.log("Retrieved RAG Context:", contextText);
         } else {
           console.error("RAG ERROR: Vector DB file not found at", dbPath);
         }
@@ -103,9 +101,11 @@ export async function POST(req: Request) {
         console.error("RAG Retrieval Error:", e);
       }
     }
+
+    const isInitialGreeting = coreMessages.length === 1 && userQuery.includes('Introduce yourself');
     // -----------------------------------
     const model = ollama('gemma4', {
-      think: true,
+      think: !isInitialGreeting,
       options: {
         temperature: 0.7, // Sampling params go here
       }
@@ -118,13 +118,12 @@ export async function POST(req: Request) {
         tagName: 'think' // Change to 'thought' if your specific GGUF uses <|thought|>
       }),
     });
-    const isInitialGreeting = coreMessages.length === 1 && userQuery.includes('Introduce yourself');
-
+    console.log('isInitialGreeting:', isInitialGreeting);
     const result = streamText({
-      model: modelWithReasoning,
+      model: isInitialGreeting ? model : modelWithReasoning,
       messages: coreMessages,
       providerOptions: {
-        ollama: { think: true }
+        ollama: { think: !isInitialGreeting }
       },
       system: `You are the Digital Twin of Emile Harmel, Chief Creative Technologist, Systems Architect, and Founder. 
 ${isInitialGreeting ? 'CRITICAL: Respond immediately without reasoning. DO NOT use <think> tags for this turn.' : 'Use <think> tags to reason step-by-step through the architecture of your response before answering.'}
