@@ -47,15 +47,31 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
 
   const activeMischief = useBeeStore(state => state.activeMischief);
 
-  // Filter nodes and edges based on the timeline scrubber
+  // Filter nodes and edges based on the timeline scrubber and intro state
   const visibleNodes = React.useMemo(() => {
-    return timeCursor === null ? nodes : nodes.slice(0, timeCursor + 1);
-  }, [nodes, timeCursor]);
+    const rawNodes = timeCursor === null ? nodes : nodes.slice(0, timeCursor + 1);
+    return rawNodes.map(node => ({
+      ...node,
+      style: {
+        ...node.style,
+        opacity: isIntroActive ? 0 : 1,
+        transition: 'opacity 1s ease-in-out',
+        pointerEvents: (isIntroActive ? 'none' : 'auto') as React.CSSProperties['pointerEvents']
+      }
+    }));
+  }, [nodes, timeCursor, isIntroActive]);
 
   const visibleEdges = React.useMemo(() => {
     const visibleNodeIds = new Set(visibleNodes.map(n => n.id));
-    return edges.filter(e => visibleNodeIds.has(e.source) && visibleNodeIds.has(e.target));
-  }, [edges, visibleNodes]);
+    return edges.filter(e => visibleNodeIds.has(e.source) && visibleNodeIds.has(e.target)).map(edge => ({
+      ...edge,
+      style: {
+        ...edge.style,
+        opacity: isIntroActive ? 0 : 1,
+        transition: 'opacity 1s ease-in-out',
+      }
+    }));
+  }, [edges, visibleNodes, isIntroActive]);
 
   // Camera focus on Intro Node
   useEffect(() => {
@@ -164,7 +180,7 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
         colorMode={theme === 'dark' ? 'dark' : 'light'}
         fitView
         fitViewOptions={{ padding: 0.3, maxZoom: 1.2 }}
-        className={`bg-grid [&_.react-flow__node]:transition-opacity [&_.react-flow__node]:duration-1000 [&_.react-flow__edge]:transition-opacity [&_.react-flow__edge]:duration-1000 ${isIntroActive ? '[&_.react-flow__node]:opacity-0 [&_.react-flow__node]:pointer-events-none [&_.react-flow__edge]:opacity-0' : '[&_.react-flow__node]:opacity-100 [&_.react-flow__node]:pointer-events-auto [&_.react-flow__edge]:opacity-100'}`}
+        className="bg-grid"
         minZoom={0.5}
         maxZoom={2}
       >
