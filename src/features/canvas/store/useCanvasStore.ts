@@ -177,7 +177,8 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   addPrompt: (text: string) => {
     const id = `prompt-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
     const nodes = get().nodes;
-    const sourceNode = nodes.find(n => n.id === get().lastPlacedNodeId) || nodes[nodes.length - 1];
+    const validNodes = nodes.filter(n => n.type !== 'intro');
+    const sourceNode = validNodes.find(n => n.id === get().lastPlacedNodeId) || validNodes[validNodes.length - 1];
     const newNode = createPromptNode(id, text, sourceNode);
 
     set(state => {
@@ -212,7 +213,8 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
       if (!activeGhostId) {
         isNewGhost = true;
         activeGhostId = `ghost-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
-        const sourceNode = nodes.find(n => n.id === lastPlacedNodeId) || nodes[nodes.length - 1];
+        const validNodes = nodes.filter(n => n.type !== 'intro');
+        const sourceNode = validNodes.find(n => n.id === lastPlacedNodeId) || validNodes[validNodes.length - 1];
         const newGhost = createGhostNode(activeGhostId, sourceNode);
         newGhost.data.text = text;
         nodes.push(newGhost);
