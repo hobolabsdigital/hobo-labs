@@ -27,7 +27,7 @@ export function useEditorialChat() {
   const truncateHistory = useCanvasStore(state => state.truncateHistory);
   const nodes = useCanvasStore(state => state.nodes);
 
-  const { messages, setMessages, sendMessage, append, status, stop, addToolOutput } = useChat({
+  const { messages, setMessages, sendMessage, status, stop, addToolOutput } = useChat({
     transport: new DefaultChatTransport({
       api: isMockApiEnabled ? '/api/chat?mock=true' : '/api/chat',
     }),
@@ -71,12 +71,11 @@ export function useEditorialChat() {
   useEffect(() => {
     if (!hasInitialized.current && messages.length === 0) {
       hasInitialized.current = true;
-      append({
-        role: 'user',
-        content: 'Introduce yourself. Use the createHeroNode tool to create a bold headline (e.g., "THE CREATIVE ENGINE") and a quick tagline. Then provide a short textual introduction starting with "Hi, I\\'m Emile Harmel, Digital Twin."'
+      sendMessage({
+        text: 'Introduce yourself. Use the createHeroNode tool to create a bold headline (e.g., "THE CREATIVE ENGINE") and a quick tagline. Then provide a short textual introduction starting with "Hi, I\\'m Emile Harmel, Digital Twin."'
       });
     }
-  }, [append, messages.length]);
+  }, [sendMessage, messages.length]);
 
   // Ghost node streaming sync
   useEffect(() => {
