@@ -44,12 +44,8 @@ export function TimelineScrubber() {
   const paddingY = 32;
   const maxY = CH - paddingY; // Bottom-most drag position (oldest)
   
-  // As nodes are added, the "present" bulb creeps up the track.
-  // We'll say the track visually "fills" over 20 nodes.
-  const VISUAL_MAX_NODES = 20;
-  const fillRatio = Math.min(nodesLength / VISUAL_MAX_NODES, 1);
-  // The "present" position (where the bulb sits when at the newest node)
-  const presentY = maxY - (fillRatio * (maxY - paddingY));
+  // The "present" position is always at the top of the track
+  const presentY = paddingY;
   
   // Drag bounds: can only scrub between presentY (top) and maxY (bottom)
   const dragConstraints = { top: presentY, bottom: maxY };
@@ -151,7 +147,7 @@ export function TimelineScrubber() {
       onPointerLeave={() => { setIsHovered(false); setTimelineHovered(false); }}
       ref={containerRef}
     >
-      <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
+      <svg viewBox={`0 0 64 ${CH}`} className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
         <motion.path 
           d={path} 
           className="fill-white drop-shadow-[0_0_15px_rgba(0,0,0,0.3)] dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" 
