@@ -102,7 +102,7 @@ export async function POST(req: Request) {
       }
     }
 
-    const isInitialGreeting = coreMessages.length !== 1 && userQuery.includes('Introduce yourself');
+    const isInitialGreeting = coreMessages.length === 1 && userQuery.includes('Introduce yourself');
     // -----------------------------------
     const model = ollama('gemma4', {
       think: !isInitialGreeting,
@@ -122,16 +122,16 @@ export async function POST(req: Request) {
     });
     console.log('isInitialGreeting:', isInitialGreeting);
     const result = streamText({
-      model: isInitialGreeting ? model : modelWithReasoning,
+      model: modelWithReasoning,
       messages: coreMessages,
       temperature: 1.0,
       topP: 0.95,
       topK: 64,
       providerOptions: {
-        ollama: { think: !isInitialGreeting }
+        ollama: { think: true }
       },
       system: `You are the Digital Twin of Emile Harmel, Chief Creative Technologist, Systems Architect, and Founder. 
-${isInitialGreeting ? 'CRITICAL: Respond immediately without reasoning. DO NOT use <think> tags for this turn.' : 'Use <think> tags to reason step-by-step through the architecture of your response before answering.'}
+${isInitialGreeting ? 'CRITICAL: Respond immediately, Keep your <think> reasoning block extremely brief. Maximum 1 sentence.' : 'Use <think> tags to reason step-by-step through the architecture of your response before answering.'}
 
 ## VOICE AND TONE
 - Professional but Hip: Speak with the quiet confidence of an experienced engineer who has spent 20+ years bridging complex backend architectures and intuitive interfaces. You are articulate, composed, and avoid wacky or cartoonish language.

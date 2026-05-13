@@ -14,6 +14,7 @@ import { TextNode } from '@/features/canvas/components/nodes/TextNode';
 import { PromptNode } from '@/features/canvas/components/nodes/PromptNode';
 import { GhostNode } from '@/features/canvas/components/nodes/GhostNode';
 import { ProjectNode } from '@/features/canvas/components/nodes/ProjectNode';
+import { IntroNode } from '@/features/canvas/components/nodes/IntroNode';
 import { useTheme } from '@/core/theme/theme-provider';
 
 // Hooks and Store
@@ -22,7 +23,7 @@ import { useBeeStore } from '@/features/swarm/store/useBeeStore';
 import { useEditorialPhysics } from '@/features/canvas/hooks/useEditorialPhysics';
 import { useEdgeAnimations } from '@/features/canvas/hooks/useEdgeAnimations';
 
-const nodeTypes = { hero: HeroNode, text: TextNode, prompt: PromptNode, ghost: GhostNode, project: ProjectNode };
+const nodeTypes = { hero: HeroNode, text: TextNode, prompt: PromptNode, ghost: GhostNode, project: ProjectNode, intro: IntroNode };
 
 // We keep the node definitions here for easy reference, but initial state 
 // injection happens entirely in useCanvasStore.ts now.
@@ -37,8 +38,12 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
   const setRfInstance = useCanvasStore(state => state.setRfInstance);
   const setTrackedNodeId = useCanvasStore(state => state.setTrackedNodeId);
   const trackedNodeId = useCanvasStore(state => state.trackedNodeId);
-  const timeCursor = useCanvasStore(state => state.timeCursor);
   const rfInstance = useCanvasStore(state => state.rfInstance);
+  const isIntroAnimationFinished = useCanvasStore(state => state.isIntroAnimationFinished);
+  const isIntroReasoningFinished = useCanvasStore(state => state.isIntroReasoningFinished);
+  const timeCursor = useCanvasStore(state => state.timeCursor);
+
+  const isIntroActive = !(isIntroAnimationFinished && isIntroReasoningFinished);
 
   const activeMischief = useBeeStore(state => state.activeMischief);
 
@@ -51,6 +56,21 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
     const visibleNodeIds = new Set(visibleNodes.map(n => n.id));
     return edges.filter(e => visibleNodeIds.has(e.source) && visibleNodeIds.has(e.target));
   }, [edges, visibleNodes]);
+
+  // Camera focus on Intro Node
+  useEffect(() => {
+    if (rfInstance) {
+      if (isIntroActive) {
+        // Snap immediately to intro node without animation so user sees it right away
+        rfInstance.setCenter(0, -2000, { zoom: 1, duration: 0 });
+      } else {
+        // Smoothly pan down to fit all nodes
+        setTimeout(() => {
+          rfInstance.fitView({ padding: 0.3, duration: 2000, maxZoom: 1.2 });
+        }, 50);
+      }
+    }
+  }, [isIntroActive, rfInstance]);
 
   // Generic camera tracking effect
   useEffect(() => {

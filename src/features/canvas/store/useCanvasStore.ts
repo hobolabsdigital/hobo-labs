@@ -25,6 +25,10 @@ export interface CanvasState {
   setDebugDrawerOpen: (open: boolean) => void;
   isTimelineHovered: boolean;
   setTimelineHovered: (hovered: boolean) => void;
+  isIntroAnimationFinished: boolean;
+  isIntroReasoningFinished: boolean;
+  setIntroAnimationFinished: (finished: boolean) => void;
+  setIntroReasoningFinished: (finished: boolean) => void;
   // Physics config
   physicsConfig: {
     velocityDecay: number;
@@ -73,7 +77,16 @@ export interface CanvasState {
 import { createPromptNode, createGhostNode, createHeroNode, createTextNode, createProjectNode, createEdge } from './nodeFactories';
 
 export const useCanvasStore = create<CanvasState>((set, get) => ({
-  nodes: [],
+  nodes: [
+    {
+      id: 'intro-1',
+      type: 'intro',
+      position: { x: 0, y: -2000 },
+      data: {},
+      draggable: false,
+      selectable: false
+    }
+  ],
   edges: [],
   rfInstance: null,
   trackedNodeId: null,
@@ -81,6 +94,10 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   isTimelineHovered: false,
   isMockApiEnabled: false,
   isDebugDrawerOpen: false,
+  isIntroAnimationFinished: false,
+  isIntroReasoningFinished: false,
+  setIntroAnimationFinished: (finished: boolean) => set({ isIntroAnimationFinished: finished }),
+  setIntroReasoningFinished: (finished: boolean) => set({ isIntroReasoningFinished: finished }),
 
   physicsConfig: {
     velocityDecay: 0.4,

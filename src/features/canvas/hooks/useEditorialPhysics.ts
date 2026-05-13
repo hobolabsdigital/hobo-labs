@@ -74,13 +74,14 @@ export function useEditorialPhysics() {
       } else {
         // It's a new node! Add it to the physics engine
         const isInitial = n.type === 'hero' && n.id === 'hero-1';
+        const isIntro = n.type === 'intro';
         return {
           ...n,
           x: n.position.x,
           y: n.position.y,
           // Lock the initial hero node so it never moves
-          fx: isInitial ? n.position.x : undefined,
-          fy: isInitial ? n.position.y : undefined
+          fx: isInitial || isIntro ? n.position.x : undefined,
+          fy: isInitial || isIntro ? n.position.y : undefined
         };
       }
     });

@@ -108,6 +108,10 @@ export function useEditorialChat() {
       if (combinedReasoning.length > 0 || isReasoningFinished) {
         upsertActiveGhost(combinedReasoning || "Organizing thoughts...", isReasoningFinished);
       }
+      
+      if (isReasoningFinished) {
+        useCanvasStore.getState().setIntroReasoningFinished(true);
+      }
     }
 
   }, [messages, status, upsertActiveGhost]);
