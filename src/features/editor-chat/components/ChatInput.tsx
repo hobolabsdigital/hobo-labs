@@ -21,6 +21,8 @@ export function ChatInput() {
   const [isFetchingSuggestions, setIsFetchingSuggestions] = useState(false);
   
   useEffect(() => {
+    // Disabled suggestions fetching per user request
+    /*
     let mounted = true;
     
     const fetchSuggestions = async (count: number) => {
@@ -49,6 +51,7 @@ export function ChatInput() {
     }
     
     return () => { mounted = false; };
+    */
   }, [suggestions.length, isFetchingSuggestions, isLoading]);
 
   useEffect(() => {
