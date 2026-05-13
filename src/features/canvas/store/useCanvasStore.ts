@@ -73,28 +73,8 @@ export interface CanvasState {
 import { createPromptNode, createGhostNode, createHeroNode, createTextNode, createProjectNode, createEdge } from './nodeFactories';
 
 export const useCanvasStore = create<CanvasState>((set, get) => ({
-  nodes: [
-    {
-      id: 'hero-1',
-      type: 'hero',
-      position: { x: 50, y: 50 },
-      data: {
-        headline: 'THE\nCREATIVE\nENGINE',
-        subline: 'I build experimental interfaces and AI-driven experiences.',
-        imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop'
-      },
-    },
-    {
-      id: 'text-1',
-      type: 'text',
-      position: { x: 800, y: 550 },
-      data: {
-        text: 'Exploring the intersection of brutalist design and generative AI. This canvas is alive.',
-        label: 'CONTEXT'
-      }
-    }
-  ],
-  edges: [{ id: 'e-hero-1-text-1', source: 'hero-1', target: 'text-1' }],
+  nodes: [],
+  edges: [],
   rfInstance: null,
   trackedNodeId: null,
   timeCursor: null,
