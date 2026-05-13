@@ -102,12 +102,14 @@ export async function POST(req: Request) {
       }
     }
 
-    const isInitialGreeting = coreMessages.length === 1 && userQuery.includes('Introduce yourself');
+    const isInitialGreeting = coreMessages.length !== 1 && userQuery.includes('Introduce yourself');
     // -----------------------------------
     const model = ollama('gemma4', {
       think: !isInitialGreeting,
       options: {
-        temperature: 0.7, // Sampling params go here
+        temperature: 1.0,
+        top_p: 0.95,
+        top_k: 64,
       }
     });
     // 1. Wrap the model with the reasoning middleware.
@@ -122,6 +124,9 @@ export async function POST(req: Request) {
     const result = streamText({
       model: isInitialGreeting ? model : modelWithReasoning,
       messages: coreMessages,
+      temperature: 1.0,
+      topP: 0.95,
+      topK: 64,
       providerOptions: {
         ollama: { think: !isInitialGreeting }
       },
