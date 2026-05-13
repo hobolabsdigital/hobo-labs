@@ -77,16 +77,7 @@ export interface CanvasState {
 import { createPromptNode, createGhostNode, createHeroNode, createTextNode, createProjectNode, createEdge } from './nodeFactories';
 
 export const useCanvasStore = create<CanvasState>((set, get) => ({
-  nodes: [
-    {
-      id: 'intro-1',
-      type: 'intro',
-      position: { x: 0, y: -2000 },
-      data: {},
-      draggable: false,
-      selectable: false
-    }
-  ],
+  nodes: [],
   edges: [],
   rfInstance: null,
   trackedNodeId: null,

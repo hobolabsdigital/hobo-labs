@@ -22,9 +22,12 @@ export function DebugPanel() {
   const swarmTarget = useBeeStore(state => state.swarmTarget);
   const setSwarmTarget = useBeeStore(state => state.setSwarmTarget);
   const brainMode = useBeeStore(state => state.brainMode);
+  const isIntroAnimationFinished = useCanvasStore(state => state.isIntroAnimationFinished);
 
   return (
-    <div className={`fixed top-4 right-0 z-50 transition-transform duration-300 ease-out ${isDebugDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+    <div className={`fixed top-4 right-0 z-50 transition-all duration-1000 ease-out ${
+      !isIntroAnimationFinished ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
+    } ${isDebugDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
       <button 
         onClick={() => setDebugDrawerOpen(!isDebugDrawerOpen)}
         className={`bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-mono absolute right-[100%] top-0 hover:bg-opacity-80 transition-all duration-300 whitespace-nowrap mr-4`}

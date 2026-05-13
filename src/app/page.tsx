@@ -19,19 +19,17 @@ const EditorialCanvas = dynamic(() => import("@/features/canvas/components/Edito
   loading: () => <Preloader />,
 });
 
+import { IntroNode } from '@/features/canvas/components/nodes/IntroNode';
+
 export default function Home() {
   return (
-    <main className="w-full h-screen overflow-hidden">
+    <main className="w-full h-screen overflow-hidden bg-white dark:bg-black relative">
+      <IntroNode />
       <ReactFlowProvider>
         <EditorialCanvas>
           <InteractiveGrid gap={24} size={2} color="var(--grid-color)" repelRadius={150} repelStrength={15} />
         </EditorialCanvas>
         
-        {/* Swarm disabled temporarily to save GPU 
-        <Swarm count={3} type="worker" />
-        <Swarm count={3} type="soldier" />
-        <SwarmTerminal />
-        */}
         <DebugPanel />
         <TimelineScrubber />
         <FluidBackground />

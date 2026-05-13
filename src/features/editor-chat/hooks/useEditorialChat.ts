@@ -72,9 +72,7 @@ export function useEditorialChat() {
     if (!hasInitialized.current && messages.length === 0) {
       hasInitialized.current = true;
       sendMessage({
-        text: `Introduce yourself.
-1. Use the createHeroNode tool to create a bold headline (e.g., "THE CREATIVE ENGINE") and a quick tagline.
-2. CRITICAL: After the tool call, you MUST output a short text message starting with "Hi, I'm Emile Harmel, Digital Twin."`
+        text: "Introduce yourself."
       });
     }
   }, [sendMessage, messages.length]);
@@ -108,7 +106,7 @@ export function useEditorialChat() {
       if (combinedReasoning.length > 0 || isReasoningFinished) {
         upsertActiveGhost(combinedReasoning || "Organizing thoughts...", isReasoningFinished);
       }
-      
+
       if (isReasoningFinished) {
         useCanvasStore.getState().setIntroReasoningFinished(true);
       }

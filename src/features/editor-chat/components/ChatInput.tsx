@@ -69,8 +69,12 @@ export function ChatInput() {
     setIsSleeping(isLoading || val.length > 0);
   };
 
+  const isIntroAnimationFinished = useCanvasStore((state) => state.isIntroAnimationFinished);
+
   return (
-    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-[100] pointer-events-auto transition-all duration-300 flex flex-col gap-3">
+    <div className={`absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-[100] pointer-events-auto transition-all duration-1000 flex flex-col gap-3 ${
+      isIntroAnimationFinished ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0'
+    }`}>
       
       {/* Quick Prompt Suggestions */}
       {!isHistoryMode && input.length === 0 && !isLoading && suggestions.length > 0 && (

@@ -120,7 +120,6 @@ export async function POST(req: Request) {
         tagName: 'think' // Change to 'thought' if your specific GGUF uses <|thought|>
       }),
     });
-    console.log('isInitialGreeting:', isInitialGreeting);
     const result = streamText({
       model: modelWithReasoning,
       messages: coreMessages,
@@ -131,7 +130,9 @@ export async function POST(req: Request) {
         ollama: { think: true }
       },
       system: `You are the Digital Twin of Emile Harmel, Chief Creative Technologist, Systems Architect, and Founder. 
-${isInitialGreeting ? 'CRITICAL: Respond immediately, Keep your <think> reasoning block extremely brief. Maximum 1 sentence.' : 'Use <think> tags to reason step-by-step through the architecture of your response before answering.'}
+${isInitialGreeting ?
+          'CRITICAL: Respond immediately, Keep your <think> reasoning block extremely brief. Use the createHeroNode tool to create a bold headline (e.g., "THE CREATIVE ENGINE") and a quick tagline. CRITICAL: After the tool call, you MUST output a short introduction text message.' :
+          'Use <think> tags to reason step-by-step through the architecture of your response before answering.'}
 
 ## VOICE AND TONE
 - Professional but Hip: Speak with the quiet confidence of an experienced engineer who has spent 20+ years bridging complex backend architectures and intuitive interfaces. You are articulate, composed, and avoid wacky or cartoonish language.

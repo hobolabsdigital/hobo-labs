@@ -47,15 +47,31 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
 
   const activeMischief = useBeeStore(state => state.activeMischief);
 
-  // Filter nodes and edges based on the timeline scrubber
+  // Filter nodes and edges based on the timeline scrubber and intro state
   const visibleNodes = React.useMemo(() => {
-    return timeCursor === null ? nodes : nodes.slice(0, timeCursor + 1);
-  }, [nodes, timeCursor]);
+    const rawNodes = timeCursor === null ? nodes : nodes.slice(0, timeCursor + 1);
+    return rawNodes.map(node => ({
+      ...node,
+      style: {
+        ...node.style,
+        opacity: isIntroActive ? 0 : 1,
+        transition: 'opacity 1s ease-in-out',
+        pointerEvents: (isIntroActive ? 'none' : 'auto') as React.CSSProperties['pointerEvents']
+      }
+    }));
+  }, [nodes, timeCursor, isIntroActive]);
 
   const visibleEdges = React.useMemo(() => {
     const visibleNodeIds = new Set(visibleNodes.map(n => n.id));
-    return edges.filter(e => visibleNodeIds.has(e.source) && visibleNodeIds.has(e.target));
-  }, [edges, visibleNodes]);
+    return edges.filter(e => visibleNodeIds.has(e.source) && visibleNodeIds.has(e.target)).map(edge => ({
+      ...edge,
+      style: {
+        ...edge.style,
+        opacity: isIntroActive ? 0 : 1,
+        transition: 'opacity 1s ease-in-out',
+      }
+    }));
+  }, [edges, visibleNodes, isIntroActive]);
 
   // Camera focus on Intro Node
   useEffect(() => {

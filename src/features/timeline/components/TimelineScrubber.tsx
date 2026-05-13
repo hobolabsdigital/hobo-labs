@@ -135,12 +135,16 @@ export function TimelineScrubber() {
     }
   }, [timeCursor, maxIndex, y, containerHeight, presentY, maxY]);
 
+  const isIntroAnimationFinished = useCanvasStore((state) => state.isIntroAnimationFinished);
+
   // If there are less than 2 nodes, history scrubbing doesn't make much sense.
   if (nodesLength <= 1) return null;
 
   return (
     <div 
-      className={`fixed top-[10vh] h-[80vh] w-16 z-[60] pointer-events-auto mix-blend-difference transition-all duration-300 ease-out ${
+      className={`fixed top-[10vh] h-[80vh] w-16 z-[60] mix-blend-difference transition-all duration-1000 ease-out ${
+        !isIntroAnimationFinished ? 'translate-x-[150%] opacity-0 pointer-events-none' : 'translate-x-0 opacity-100 pointer-events-auto'
+      } ${
         isDebugDrawerOpen ? 'right-[340px]' : 'right-8'
       }`}
       onPointerEnter={() => { setIsHovered(true); setTimelineHovered(true); }}
