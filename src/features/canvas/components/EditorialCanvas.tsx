@@ -49,29 +49,39 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
 
   // Filter nodes and edges based on the timeline scrubber and intro state
   const visibleNodes = React.useMemo(() => {
-    const rawNodes = timeCursor === null ? nodes : nodes.slice(0, timeCursor + 1);
-    return rawNodes.map(node => ({
-      ...node,
-      style: {
-        ...node.style,
-        opacity: isIntroActive ? 0 : 1,
-        transition: 'opacity 1s ease-in-out',
-        pointerEvents: (isIntroActive ? 'none' : 'auto') as React.CSSProperties['pointerEvents']
-      }
-    }));
+    return nodes.map((node, index) => {
+      const isPastCursor = timeCursor !== null && index > timeCursor;
+      const isHidden = isIntroActive || isPastCursor;
+      
+      return {
+        ...node,
+        style: {
+          ...node.style,
+          opacity: isHidden ? 0 : 1,
+          transition: 'opacity 0.5s ease-in-out',
+          pointerEvents: (isHidden ? 'none' : 'auto') as React.CSSProperties['pointerEvents']
+        }
+      };
+    });
   }, [nodes, timeCursor, isIntroActive]);
 
   const visibleEdges = React.useMemo(() => {
-    const visibleNodeIds = new Set(visibleNodes.map(n => n.id));
-    return edges.filter(e => visibleNodeIds.has(e.source) && visibleNodeIds.has(e.target)).map(edge => ({
-      ...edge,
-      style: {
-        ...edge.style,
-        opacity: isIntroActive ? 0 : 1,
-        transition: 'opacity 1s ease-in-out',
-      }
-    }));
-  }, [edges, visibleNodes, isIntroActive]);
+    return edges.map(edge => {
+      const sourceNodeIndex = nodes.findIndex(n => n.id === edge.source);
+      const targetNodeIndex = nodes.findIndex(n => n.id === edge.target);
+      const isPastCursor = timeCursor !== null && (sourceNodeIndex > timeCursor || targetNodeIndex > timeCursor);
+      const isHidden = isIntroActive || isPastCursor;
+      
+      return {
+        ...edge,
+        style: {
+          ...edge.style,
+          opacity: isHidden ? 0 : 1,
+          transition: 'opacity 0.5s ease-in-out',
+        }
+      };
+    });
+  }, [edges, nodes, timeCursor, isIntroActive]);
 
   // Camera focus on Intro Node
   useEffect(() => {

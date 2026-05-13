@@ -24,16 +24,17 @@ export function TimelineScrubber() {
 
   const [containerHeight, setContainerHeight] = useState(0);
 
-  // Measure container height on mount and resize
+  // Measure container height robustly using window.innerHeight to match h-[80vh]
   useEffect(() => {
     const measure = () => {
-      if (containerRef.current) {
-        setContainerHeight(containerRef.current.getBoundingClientRect().height);
-      }
+      setContainerHeight(window.innerHeight * 0.8);
     };
+    
+    // Initial measure
     measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
+    
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
   }, []);
 
   const y = useMotionValue(0);
@@ -48,7 +49,10 @@ export function TimelineScrubber() {
   const presentY = paddingY;
   
   // Drag bounds: can only scrub between presentY (top) and maxY (bottom)
-  const dragConstraints = { top: presentY, bottom: maxY };
+  const dragConstraints = React.useMemo(() => ({ 
+    top: presentY, 
+    bottom: maxY 
+  }), [presentY, maxY]);
 
   // Physics values for interactions
   const targetR = isDragging ? 6 : (isHoveredThumb ? 14 : 10);
@@ -94,7 +98,7 @@ export function TimelineScrubber() {
   };
 
   const handleDrag = () => {
-    if (!containerRef.current || containerHeight === 0) return;
+    if (!containerRef.current) return;
     
     const currentY = y.get();
     
