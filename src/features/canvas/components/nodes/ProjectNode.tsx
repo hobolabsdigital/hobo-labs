@@ -72,7 +72,7 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id }: { data:
         {/* Main Image Container */}
         <div className="w-full aspect-video border border-foreground/10 bg-foreground/5 flex items-center justify-center overflow-hidden relative">
           {image ? (
-            <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
+            <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover transition-all duration-700" />
           ) : (
             <span className="font-mono text-xs text-foreground/40 uppercase tracking-widest">
               HERO UI ASSET
@@ -123,7 +123,7 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id }: { data:
           <div className="grid grid-cols-2 gap-6 mt-4">
             {resolvedGallery.slice(0, 2).map((img: string, i: number) => (
               <div key={i} className="relative aspect-[4/3] border border-foreground/10 bg-foreground/5 flex items-center justify-center overflow-hidden">
-                <img src={img} alt={`Gallery ${i}`} className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
+                <img src={img} alt={`Gallery ${i}`} className="absolute inset-0 w-full h-full object-cover transition-all duration-700" />
                 {!img && (
                   <span className="font-mono text-[10px] text-foreground/30 uppercase tracking-widest">
                     {i === 0 ? 'PLAYER CARDS' : 'TIMELINE VIEW'}
