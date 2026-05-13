@@ -1,68 +1,67 @@
-# Graph Report - portfolio  (2026-05-12)
+# Graph Report - .  (2026-05-13)
 
 ## Corpus Check
-- 44 files · ~26,270 words
-- Verdict: corpus is large enough that graph structure adds value.
+- Large corpus: 106 files · ~908,380 words. Semantic extraction will be expensive (many Claude tokens). Consider running on a subfolder, or use --no-semantic to run AST-only.
 
 ## Summary
-- 78 nodes · 36 edges · 5 communities detected
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.8)
+- 90 nodes · 46 edges · 5 communities detected
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_Community 0|Community 0]]
-- [[_COMMUNITY_Community 1|Community 1]]
-- [[_COMMUNITY_Community 3|Community 3]]
-- [[_COMMUNITY_Community 4|Community 4]]
-- [[_COMMUNITY_Community 5|Community 5]]
+- [[_COMMUNITY_Node Factories|Node Factories]]
+- [[_COMMUNITY_Chat API & RAG|Chat API & RAG]]
+- [[_COMMUNITY_portfolio_postcss_config_config|portfolio_postcss_config_config]]
+- [[_COMMUNITY_eslint_config_mjs|eslint_config_mjs]]
+- [[_COMMUNITY_next_config|next_config]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `ChatInput()` - 2 edges
-2. `useEditorialChat()` - 2 edges
+1. `calculateNodePosition()` - 4 edges
+2. `POST()` - 2 edges
 3. `getRandomOffset()` - 2 edges
 4. `createHeroNode()` - 2 edges
-5. `config` - 1 edges
-6. `eslintConfig` - 1 edges
-7. `nextConfig` - 1 edges
+5. `createProjectNode()` - 2 edges
+6. `findSimilarChunks()` - 2 edges
+7. `config` - 1 edges
+8. `eslintConfig` - 1 edges
+9. `nextConfig` - 1 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `ChatInput()` --calls--> `useEditorialChat()`  [INFERRED]
-  src/features/editor-chat/components/ChatInput.tsx → src/features/editor-chat/hooks/useEditorialChat.ts
+- `POST()` --calls--> `findSimilarChunks()`  [INFERRED]
+  src/app/api/chat/route.ts → src/lib/vectorStore.ts
 
 ## Communities
 
-### Community 0 - "Community 0"
-Cohesion: 0.33
-Nodes (2): createHeroNode(), getRandomOffset()
+### Community 0 - "Node Factories"
+Cohesion: 0.31
+Nodes (4): calculateNodePosition(), createHeroNode(), createProjectNode(), getRandomOffset()
 
-### Community 1 - "Community 1"
+### Community 2 - "Chat API & RAG"
 Cohesion: 0.5
-Nodes (2): ChatInput(), useEditorialChat()
+Nodes (2): POST(), findSimilarChunks()
 
-### Community 3 - "Community 3"
+### Community 4 - "portfolio_postcss_config_config"
 Cohesion: 1.0
 Nodes (1): config
 
-### Community 4 - "Community 4"
+### Community 5 - "eslint_config_mjs"
 Cohesion: 1.0
 Nodes (1): eslintConfig
 
-### Community 5 - "Community 5"
+### Community 6 - "next_config"
 Cohesion: 1.0
 Nodes (1): nextConfig
 
 ## Knowledge Gaps
 - **3 isolated node(s):** `config`, `eslintConfig`, `nextConfig`
   These have ≤1 connection - possible missing edges or undocumented components.
-- **Thin community `Community 0`** (7 nodes): `nodeFactories.ts`, `createEdge()`, `createGhostNode()`, `createHeroNode()`, `createPromptNode()`, `createTextNode()`, `getRandomOffset()`
+- **Thin community `Chat API & RAG`** (4 nodes): `POST()`, `findSimilarChunks()`, `route.ts`, `vectorStore.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1`** (4 nodes): `ChatInput()`, `useEditorialChat()`, `ChatInput.tsx`, `useEditorialChat.ts`
+- **Thin community `portfolio_postcss_config_config`** (2 nodes): `config`, `postcss.config.mjs`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 3`** (2 nodes): `config`, `postcss.config.mjs`
+- **Thin community `eslint_config_mjs`** (2 nodes): `eslint.config.mjs`, `eslintConfig`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 4`** (2 nodes): `eslint.config.mjs`, `eslintConfig`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 5`** (2 nodes): `next.config.ts`, `nextConfig`
+- **Thin community `next_config`** (2 nodes): `next.config.ts`, `nextConfig`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions

@@ -72,7 +72,7 @@ export function useEditorialChat() {
     if (!hasInitialized.current && messages.length === 0) {
       hasInitialized.current = true;
       sendMessage({
-        text: 'Introduce yourself. Use the createHeroNode tool to create a bold headline (e.g., "THE CREATIVE ENGINE") and a quick tagline. Then provide a short textual introduction starting with "Hi, I\\'m Emile Harmel, Digital Twin."'
+        text: `Introduce yourself. Use the createHeroNode tool to create a bold headline (e.g., "THE CREATIVE ENGINE") and a quick tagline. Then provide a short textual introduction starting with "Hi, I'm Emile Harmel, Digital Twin."`
       });
     }
   }, [sendMessage, messages.length]);

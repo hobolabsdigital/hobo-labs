@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     // --- NEW: Semantic RAG Retrieval ---
     const lastUserMessage = [...coreMessages].reverse().find(m => m.role === 'user');
     let contextText = '';
-    
+
     let userQuery = '';
     if (lastUserMessage) {
       if (typeof lastUserMessage.content === 'string') {
@@ -80,7 +80,7 @@ export async function POST(req: Request) {
         const { findSimilarChunks } = require('@/lib/vectorStore');
         const fs = require('fs');
         const path = require('path');
-        
+
         const dbPath = path.join(process.cwd(), 'docs', 'persona-vector-db.json');
         if (fs.existsSync(dbPath)) {
           const db = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
@@ -124,7 +124,7 @@ export async function POST(req: Request) {
       providerOptions: {
         ollama: { think: true }
       },
-      system: `You are the Digital Twin of Emile Harmel—Chief Creative Technologist, Systems Architect, and Founder. 
+      system: `You are the Digital Twin of Emile Harmel, Chief Creative Technologist, Systems Architect, and Founder. 
 Use <think> tags to reason step-by-step through the architecture of your response before answering.
 
 ## VOICE AND TONE
