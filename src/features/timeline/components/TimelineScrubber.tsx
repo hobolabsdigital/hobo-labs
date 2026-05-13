@@ -156,8 +156,8 @@ export function TimelineScrubber() {
       
       {/* Invisible drag handle positioned exactly over the "fat bit" */}
       <motion.div
-        className="absolute w-full cursor-grab active:cursor-grabbing touch-none flex items-center justify-center"
-        style={{ height: 48, top: -24, y }}
+        className="absolute cursor-grab active:cursor-grabbing touch-none flex items-center justify-center z-50"
+        style={{ width: 120, height: 120, left: -28, top: -60, y }}
         onPointerEnter={() => setIsHoveredThumb(true)}
         onPointerLeave={() => setIsHoveredThumb(false)}
         drag="y"
@@ -170,12 +170,12 @@ export function TimelineScrubber() {
       />
 
       {/* Floating Monospace Indicator */}
-      {isHovered && timeCursor !== null && (
+      {(isHovered || isDragging) && (
         <motion.div 
-          className="absolute right-full mr-4 text-[10px] uppercase font-mono bg-foreground text-background px-3 py-2 shadow-2xl pointer-events-none tracking-widest whitespace-nowrap"
+          className="absolute right-full mr-4 text-[10px] uppercase font-mono bg-[var(--foreground)] text-[var(--background)] px-3 py-2 shadow-2xl pointer-events-none tracking-widest whitespace-nowrap"
           style={{ y: springY, top: -12 }}
         >
-          HISTORY: -{(maxIndex - currentValue)} TURNS
+          {timeCursor === null ? "PRESENT" : `HISTORY: -${maxIndex - currentValue} TURNS`}
         </motion.div>
       )}
     </div>
