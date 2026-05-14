@@ -323,7 +323,9 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
 
       targetId = `text-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
       const sourceNode = state.nodes.find(n => n.id === state.lastPlacedNodeId);
+      const ci = state.nodeCreationCounter;
       const newNode = createTextNode(targetId, text, sourceNode);
+      newNode.data = { ...newNode.data, creationIndex: ci };
 
       newEdges = sourceNode ? [...state.edges, createEdge(sourceNode.id, targetId)] : state.edges;
       newlyCreated = true;
@@ -334,7 +336,8 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
         lastPlacedNodeId: isFinished ? targetId : state.lastPlacedNodeId,
         activeStreamingTextId: isFinished ? null : targetId,
         activeStreamingText: isFinished ? null : text,
-        trackedNodeId: targetId 
+        trackedNodeId: targetId,
+        nodeCreationCounter: ci + 1,
       };
     });
   },

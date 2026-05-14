@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ReactFlow,
   Controls,
@@ -46,13 +46,36 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
 
   const isIntroActive = !(isIntroAnimationFinished && isIntroReasoningFinished);
 
-
+  // Debug bounding box mode — toggle with 'D' key
+  const [showDebugBounds, setShowDebugBounds] = useState(false);
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'd' || e.key === 'D') {
+        // Don't trigger in input fields
+        if ((e.target as HTMLElement)?.tagName === 'INPUT' || (e.target as HTMLElement)?.tagName === 'TEXTAREA') return;
+        setShowDebugBounds(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
 
   // Filter nodes and edges based on the timeline scrubber and intro state
   const visibleNodes = React.useMemo(() => {
     return nodes.map((node, index) => {
       const isPastCursor = timeCursor !== null && index > timeCursor;
       const isHidden = isIntroActive || isPastCursor;
+
+      // Debug bounding box colors per node type
+      const debugColors: Record<string, string> = {
+        hero: 'rgba(255, 0, 0, 0.6)',
+        text: 'rgba(0, 128, 255, 0.6)',
+        ghost: 'rgba(0, 255, 128, 0.6)',
+        project: 'rgba(255, 165, 0, 0.6)',
+        dossier: 'rgba(200, 0, 255, 0.6)',
+        prompt: 'rgba(255, 255, 0, 0.6)',
+      };
+      const debugOutline = showDebugBounds && node.type ? `2px dashed ${debugColors[node.type] || 'rgba(128,128,128,0.5)'}` : undefined;
       
       return {
         ...node,
@@ -60,11 +83,13 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
           ...node.style,
           opacity: isHidden ? 0 : 1,
           transition: 'opacity 0.5s ease-in-out',
-          pointerEvents: (isHidden ? 'none' : 'auto') as React.CSSProperties['pointerEvents']
+          pointerEvents: (isHidden ? 'none' : 'auto') as React.CSSProperties['pointerEvents'],
+          outline: debugOutline,
+          outlineOffset: '4px',
         }
       };
     });
-  }, [nodes, timeCursor, isIntroActive]);
+  }, [nodes, timeCursor, isIntroActive, showDebugBounds]);
 
   const visibleEdges = React.useMemo(() => {
     // Build an O(1) lookup map for node indices to drastically improve scrubbing performance

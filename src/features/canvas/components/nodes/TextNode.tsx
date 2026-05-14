@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Handle, Position } from "@xyflow/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnnotationText } from '@/core/ui/components/annotation-text';
@@ -54,19 +54,22 @@ const StreamingTextContent = React.memo(function StreamingTextContent({ id, fall
 });
 
 export const TextNode = React.memo(function TextNode({ data, id }: { data: any, id: string }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
     <AnimatePresence mode="wait">
       <motion.div 
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ y: '100vh', opacity: 0, rotate: -15, transition: { duration: 0.6, ease: 'easeIn' } }}
-        className="max-w-md p-6 bg-[var(--background)] relative border-l-2 border-foreground origin-bottom-right"
-        style={{
+        className="max-w-md p-6 bg-[var(--background)] relative border-l-2 border-foreground origin-bottom-right cursor-pointer group"
+        style={isExpanded ? {} : {
           maxHeight: '280px',
           overflow: 'hidden',
           WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
           maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
         }}
+        onClick={() => setIsExpanded(!isExpanded)}
       >
         {['top', 'right', 'bottom', 'left'].map(pos => {
           const positionEnum = pos === 'top' ? Position.Top : pos === 'right' ? Position.Right : pos === 'bottom' ? Position.Bottom : Position.Left;
@@ -90,6 +93,18 @@ export const TextNode = React.memo(function TextNode({ data, id }: { data: any, 
           
           <StreamingTextContent id={id} fallbackText={data.text} animationEffect={data.animationEffect} />
         </div>
+
+        {/* Expand/collapse hint */}
+        {!isExpanded && (
+          <div className="absolute bottom-2 right-4 font-mono text-[10px] text-foreground/30 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+            [ EXPAND ]
+          </div>
+        )}
+        {isExpanded && (
+          <div className="font-mono text-[10px] text-foreground/30 uppercase tracking-widest mt-4 text-right">
+            [ COLLAPSE ]
+          </div>
+        )}
       </motion.div>
     </AnimatePresence>
   );
