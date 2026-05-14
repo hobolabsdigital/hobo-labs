@@ -25,10 +25,11 @@ export const HeroNode = React.memo(function HeroNode({ data, id }: { data: any, 
         animate={{ opacity: 1, scale: 1 }}
         exit={{ y: '100vh', opacity: 0, rotate: 15, transition: { duration: 0.6, ease: 'easeIn' } }}
         className="relative flex flex-col items-start bg-transparent origin-bottom-left"
+        style={{ maxWidth: '900px' }}
       >
         <motion.div className="mb-4" variants={typewriterContainer} initial="hidden" animate="visible">
           {headlineLines.map((line: string, i: number) => (
-            <h1 key={i} className="text-7xl md:text-9xl font-sans font-medium text-foreground leading-[0.85] tracking-tighter uppercase whitespace-nowrap">
+            <h1 key={i} className="text-7xl md:text-9xl font-sans font-medium text-foreground leading-[0.85] tracking-tighter uppercase" style={{ overflowWrap: 'break-word' }}>
               {line.split('').map((char, charIdx) => (
                 <motion.span key={charIdx} variants={typewriterChar}>{char}</motion.span>
               ))}
