@@ -102,6 +102,40 @@ export const createProjectNode = (id: string, data: any, sourceNode?: Node): Nod
   };
 };
 
+export const createDossierNode = (id: string, slug: string, sourceNode?: Node): Node => {
+  let x = 600 + Math.random() * 100;
+  let y = 400 + Math.random() * 100;
+
+  if (sourceNode) {
+    x = sourceNode.position.x + 150 + Math.random() * 50;
+    y = sourceNode.position.y + 80 + (Math.random() * 40 - 20);
+  }
+
+  return {
+    id,
+    type: 'dossier',
+    position: { x, y },
+    data: { slug, status: 'accessing' },
+  };
+};
+
+export const createSkeletonProjectNode = (id: string, slug: string, sourceNode?: Node): Node => {
+  let x = 800 + Math.random() * 100;
+  let y = 400 + Math.random() * 100;
+
+  if (sourceNode) {
+    x = sourceNode.position.x + 300 + Math.random() * 50;
+    y = sourceNode.position.y + (Math.random() * 60 - 30);
+  }
+
+  return {
+    id,
+    type: 'project',
+    position: { x, y },
+    data: { isLoading: true, slug },
+  };
+};
+
 export const createEdge = (source: string, target: string): Edge => {
-  return { id: `e-${source}-${target}`, source, target };
+  return { id: `e-${source}-${target}`, source, target, sourceHandle: 'right', targetHandle: 'left' };
 };
