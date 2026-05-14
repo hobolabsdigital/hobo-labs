@@ -119,9 +119,12 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
         // Snap immediately to intro node without animation so user sees it right away
         rfInstance.setCenter(0, -2000, { zoom: 1, duration: 0 });
       } else {
-        // Pan to the hero node area instead of fitting all nodes
+        // Pan to the actual hero node position
         setTimeout(() => {
-          rfInstance.setCenter(400, 400, { zoom: 0.9, duration: 2000 });
+          const heroNode = useCanvasStore.getState().nodes.find(n => n.id === 'hero-1');
+          const x = heroNode ? heroNode.position.x + 200 : 400;
+          const y = heroNode ? heroNode.position.y + 150 : 400;
+          rfInstance.setCenter(x, y, { zoom: 0.9, duration: 2000 });
         }, 50);
       }
     }
