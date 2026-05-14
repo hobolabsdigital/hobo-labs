@@ -38,7 +38,7 @@ export function useEditorialPhysics() {
         // Push each subsequent node further right
         const index = d.data?.creationIndex ?? 0;
         return index * 350;
-      }).strength(0.05));
+      }).strength(0.15));
 
     simulationRef.current = simulation;
     setSimulationRef(simulation);
