@@ -61,6 +61,12 @@ export const TextNode = React.memo(function TextNode({ data, id }: { data: any, 
         animate={{ opacity: 1, scale: 1 }}
         exit={{ y: '100vh', opacity: 0, rotate: -15, transition: { duration: 0.6, ease: 'easeIn' } }}
         className="max-w-md p-6 bg-[var(--background)] relative border-l-2 border-foreground origin-bottom-right"
+        style={{
+          maxHeight: '280px',
+          overflow: 'hidden',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+        }}
       >
         {['top', 'right', 'bottom', 'left'].map(pos => {
           const positionEnum = pos === 'top' ? Position.Top : pos === 'right' ? Position.Right : pos === 'bottom' ? Position.Bottom : Position.Left;
