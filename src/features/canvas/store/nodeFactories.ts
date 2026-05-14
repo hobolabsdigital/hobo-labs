@@ -1,32 +1,23 @@
 import { Node, Edge } from '@xyflow/react';
 
-const getRandomOffset = (base: number, spread: number) => base + (Math.random() * spread - spread / 2);
+/** Horizontal spacing between nodes — matches forceX target in useEditorialPhysics */
+const H_SPACING = 300;
 
 export const createPromptNode = (id: string, text: string, sourceNode?: Node): Node => {
-  let x = 400 + Math.random() * 200;
-  let y = 400 + Math.random() * 200;
-
-  if (sourceNode) {
-    x = sourceNode.position.x + 150 + Math.random() * 100;
-    y = sourceNode.position.y + (Math.random() * 100 - 50);
-  }
+  let x = sourceNode ? sourceNode.position.x + H_SPACING : 400;
+  let y = sourceNode ? sourceNode.position.y + (Math.random() * 80 - 40) : 400;
 
   return { id, type: 'prompt', position: { x, y }, data: { text } };
 };
 
 export const createGhostNode = (id: string, sourceNode?: Node): Node => {
-  let x = 600 + Math.random() * 200 - 100;
-  let y = 600 + Math.random() * 200 - 100;
-
-  if (sourceNode) {
-    x = sourceNode.position.x + 150 + Math.random() * 50;
-    y = sourceNode.position.y + 100 + (Math.random() * 50 - 25);
-  }
+  let x = sourceNode ? sourceNode.position.x + H_SPACING : 600;
+  let y = sourceNode ? sourceNode.position.y + (Math.random() * 80 - 40) : 400;
 
   return { id, type: 'ghost', position: { x, y }, data: { text: "Organizing thoughts...", isFinished: false } };
 };
 
-export const calculateNodePosition = (data: any, sourceNode?: Node, defaultOffset: number = 150) => {
+export const calculateNodePosition = (data: any, sourceNode?: Node, defaultOffset: number = 300) => {
   let x = 600;
   let y = 400;
 
@@ -40,18 +31,15 @@ export const calculateNodePosition = (data: any, sourceNode?: Node, defaultOffse
       case 'center': x = 600; y = 400; break;
     }
   } else if (sourceNode) {
-    x = sourceNode.position.x + defaultOffset + Math.random() * 50;
-    y = sourceNode.position.y + 100 + (Math.random() * 50 - 25);
-  } else {
-    x = getRandomOffset(600, 400);
-    y = getRandomOffset(400, 400);
+    x = sourceNode.position.x + defaultOffset;
+    y = sourceNode.position.y + (Math.random() * 80 - 40);
   }
 
   return { x, y };
 };
 
 export const createHeroNode = (id: string, data: any, sourceNode?: Node): Node => {
-  const { x, y } = calculateNodePosition(data, sourceNode, 150);
+  const { x, y } = calculateNodePosition(data, sourceNode, H_SPACING);
 
   return {
     id,
@@ -68,19 +56,14 @@ export const createHeroNode = (id: string, data: any, sourceNode?: Node): Node =
 };
 
 export const createTextNode = (id: string, text: string, sourceNode?: Node): Node => {
-  let x = 600 + Math.random() * 200 - 100;
-  let y = 600 + Math.random() * 200 - 100;
-
-  if (sourceNode) {
-    x = sourceNode.position.x + 150 + Math.random() * 50;
-    y = sourceNode.position.y + 100 + (Math.random() * 50 - 25);
-  }
+  let x = sourceNode ? sourceNode.position.x + H_SPACING : 600;
+  let y = sourceNode ? sourceNode.position.y + (Math.random() * 80 - 40) : 400;
 
   return { id, type: 'text', position: { x, y }, data: { text, label: 'INSIGHT', animationEffect: 'annotation' } };
 };
 
 export const createProjectNode = (id: string, data: any, sourceNode?: Node): Node => {
-  const { x, y } = calculateNodePosition(data, sourceNode, 200);
+  const { x, y } = calculateNodePosition(data, sourceNode, 400);
 
   return {
     id,
@@ -103,13 +86,8 @@ export const createProjectNode = (id: string, data: any, sourceNode?: Node): Nod
 };
 
 export const createDossierNode = (id: string, slug: string, sourceNode?: Node): Node => {
-  let x = 600 + Math.random() * 100;
-  let y = 400 + Math.random() * 100;
-
-  if (sourceNode) {
-    x = sourceNode.position.x + 150 + Math.random() * 50;
-    y = sourceNode.position.y + 80 + (Math.random() * 40 - 20);
-  }
+  let x = sourceNode ? sourceNode.position.x + H_SPACING : 600;
+  let y = sourceNode ? sourceNode.position.y + (Math.random() * 60 - 30) : 400;
 
   return {
     id,
@@ -120,13 +98,8 @@ export const createDossierNode = (id: string, slug: string, sourceNode?: Node): 
 };
 
 export const createSkeletonProjectNode = (id: string, slug: string, sourceNode?: Node): Node => {
-  let x = 800 + Math.random() * 100;
-  let y = 400 + Math.random() * 100;
-
-  if (sourceNode) {
-    x = sourceNode.position.x + 300 + Math.random() * 50;
-    y = sourceNode.position.y + (Math.random() * 60 - 30);
-  }
+  let x = sourceNode ? sourceNode.position.x + 400 : 800;
+  let y = sourceNode ? sourceNode.position.y + (Math.random() * 60 - 30) : 400;
 
   return {
     id,
