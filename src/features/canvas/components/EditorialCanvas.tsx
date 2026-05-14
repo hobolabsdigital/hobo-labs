@@ -119,20 +119,21 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
         // Snap immediately to intro node without animation so user sees it right away
         rfInstance.setCenter(0, -2000, { zoom: 1, duration: 0 });
       } else {
-        // Pan to the actual hero node position
+        // Pan to the actual hero node position — delay to let D3 settle first
         setTimeout(() => {
           const heroNode = useCanvasStore.getState().nodes.find(n => n.id === 'hero-1');
           const x = heroNode ? heroNode.position.x + 200 : 400;
           const y = heroNode ? heroNode.position.y + 150 : 400;
           rfInstance.setCenter(x, y, { zoom: 0.9, duration: 2000 });
-        }, 50);
+        }, 200);
       }
     }
   }, [isIntroActive, rfInstance]);
 
   // Camera tracking — pan to latest active node via setCenter
+  // Suppressed during intro so it doesn't fight the hero-pan animation
   useEffect(() => {
-    if (trackedNodeId && rfInstance) {
+    if (trackedNodeId && rfInstance && !isIntroActive) {
       const nodes = useCanvasStore.getState().nodes;
       const targetNode = nodes.find(n => n.id === trackedNodeId);
       if (!targetNode) return;
@@ -158,7 +159,7 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
         clearTimeout(resetId);
       };
     }
-  }, [trackedNodeId, rfInstance, setTrackedNodeId]);
+  }, [trackedNodeId, rfInstance, setTrackedNodeId, isIntroActive]);
 
   // Fit view when traveling through time
   useEffect(() => {
