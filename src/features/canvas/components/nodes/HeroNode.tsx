@@ -3,24 +3,10 @@
 import React from 'react';
 import { Handle, Position } from "@xyflow/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useBeeStore } from '@/features/swarm/store/useBeeStore';
-
-const EMPTY_OBJECT = {};
 
 export const HeroNode = React.memo(function HeroNode({ data, id }: { data: any, id: string }) {
   const rawHeadline = data.headline || data.title || "THE\nCREATIVE\nENGINE";
   const headlineLines = rawHeadline.replace(/\\n/g, '\n').split('\n');
-
-  const workerTarget = useBeeStore(state => state.swarmTarget.worker);
-  const soldierTarget = useBeeStore(state => state.swarmTarget.soldier);
-  
-  const isWorkerTarget = workerTarget === 'global' || workerTarget === id;
-  const isSoldierTarget = soldierTarget === 'global' || soldierTarget === id;
-  
-  const workerStyles = useBeeStore(state => isWorkerTarget ? state.themeOverrides.worker : EMPTY_OBJECT);
-  const soldierStyles = useBeeStore(state => isSoldierTarget ? state.themeOverrides.soldier : EMPTY_OBJECT);
-  
-  const nodeStyles = { ...workerStyles, ...soldierStyles };
 
   const typewriterContainer = {
     hidden: { opacity: 1 },
@@ -35,12 +21,10 @@ export const HeroNode = React.memo(function HeroNode({ data, id }: { data: any, 
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={JSON.stringify(nodeStyles)}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ y: '100vh', opacity: 0, rotate: 15, transition: { duration: 0.6, ease: 'easeIn' } }}
         className="relative flex flex-col items-start bg-transparent origin-bottom-left"
-        style={nodeStyles}
       >
         <motion.div className="mb-4" variants={typewriterContainer} initial="hidden" animate="visible">
           {headlineLines.map((line: string, i: number) => (

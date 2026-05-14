@@ -1,27 +1,18 @@
 "use client";
 
 import { useCanvasStore, INTRO_REVEAL_CLASSES } from '@/features/canvas/store/useCanvasStore';
-import { useBeeStore, MischiefType } from '@/features/swarm/store/useBeeStore';
 
 export function DebugPanel() {
   const isDebugDrawerOpen = useCanvasStore(state => state.isDebugDrawerOpen);
   const setDebugDrawerOpen = useCanvasStore(state => state.setDebugDrawerOpen);
   const nodes = useCanvasStore(state => state.nodes);
   const edges = useCanvasStore(state => state.edges);
-  const setNodes = useCanvasStore(state => state.setNodes);
-  const setEdges = useCanvasStore(state => state.setEdges);
-  const setTrackedNodeId = useCanvasStore(state => state.setTrackedNodeId);
   
   const physicsConfig = useCanvasStore(state => state.physicsConfig);
   const setPhysicsConfig = useCanvasStore(state => state.setPhysicsConfig);
   const fluidConfig = useCanvasStore(state => state.fluidConfig);
   const setFluidConfig = useCanvasStore(state => state.setFluidConfig);
 
-  const activeMischief = useBeeStore(state => state.activeMischief);
-  const setMischief = useBeeStore(state => state.setMischief);
-  const swarmTarget = useBeeStore(state => state.swarmTarget);
-  const setSwarmTarget = useBeeStore(state => state.setSwarmTarget);
-  const brainMode = useBeeStore(state => state.brainMode);
   const isIntroAnimationFinished = useCanvasStore(state => state.isIntroAnimationFinished);
 
   return (
@@ -36,55 +27,6 @@ export function DebugPanel() {
       </button>
 
       <div className="bg-[var(--background)] border border-[var(--foreground)] border-r-0 p-4 shadow-2xl flex flex-col gap-4 font-mono w-80 h-auto max-h-[90vh] overflow-y-auto">
-          
-          <div className="flex flex-col gap-2 border-b border-[var(--foreground)] pb-4">
-            <h3 className="text-xs uppercase tracking-wider font-bold mb-2">Swarm Controls</h3>
-            
-            <div className="flex items-center justify-between pt-1 pb-2">
-              <label htmlFor="manual-override" className="text-[10px] uppercase tracking-wider">Manual Override</label>
-              <input
-                type="checkbox"
-                id="manual-override"
-                checked={useBeeStore(state => state.manualOverride)}
-                onChange={(e) => useBeeStore.getState().setManualOverride(e.target.checked)}
-                className="w-3 h-3 accent-[var(--foreground)]"
-              />
-            </div>
-
-            <div className="flex flex-col gap-1 text-[10px] mb-2">
-              <label>Brain Mode</label>
-              <div className="flex gap-2">
-                {(['worker', 'soldier'] as const).map(mode => (
-                  <button
-                    key={mode}
-                    className={`px-2 py-1 text-[10px] uppercase font-bold border transition-colors flex-1 ${useBeeStore(state => state.brainMode) === mode ? 'bg-[var(--foreground)] text-[var(--background)]' : 'border-[var(--foreground)] text-[var(--foreground)] hover:bg-[var(--foreground)] hover:text-[var(--background)]'}`}
-                    onClick={() => useBeeStore.getState().setBrainMode(mode)}
-                  >
-                    {mode}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <button
-              onClick={() => useBeeStore.getState().triggerForceTick(useBeeStore.getState().brainMode)}
-              className="w-full py-2 bg-[var(--foreground)] text-[var(--background)] text-[10px] font-bold uppercase hover:bg-opacity-80 transition-opacity mb-2"
-            >
-              Force Brain Tick
-            </button>
-
-            <div className="flex flex-wrap gap-2 mb-2">
-              {(['none', 'invert', 'float_nodes', 'buzz_text', 'theme_hack'] as MischiefType[]).map(mischief => (
-                <button
-                  key={mischief}
-                  className={`px-2 py-1 text-[10px] uppercase font-bold border hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-colors ${activeMischief === mischief ? 'bg-[var(--foreground)] text-[var(--background)]' : 'border-[var(--foreground)] text-[var(--foreground)]'}`}
-                  onClick={() => setMischief(mischief)}
-                >
-                  {mischief}
-                </button>
-              ))}
-            </div>
-          </div>
 
           <div className="flex flex-col gap-2 border-b border-[var(--foreground)] pb-4">
             <h3 className="text-xs uppercase tracking-wider font-bold mb-2">Node Physics</h3>
@@ -127,19 +69,6 @@ export function DebugPanel() {
                 <span>{physicsConfig.linkIterations}</span>
               </div>
               <input type="range" min="1" max="30" step="1" value={physicsConfig.linkIterations} onChange={(e) => setPhysicsConfig({ linkIterations: parseInt(e.target.value) })} className="w-full accent-[var(--foreground)]" />
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2 pt-2 border-b border-[var(--foreground)] pb-4">
-            <h3 className="text-xs uppercase tracking-wider font-bold mb-2">Swarm Target</h3>
-            <div className="flex gap-2">
-              <input 
-                type="text"
-                value={swarmTarget[brainMode] || ''} 
-                onChange={(e) => setSwarmTarget(brainMode, e.target.value || null)}
-                placeholder="null"
-                className="w-full bg-transparent border border-[var(--foreground)] p-1 text-[var(--foreground)] focus:outline-none text-[10px]"
-              />
             </div>
           </div>
 

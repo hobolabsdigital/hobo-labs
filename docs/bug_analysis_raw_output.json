@@ -3,12 +3,18 @@
   "toolCalls": [
     {
       "type": "tool-call",
-      "toolCallId": "e930041b-0d87-4e64-844d-6812e7262fda",
-      "toolName": "showProject",
+      "toolCallId": "80bb9293-c88a-474e-ae95-272cf397155d",
+      "toolName": "createHeroNode",
       "input": {
-        "slug": "monstory"
+        "type": "hero",
+        "headline": "SYSTEMS WHISPERER\\\\nENGINEERING THE HUMAN\\\\nEXPERIENCE",
+        "subline": "Turning complex backends into intuitive, story-driven digital worlds.",
+        "text": "I architect agentic ecosystems where rigorous engineering meets human intent. Over 20 years building systems that feel inevitable, not engineered.",
+        "label": "ARCHITECTURAL CORE",
+        "animationEffect": "iris",
+        "layoutIntent": "top_right"
       }
     }
   ],
-  "rawText": ""
+  "rawText": "\nThis is Emile Harmel. I specialize in the space between backend complexity and delightful user interaction. Think of me as a Systems Whisperer—I take tangled pipelines and build them into clean, living frameworks. My focus is on agentic coding, architecting systems that don't just function, but feel fundamentally designed. Let's build something that *feels* logical."
 }

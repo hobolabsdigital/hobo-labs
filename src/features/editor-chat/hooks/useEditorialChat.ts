@@ -19,7 +19,9 @@ export function useEditorialChat() {
   const isMockApiEnabled = useCanvasStore(state => state.isMockApiEnabled);
 
   const addPrompt = useCanvasStore(state => state.addPrompt);
-  const upsertActiveGhost = useCanvasStore(state => state.upsertActiveGhost);
+  const createGhost = useCanvasStore(state => state.createGhost);
+  const updateGhostText = useCanvasStore(state => state.updateGhostText);
+  const finishGhost = useCanvasStore(state => state.finishGhost);
   const addHero = useCanvasStore(state => state.addHero);
   const addProject = useCanvasStore(state => state.addProject);
   const addText = useCanvasStore(state => state.addText);
@@ -95,7 +97,7 @@ export function useEditorialChat() {
 
     // 1. If we're waiting for the AI to respond, spawn the ghost node immediately
     if (lastMessage.role === 'user' && status === 'submitted') {
-      upsertActiveGhost("Organizing thoughts...", false);
+      createGhost("Organizing thoughts...");
       return;
     }
 
@@ -113,17 +115,15 @@ export function useEditorialChat() {
 
       const combinedReasoning = reasoningParts.map((p: MessagePart) => p.text).join('');
 
-      // Only upsert if we actually have reasoning or if we need to finish the ghost node
-      if (combinedReasoning.length > 0 || isReasoningFinished) {
-        upsertActiveGhost(combinedReasoning || "Organizing thoughts...", isReasoningFinished);
-      }
-
       if (isReasoningFinished) {
+        finishGhost(combinedReasoning || "Organizing thoughts...");
         useCanvasStore.getState().setIntroReasoningFinished(true);
+      } else if (combinedReasoning.length > 0) {
+        updateGhostText(combinedReasoning);
       }
     }
 
-  }, [messages, status, upsertActiveGhost]);
+  }, [messages, status, createGhost, updateGhostText, finishGhost]);
 
   const lastProcessedTextMsgId = useRef<string | null>(null);
   const processedShowProjectCalls = useRef<Set<string>>(new Set());

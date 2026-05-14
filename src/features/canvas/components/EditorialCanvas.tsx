@@ -19,7 +19,7 @@ import { useTheme } from '@/core/theme/theme-provider';
 
 // Hooks and Store
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
-import { useBeeStore } from '@/features/swarm/store/useBeeStore';
+
 import { useEditorialPhysics } from '@/features/canvas/hooks/useEditorialPhysics';
 import { useEdgeAnimations } from '@/features/canvas/hooks/useEdgeAnimations';
 
@@ -45,7 +45,7 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
 
   const isIntroActive = !(isIntroAnimationFinished && isIntroReasoningFinished);
 
-  const activeMischief = useBeeStore(state => state.activeMischief);
+
 
   // Filter nodes and edges based on the timeline scrubber and intro state
   const visibleNodes = React.useMemo(() => {
@@ -177,7 +177,7 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
   }, []);
 
   return (
-    <div className={`w-full h-screen bg-[var(--background)] relative ${activeMischief === 'invert' ? 'filter invert duration-500' : 'duration-500'}`}>
+    <div className="w-full h-screen bg-[var(--background)] relative">
       <ReactFlow
         nodes={visibleNodes}
         edges={visibleEdges}

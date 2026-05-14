@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Node, Edge, OnNodesChange, OnEdgesChange, OnConnect, applyNodeChanges, applyEdgeChanges, addEdge, ReactFlowInstance } from '@xyflow/react';
+import type { Simulation, SimulationNodeDatum } from 'd3-force';
 
 export interface CanvasState {
   nodes: Node[];
@@ -57,8 +58,8 @@ export interface CanvasState {
   setFluidConfig: (config: Partial<CanvasState['fluidConfig']>) => void;
 
   // D3 Simulation reference for drag events
-  simulationRef: any | null;
-  setSimulationRef: (ref: any) => void;
+  simulationRef: Simulation<SimulationNodeDatum, undefined> | null;
+  setSimulationRef: (ref: Simulation<SimulationNodeDatum, undefined> | null) => void;
 
   // Decoupled node creation
   activeGhostId: string | null;
@@ -67,7 +68,9 @@ export interface CanvasState {
   activeStreamingText: string | null;
   lastPlacedNodeId: string | null;
   addPrompt: (text: string) => void;
-  upsertActiveGhost: (text: string, isFinished?: boolean) => void;
+  createGhost: (text?: string) => void;
+  updateGhostText: (text: string) => void;
+  finishGhost: (text: string) => void;
   addHero: (data: any, id: string) => void;
   addProject: (data: any, id: string) => void;
   addText: (text: string, isFinished?: boolean) => void;
@@ -190,50 +193,52 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
     setTimeout(() => { if (get().trackedNodeId === id) set({ trackedNodeId: null }); }, 1500);
   },
 
-  upsertActiveGhost: (text: string, isFinished = false) => {
+  createGhost: (text: string = 'Organizing thoughts...') => {
     set(state => {
-      let activeGhostId = state.activeGhostId;
-      
-      if (!activeGhostId && isFinished) {
-        return state;
-      }
+      // Don't create a second ghost if one already exists
+      if (state.activeGhostId) return state;
 
-      let nodes = [...state.nodes];
-      const edges = [...state.edges];
-      let lastPlacedNodeId = state.lastPlacedNodeId;
-      let isNewGhost = false;
+      const ghostId = `ghost-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+      const validNodes = state.nodes.filter(n => n.type !== 'intro');
+      const sourceNode = validNodes.find(n => n.id === state.lastPlacedNodeId) || validNodes[validNodes.length - 1];
+      const newGhost = createGhostNode(ghostId, sourceNode);
+      newGhost.data.text = text;
 
-      if (!activeGhostId) {
-        isNewGhost = true;
-        activeGhostId = `ghost-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
-        const validNodes = nodes.filter(n => n.type !== 'intro');
-        const sourceNode = validNodes.find(n => n.id === lastPlacedNodeId) || validNodes[validNodes.length - 1];
-        const newGhost = createGhostNode(activeGhostId, sourceNode);
-        newGhost.data.text = text;
-        nodes.push(newGhost);
-        if (sourceNode) {
-          edges.push(createEdge(sourceNode.id, activeGhostId));
-        }
-        lastPlacedNodeId = activeGhostId;
-      }
-
-      if (isFinished) {
-        nodes = nodes.map(n =>
-          n.id === activeGhostId
-            ? { ...n, data: { ...n.data, text, isFinished } }
-            : n
-        );
-      }
+      const newEdges = sourceNode
+        ? [...state.edges, createEdge(sourceNode.id, ghostId)]
+        : state.edges;
 
       return {
-        nodes: isNewGhost || isFinished ? nodes : state.nodes,
-        edges: isNewGhost ? edges : state.edges,
-        activeGhostId: isFinished ? null : activeGhostId,
-        activeGhostText: isFinished ? null : text,
-        // Crucial fix: ensure lastPlacedNodeId properly updates to the ghost node
-        // so subsequent nodes chain off it, instead of branching off the prompt!
-        lastPlacedNodeId: isNewGhost ? activeGhostId : lastPlacedNodeId,
-        trackedNodeId: isNewGhost ? activeGhostId : state.trackedNodeId 
+        nodes: [...state.nodes, newGhost],
+        edges: newEdges,
+        activeGhostId: ghostId,
+        activeGhostText: text,
+        lastPlacedNodeId: ghostId,
+        trackedNodeId: ghostId,
+      };
+    });
+  },
+
+  updateGhostText: (text: string) => {
+    set(state => {
+      if (!state.activeGhostId) return state;
+      return { activeGhostText: text };
+    });
+  },
+
+  finishGhost: (text: string) => {
+    set(state => {
+      if (!state.activeGhostId) return state;
+
+      const ghostId = state.activeGhostId;
+      return {
+        nodes: state.nodes.map(n =>
+          n.id === ghostId
+            ? { ...n, data: { ...n.data, text, isFinished: true } }
+            : n
+        ),
+        activeGhostId: null,
+        activeGhostText: null,
       };
     });
   },

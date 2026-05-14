@@ -5,10 +5,7 @@ import { Handle, Position } from "@xyflow/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnnotationText } from '@/core/ui/components/annotation-text';
 import { IrisText } from '@/core/ui/components/iris-text';
-import { useBeeStore } from '@/features/swarm/store/useBeeStore';
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
-
-const EMPTY_OBJECT = {};
 
 const typewriterContainer = {
   hidden: { opacity: 1 },
@@ -57,26 +54,13 @@ const StreamingTextContent = React.memo(function StreamingTextContent({ id, fall
 });
 
 export const TextNode = React.memo(function TextNode({ data, id }: { data: any, id: string }) {
-  const workerTarget = useBeeStore(state => state.swarmTarget.worker);
-  const soldierTarget = useBeeStore(state => state.swarmTarget.soldier);
-  
-  const isWorkerTarget = workerTarget === 'global' || workerTarget === id;
-  const isSoldierTarget = soldierTarget === 'global' || soldierTarget === id;
-  
-  const workerStyles = useBeeStore(state => isWorkerTarget ? state.themeOverrides.worker : EMPTY_OBJECT);
-  const soldierStyles = useBeeStore(state => isSoldierTarget ? state.themeOverrides.soldier : EMPTY_OBJECT);
-  
-  const nodeStyles = { ...workerStyles, ...soldierStyles };
-
   return (
     <AnimatePresence mode="wait">
       <motion.div 
-        key={JSON.stringify(nodeStyles)}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ y: '100vh', opacity: 0, rotate: -15, transition: { duration: 0.6, ease: 'easeIn' } }}
         className="max-w-md p-6 bg-[var(--background)] relative border-l-2 border-foreground origin-bottom-right"
-        style={nodeStyles}
       >
         {['top', 'right', 'bottom', 'left'].map(pos => {
           const positionEnum = pos === 'top' ? Position.Top : pos === 'right' ? Position.Right : pos === 'bottom' ? Position.Bottom : Position.Left;

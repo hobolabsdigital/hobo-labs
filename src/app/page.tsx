@@ -13,8 +13,6 @@ import { TimelineScrubber } from '@/features/timeline/components/TimelineScrubbe
 import { FluidBackground } from '@/features/fluid-bg/components/FluidBackground';
 import { InteractiveGrid } from '@/core/ui/InteractiveGrid';
 import { ThemeToggle } from '@/core/ui/ThemeToggle';
-import { Swarm } from '@/features/swarm/components/Swarm';
-import { SwarmTerminal } from '@/features/swarm/components/SwarmTerminal';
 import { CrtEffect } from '@/features/crt/components/CrtEffect';
 
 const EditorialCanvas = dynamic(() => import("@/features/canvas/components/EditorialCanvas"), {

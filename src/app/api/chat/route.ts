@@ -1,9 +1,13 @@
 import { ollama } from 'ai-sdk-ollama';
 import {
   streamText, tool, convertToModelMessages, wrapLanguageModel,
-  extractReasoningMiddleware, ToolLoopAgent
+  extractReasoningMiddleware, ToolLoopAgent, embed
 } from 'ai';
 import { z } from 'zod';
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+import { findSimilarChunks } from '@/lib/vectorStore';
 
 export async function POST(req: Request) {
   try {
@@ -14,7 +18,7 @@ export async function POST(req: Request) {
           const encoder = new TextEncoder();
           const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-          controller.enqueue(encoder.encode('0:"Thinking about the design...\\n"\n'));
+          controller.enqueue(encoder.encode('0:"Thinking about the design...\\\\n"\\n'));
           await delay(1000);
 
           const toolCall = {
@@ -26,7 +30,7 @@ export async function POST(req: Request) {
           controller.enqueue(encoder.encode(`9:${JSON.stringify(toolCall)}\n`));
           await delay(500);
 
-          controller.enqueue(encoder.encode('0:"\\nNode generated successfully."\n'));
+          controller.enqueue(encoder.encode('0:"\\\\nNode generated successfully."\\n'));
           controller.close();
         }
       });
@@ -42,7 +46,6 @@ export async function POST(req: Request) {
     console.log('Generating node...');
     const body = await req.json();
     const messages = Array.isArray(body) ? body : body.messages || [];
-    console.log("Raw messages from client:", JSON.stringify(messages, null, 2));
 
     const safeMessages = messages.map((msg: any) => {
       const sanitized = { ...msg };
@@ -75,11 +78,6 @@ export async function POST(req: Request) {
 
     if (userQuery) {
       try {
-        const { embed } = require('ai');
-        const { findSimilarChunks } = require('@/lib/vectorStore');
-        const fs = require('fs');
-        const path = require('path');
-
         // Only load persona DB for main agent — no project bodies here
         const personaDbPath = path.join(process.cwd(), 'docs', 'persona-vector-db.json');
         if (fs.existsSync(personaDbPath)) {
@@ -111,12 +109,10 @@ export async function POST(req: Request) {
     // Always load project catalog for the system prompt
     let catalogText = '';
     try {
-      const fs = require('fs');
-      const path = require('path');
       const catalogPath = path.join(process.cwd(), 'docs', 'persona', 'project-catalog.md');
       if (fs.existsSync(catalogPath)) {
         const catalogRaw = fs.readFileSync(catalogPath, 'utf8');
-        const { content: catalogBody } = require('gray-matter')(catalogRaw);
+        const { content: catalogBody } = matter(catalogRaw);
         catalogText = catalogBody.trim();
       }
     } catch (e) {
@@ -170,8 +166,6 @@ export async function POST(req: Request) {
           }),
           execute: async ({ slug }) => {
             console.log(`[SUB-AGENT-TOOL] getProjectSource("${slug}")`);
-            const fs = require('fs');
-            const path = require('path');
             const projectsDbPath = path.join(process.cwd(), 'docs', 'projects-vector-db.json');
 
             if (!fs.existsSync(projectsDbPath)) {
@@ -276,7 +270,7 @@ Use the EXACT slug when calling showProject.
 ${catalogText}
 
 ## TOOL USAGE
-1. HERO NODES: When calling 'createHeroNode', use '\\n' to stack the headline into 2-3 lines (e.g., 'AGENTIC\\nORCHESTRATION'). Never output a single long horizontal headline.
+1. HERO NODES: When calling 'createHeroNode', use '\\\\n' to stack the headline into 2-3 lines (e.g., 'AGENTIC\\\\nORCHESTRATION'). Never output a single long horizontal headline.
 2. PROJECTS: When asked about a specific project, call 'showProject' with the EXACT slug from the catalog above. The system's sub-agent will handle everything else — you just provide the slug. Then give a brief conversational reflection.
 3. AGENTIC SHIFT: Never use the term "Vibe Coding." You are an Architect of Systems, and your work is "Agentic Coding."
 4. NO RAMBLING: If you don't have enough context for something, be honest and direct. After tool calls, provide a brief reflection and STOP.
@@ -286,7 +280,7 @@ ${catalogText}
           description: 'Create a new hero or text node on the editorial canvas',
           inputSchema: z.object({
             type: z.enum(['text', 'hero']).optional().default('hero').describe('The type of node to create. Defaults to "hero" if omitted.'),
-            headline: z.string().optional().describe('Headline for hero nodes. CRITICAL: You MUST use \\n to break this text into 2-3 stacked lines (ALL CAPS).'),
+            headline: z.string().optional().describe('Headline for hero nodes. CRITICAL: You MUST use \\\\n to break this text into 2-3 stacked lines (ALL CAPS).'),
             subline: z.string().optional().describe('Subline for hero nodes'),
             text: z.string().optional().describe('Content for text nodes'),
             label: z.string().optional().describe('Small label for text nodes (e.g. CONTEXT, INSIGHT)'),
@@ -331,8 +325,6 @@ WORKFLOW:
         }),
       },
       onFinish: (completionResult) => {
-        const fs = require('fs');
-        const path = require('path');
         const logPath = path.join(process.cwd(), 'docs', 'bug_analysis_raw_output.json');
 
         fs.writeFileSync(logPath, JSON.stringify({
@@ -343,7 +335,6 @@ WORKFLOW:
 
         console.log("================= STREAM FINISH ================");
         console.log("Finish Reason:", completionResult.finishReason);
-        console.log("Written stream results to docs/bug_analysis_raw_output.json");
         console.log("=================================================");
       }
     });

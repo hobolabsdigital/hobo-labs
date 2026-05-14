@@ -4,7 +4,6 @@ import { Button } from '@/core/ui/components/button';
 
 import { SendIcon } from "lucide-react";
 import { useCanvasStore, INTRO_REVEAL_CLASSES } from '@/features/canvas/store/useCanvasStore';
-import { useBeeStore } from '@/features/swarm/store/useBeeStore';
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useEditorialChat } from '@/features/editor-chat/hooks/useEditorialChat';
@@ -12,51 +11,11 @@ import { useEditorialChat } from '@/features/editor-chat/hooks/useEditorialChat'
 export function ChatInput() {
   const timeCursor = useCanvasStore((state) => state.timeCursor);
   const isHistoryMode = timeCursor !== null;
-  const setIsSleeping = useBeeStore((state) => state.setIsSleeping);
 
   const { input, setInput, handleSend, status } = useEditorialChat();
   const isLoading = status === 'submitted' || status === 'streaming';
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [isFetchingSuggestions, setIsFetchingSuggestions] = useState(false);
-
-  useEffect(() => {
-    // Disabled suggestions fetching per user request
-    /*
-    let mounted = true;
-    
-    const fetchSuggestions = async (count: number) => {
-      setIsFetchingSuggestions(true);
-      try {
-        const res = await fetch(`/api/suggestions?count=${count}`);
-        const data = await res.json();
-        if (mounted && data.suggestions) {
-          setSuggestions(prev => {
-            const next = [...prev];
-            data.suggestions.forEach((s: string) => {
-              if (!next.includes(s)) next.push(s);
-            });
-            return next;
-          });
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        if (mounted) setIsFetchingSuggestions(false);
-      }
-    };
-
-    if (suggestions.length < 3 && !isFetchingSuggestions && !isLoading) {
-      fetchSuggestions(3 - suggestions.length);
-    }
-    
-    return () => { mounted = false; };
-    */
-  }, [suggestions.length, isFetchingSuggestions, isLoading]);
-
-  useEffect(() => {
-    setIsSleeping(isLoading || input.length > 0);
-  }, [isLoading, setIsSleeping]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -64,9 +23,7 @@ export function ChatInput() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setInput(val);
-    setIsSleeping(isLoading || val.length > 0);
+    setInput(e.target.value);
   };
 
   const isIntroAnimationFinished = useCanvasStore((state) => state.isIntroAnimationFinished);
@@ -89,7 +46,6 @@ export function ChatInput() {
               type="button"
               onClick={() => {
                 setInput(suggestion);
-                setIsSleeping(true);
                 setSuggestions(prev => prev.filter(s => s !== suggestion));
               }}
               className="rounded-full whitespace-nowrap text-xs font-medium px-4 py-1.5 bg-foreground text-background hover:bg-foreground/90 border-none transition-all shadow-md"
