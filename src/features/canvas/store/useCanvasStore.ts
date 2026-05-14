@@ -107,11 +107,11 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   setIntroReasoningFinished: (finished: boolean) => set({ isIntroReasoningFinished: finished }),
 
   physicsConfig: {
-    velocityDecay: 0.65,
-    chargeStrength: -300,
+    velocityDecay: 0.5,
+    chargeStrength: -150,
     linkDistance: 400,
-    linkStrength: 0.3,
-    linkIterations: 3,
+    linkStrength: 0.15,
+    linkIterations: 2,
   },
   fluidConfig: {
     SPLAT_RADIUS: 0.15,

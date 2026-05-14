@@ -38,9 +38,9 @@ export function useEditorialPhysics() {
         // Push each subsequent node further right based on creation order
         const index = d.data?.creationIndex ?? 0;
         return index * 350;
-      }).strength(0.2))
+      }).strength(0.08))
       // Gentle vertical centering — keeps nodes from drifting too far up/down
-      .force('y-center', d3.forceY().y(400).strength(0.03));
+      .force('y-center', d3.forceY().y(400).strength(0.015));
 
     simulationRef.current = simulation;
     setSimulationRef(simulation);

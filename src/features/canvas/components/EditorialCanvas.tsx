@@ -119,13 +119,10 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
         // Snap immediately to intro node without animation so user sees it right away
         rfInstance.setCenter(0, -2000, { zoom: 1, duration: 0 });
       } else {
-        // Pan to the actual hero node position — delay to let D3 settle first
+        // Fit all spawned nodes into view after intro completes
         setTimeout(() => {
-          const heroNode = useCanvasStore.getState().nodes.find(n => n.id === 'hero-1');
-          const x = heroNode ? heroNode.position.x + 200 : 400;
-          const y = heroNode ? heroNode.position.y + 150 : 400;
-          rfInstance.setCenter(x, y, { zoom: 0.9, duration: 2000 });
-        }, 200);
+          rfInstance.fitView({ padding: 0.3, duration: 2000, maxZoom: 0.85 });
+        }, 500);
       }
     }
   }, [isIntroActive, rfInstance]);
