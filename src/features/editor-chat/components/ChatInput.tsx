@@ -1,11 +1,8 @@
 "use client";
 
 import { Button } from '@/core/ui/components/button';
-
 import { SendIcon } from "lucide-react";
 import { useCanvasStore, INTRO_REVEAL_CLASSES } from '@/features/canvas/store/useCanvasStore';
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { useEditorialChat } from '@/features/editor-chat/hooks/useEditorialChat';
 
 export function ChatInput() {
@@ -14,8 +11,6 @@ export function ChatInput() {
 
   const { input, setInput, handleSend, status } = useEditorialChat();
   const isLoading = status === 'submitted' || status === 'streaming';
-
-  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,30 +26,6 @@ export function ChatInput() {
   return (
     <div className={`bg-transparent absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-[100] pointer-events-auto ${INTRO_REVEAL_CLASSES} flex flex-col gap-3 ${isIntroAnimationFinished ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0'
       }`}>
-
-      {/* Quick Prompt Suggestions */}
-      {!isHistoryMode && input.length === 0 && !isLoading && suggestions.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 px-2"
-        >
-          {suggestions.map((suggestion, i) => (
-            <Button
-              key={i}
-              type="button"
-              onClick={() => {
-                setInput(suggestion);
-                setSuggestions(prev => prev.filter(s => s !== suggestion));
-              }}
-              className="rounded-full whitespace-nowrap text-xs font-medium px-4 py-1.5 bg-foreground text-background hover:bg-foreground/90 border-none transition-all shadow-md"
-            >
-              {suggestion}
-            </Button>
-          ))}
-        </motion.div>
-      )}
 
       <form
         onSubmit={onSubmit}

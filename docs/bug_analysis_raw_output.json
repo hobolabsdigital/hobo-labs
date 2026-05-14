@@ -3,18 +3,16 @@
   "toolCalls": [
     {
       "type": "tool-call",
-      "toolCallId": "f7880e36-0251-497f-807f-de5853040078",
+      "toolCallId": "0891dc8c-c25b-4cf4-b73c-99e3fe683d5d",
       "toolName": "createHeroNode",
       "input": {
         "type": "hero",
-        "headline": "BUILDING\\nTHE ARCHITECTURE OF EXPERIENCE",
-        "subline": "Emile Harmel: Systems Whisperer",
-        "text": "I translate complexity into elegant, human-centric digital realities. My focus is architecting self-healing, agentic ecosystems that don't just function—they feel intuitive.",
-        "label": "SYSTEMS ARCHITECT",
-        "animationEffect": "iris",
+        "headline": "EMILE HARMEL\\\\nSYSTEMS WHISPERER",
+        "subline": "Making logic feel human, and humanity feel designed.",
+        "label": "ARCHITECT",
         "layoutIntent": "top_right"
       }
     }
   ],
-  "rawText": "\nHello. I’m Emile. Over the last couple of decades, I’ve specialized in the friction point between immense backend capability and the most polished user experience. I don't just code; I architect the entire narrative structure of a digital product. Think of me as the person who makes sure the logic doesn't drag."
+  "rawText": ""
 }
