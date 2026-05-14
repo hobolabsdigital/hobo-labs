@@ -94,3 +94,11 @@ The ReactFlow canvas is not keyboard-navigable:
 - Timeline scrubber needs keyboard controls
 - Screen reader support for node content
 - ARIA labels for interactive elements
+
+---
+
+## B-009: Type Node Data Payloads
+**Priority:** Medium  
+**Impact:** Type safety  
+
+`addHero(data: any)`, `addProject(data: any)`, and node component props all use `data: any`. These should use discriminated union types matching each node type's expected fields (HeroNodeData, TextNodeData, ProjectNodeData, etc.). The simulation ref was already typed — these are the remaining `any` leaks in the canvas pipeline.

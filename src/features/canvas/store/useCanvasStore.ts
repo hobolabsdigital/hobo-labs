@@ -79,7 +79,7 @@ export interface CanvasState {
 
 import { createPromptNode, createGhostNode, createHeroNode, createTextNode, createProjectNode, createEdge } from './nodeFactories';
 
-export const INTRO_REVEAL_CLASSES = "transition-all duration-1000 ease-out";
+
 
 export const useCanvasStore = create<CanvasState>((set, get) => ({
   nodes: [],
@@ -222,7 +222,15 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   updateGhostText: (text: string) => {
     set(state => {
       if (!state.activeGhostId) return state;
-      return { activeGhostText: text };
+      const ghostId = state.activeGhostId;
+      return {
+        activeGhostText: text,
+        nodes: state.nodes.map(n =>
+          n.id === ghostId
+            ? { ...n, data: { ...n.data, text } }
+            : n
+        ),
+      };
     });
   },
 

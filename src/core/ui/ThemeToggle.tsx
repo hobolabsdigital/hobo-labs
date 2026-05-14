@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { useTheme } from '@/core/theme/theme-provider';
-import { useCanvasStore, INTRO_REVEAL_CLASSES } from '@/features/canvas/store/useCanvasStore';
+import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
+import { INTRO_REVEAL_CLASSES } from '@/features/canvas/constants';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();

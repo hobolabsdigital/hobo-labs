@@ -3,16 +3,18 @@
   "toolCalls": [
     {
       "type": "tool-call",
-      "toolCallId": "0891dc8c-c25b-4cf4-b73c-99e3fe683d5d",
+      "toolCallId": "e546391e-7f60-4f94-b508-d0724b3dfc1e",
       "toolName": "createHeroNode",
       "input": {
         "type": "hero",
-        "headline": "EMILE HARMEL\\\\nSYSTEMS WHISPERER",
-        "subline": "Making logic feel human, and humanity feel designed.",
-        "label": "ARCHITECT",
+        "headline": "SYSTEMS ARCHITECT &\\\\nCREATIVE TECHNOLOGIST",
+        "subline": "WHERE LOGIC MEETS LIFE.",
+        "text": "I build worlds that make logic feel human and humanity feel designed.",
+        "label": "EMILE HARMEL",
+        "animationEffect": "annotation",
         "layoutIntent": "top_right"
       }
     }
   ],
-  "rawText": ""
+  "rawText": "\nHello. I'm Emile. For the last two decades, my focus has been on the seams—the junction points where brutally efficient backend architecture meets an interface that feels intuitive enough to write poetry with.\n\nI don't just build applications; I engineer ecosystems. My sweet spot is transforming tangled, monolithic pipelines into self-healing, agentic frameworks. Think of it as moving beyond mere coding into true systems orchestration.\n\nIf it involves complexity, but it needs to feel graceful in the hands of a user, we should talk."
 }

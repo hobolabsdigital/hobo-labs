@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useMotionValue, useSpring, animate, useAnimationFrame } from "framer-motion";
-import { useCanvasStore, INTRO_REVEAL_CLASSES } from '@/features/canvas/store/useCanvasStore';
+import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
+import { INTRO_REVEAL_CLASSES } from '@/features/canvas/constants';
 
 export function TimelineScrubber() {
   const nodesLength = useCanvasStore((state) => state.nodes.length);

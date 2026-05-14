@@ -2,7 +2,8 @@
 
 import { Button } from '@/core/ui/components/button';
 import { SendIcon } from "lucide-react";
-import { useCanvasStore, INTRO_REVEAL_CLASSES } from '@/features/canvas/store/useCanvasStore';
+import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
+import { INTRO_REVEAL_CLASSES } from '@/features/canvas/constants';
 import { useEditorialChat } from '@/features/editor-chat/hooks/useEditorialChat';
 
 export function ChatInput() {

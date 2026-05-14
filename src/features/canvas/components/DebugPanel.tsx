@@ -1,6 +1,7 @@
 "use client";
 
-import { useCanvasStore, INTRO_REVEAL_CLASSES } from '@/features/canvas/store/useCanvasStore';
+import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
+import { INTRO_REVEAL_CLASSES } from '@/features/canvas/constants';
 
 export function DebugPanel() {
   const isDebugDrawerOpen = useCanvasStore(state => state.isDebugDrawerOpen);
