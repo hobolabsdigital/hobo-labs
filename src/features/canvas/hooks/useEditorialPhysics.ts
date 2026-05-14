@@ -127,12 +127,12 @@ export function useEditorialPhysics() {
 
     // 2d. Apply gentle heat so new items settle, avoiding the 'explosion' effect of alpha(1)
     if (nodesLength > 2) {
-      simulation.alphaTarget(0.1).restart();
+      simulation.alphaTarget(0.05).restart();
       
       // Turn off target after a short burst to allow cooling
       setTimeout(() => {
         if (simulationRef.current) simulationRef.current.alphaTarget(0);
-      }, 1000);
+      }, 500);
     } else {
       // Initial layout blast
       simulation.alpha(1).restart();
