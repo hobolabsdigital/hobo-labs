@@ -107,11 +107,11 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   setIntroReasoningFinished: (finished: boolean) => set({ isIntroReasoningFinished: finished }),
 
   physicsConfig: {
-    velocityDecay: 0.4,
-    chargeStrength: -30,
+    velocityDecay: 0.55,
+    chargeStrength: -300,
     linkDistance: 400,
-    linkStrength: 1.0,
-    linkIterations: 10,
+    linkStrength: 0.3,
+    linkIterations: 3,
   },
   fluidConfig: {
     SPLAT_RADIUS: 0.15,
@@ -176,7 +176,7 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   setTimeCursor: (index) => {
     set({ timeCursor: index });
   },
-  
+
   setTimelineHovered: (hovered) => set({ isTimelineHovered: hovered }),
 
   setMockApiEnabled: (enabled) => set({ isMockApiEnabled: enabled }),
@@ -303,7 +303,7 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
 
       if (state.activeStreamingTextId) {
         targetId = state.activeStreamingTextId;
-        
+
         if (isFinished) {
           newNodes = newNodes.map(n =>
             n.id === targetId
@@ -330,9 +330,9 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
       newEdges = sourceNode ? [...state.edges, createEdge(sourceNode.id, targetId)] : state.edges;
       newlyCreated = true;
 
-      return { 
-        nodes: [...newNodes, newNode], 
-        edges: newEdges, 
+      return {
+        nodes: [...newNodes, newNode],
+        edges: newEdges,
         lastPlacedNodeId: isFinished ? targetId : state.lastPlacedNodeId,
         activeStreamingTextId: isFinished ? null : targetId,
         activeStreamingText: isFinished ? null : text,
@@ -414,13 +414,13 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
         nodes: state.nodes.map(n =>
           n.id === skeletonId
             ? {
-                ...n,
-                data: {
-                  ...data,
-                  isLoading: false,
-                  isRevealing: true, // Triggers typewriter animation
-                },
-              }
+              ...n,
+              data: {
+                ...data,
+                isLoading: false,
+                isRevealing: true, // Triggers typewriter animation
+              },
+            }
             : n
         ),
         activeDossierId: null,

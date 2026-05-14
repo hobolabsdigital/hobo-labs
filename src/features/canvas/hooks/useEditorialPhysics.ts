@@ -24,21 +24,23 @@ export function useEditorialPhysics() {
       .force('collide', d3.forceCollide().radius((d: any) => {
         switch (d.type) {
           case 'hero':    return 300;
-          case 'project': return 280;
+          case 'project': return 350;
           case 'text':    return 160;
           case 'ghost':   return 100;
-          case 'dossier': return 80;
+          case 'dossier': return 100;
           default:        return 120;
         }
-      }).iterations(2))
+      }).iterations(3))
       .force('link', d3.forceLink().id((d: any) => d.id).distance(physicsConfig.linkDistance).strength(physicsConfig.linkStrength).iterations(physicsConfig.linkIterations))
       .force('x-flow', d3.forceX().x((d: any) => {
         // Hero and intro nodes are pinned — don't apply x force
         if (d.type === 'hero' || d.type === 'intro') return d.x;
-        // Push each subsequent node further right
+        // Push each subsequent node further right based on creation order
         const index = d.data?.creationIndex ?? 0;
         return index * 350;
-      }).strength(0.15));
+      }).strength(0.2))
+      // Gentle vertical centering — keeps nodes from drifting too far up/down
+      .force('y-center', d3.forceY().y(400).strength(0.03));
 
     simulationRef.current = simulation;
     setSimulationRef(simulation);
