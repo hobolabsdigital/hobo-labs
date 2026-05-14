@@ -14,6 +14,7 @@ import { TextNode } from '@/features/canvas/components/nodes/TextNode';
 import { PromptNode } from '@/features/canvas/components/nodes/PromptNode';
 import { GhostNode } from '@/features/canvas/components/nodes/GhostNode';
 import { ProjectNode } from '@/features/canvas/components/nodes/ProjectNode';
+import { DossierNode } from '@/features/canvas/components/nodes/DossierNode';
 import { IntroNode } from '@/features/canvas/components/nodes/IntroNode';
 import { useTheme } from '@/core/theme/theme-provider';
 
@@ -23,7 +24,7 @@ import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 import { useEditorialPhysics } from '@/features/canvas/hooks/useEditorialPhysics';
 import { useEdgeAnimations } from '@/features/canvas/hooks/useEdgeAnimations';
 
-const nodeTypes = { hero: HeroNode, text: TextNode, prompt: PromptNode, ghost: GhostNode, project: ProjectNode, intro: IntroNode };
+const nodeTypes = { hero: HeroNode, text: TextNode, prompt: PromptNode, ghost: GhostNode, project: ProjectNode, dossier: DossierNode, intro: IntroNode };
 
 // We keep the node definitions here for easy reference, but initial state 
 // injection happens entirely in useCanvasStore.ts now.
@@ -93,23 +94,33 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
         // Snap immediately to intro node without animation so user sees it right away
         rfInstance.setCenter(0, -2000, { zoom: 1, duration: 0 });
       } else {
-        // Smoothly pan down to fit all nodes
+        // Pan to the hero node area instead of fitting all nodes
         setTimeout(() => {
-          rfInstance.fitView({ padding: 0.3, duration: 2000, maxZoom: 1.2 });
+          rfInstance.setCenter(400, 400, { zoom: 0.9, duration: 2000 });
         }, 50);
       }
     }
   }, [isIntroActive, rfInstance]);
 
-  // Generic camera tracking effect
+  // Camera tracking — pan to latest active node via setCenter
   useEffect(() => {
     if (trackedNodeId && rfInstance) {
-      // Small delay to ensure node bounds are calculated by ReactFlow
+      const nodes = useCanvasStore.getState().nodes;
+      const targetNode = nodes.find(n => n.id === trackedNodeId);
+      if (!targetNode) return;
+
+      // Determine zoom level based on node type
+      const zoom = targetNode.type === 'project' ? 0.7 : 0.9;
+
       const timeoutId = setTimeout(() => {
-        rfInstance.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 });
+        rfInstance.setCenter(
+          targetNode.position.x + (targetNode.type === 'project' ? 400 : 200),
+          targetNode.position.y + (targetNode.type === 'project' ? 200 : 100),
+          { zoom, duration: 800 }
+        );
       }, 50);
 
-      // Reset the tracking lock after the animation completes so D3 doesn't permanently lock the camera
+      // Release tracking after animation so user can pan freely
       const resetId = setTimeout(() => {
         setTrackedNodeId(null);
       }, 1500);
