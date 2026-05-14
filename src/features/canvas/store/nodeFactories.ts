@@ -110,5 +110,5 @@ export const createSkeletonProjectNode = (id: string, slug: string, sourceNode?:
 };
 
 export const createEdge = (source: string, target: string): Edge => {
-  return { id: `e-${source}-${target}`, source, target, sourceHandle: 'right', targetHandle: 'left' };
+  return { id: `e-${source}-${target}`, source, target, sourceHandle: 'src-right', targetHandle: 'tgt-left' };
 };

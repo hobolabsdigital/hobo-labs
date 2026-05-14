@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Handle, Position } from "@xyflow/react";
+import { NodeHandles } from './NodeHandles';
 import { motion, AnimatePresence } from "framer-motion";
 
 export const HeroNode = React.memo(function HeroNode({ data, id }: { data: any, id: string }) {
@@ -60,15 +61,7 @@ export const HeroNode = React.memo(function HeroNode({ data, id }: { data: any, 
           </div>
         )}
 
-        {['top', 'right', 'bottom', 'left'].map(pos => {
-          const positionEnum = pos === 'top' ? Position.Top : pos === 'right' ? Position.Right : pos === 'bottom' ? Position.Bottom : Position.Left;
-          return (
-            <React.Fragment key={pos}>
-              <Handle type="target" position={positionEnum} id={pos} className="opacity-0" />
-              <Handle type="source" position={positionEnum} id={pos} className="opacity-0" />
-            </React.Fragment>
-          );
-        })}
+        <NodeHandles />
       </motion.div>
     </AnimatePresence>
   );

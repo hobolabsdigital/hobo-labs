@@ -1,8 +1,8 @@
 "use client";
 
 import React from 'react';
-import { Handle, Position } from "@xyflow/react";
 import { motion } from "framer-motion";
+import { NodeHandles } from './NodeHandles';
 
 export const PromptNode = React.memo(function PromptNode({ data }: { data: any }) {
   return (
@@ -12,15 +12,7 @@ export const PromptNode = React.memo(function PromptNode({ data }: { data: any }
       transition={{ type: "spring", bounce: 0.4 }}
       className="max-w-xs p-5 bg-foreground text-background relative shadow-2xl rounded-2xl"
     >
-      {['top', 'right', 'bottom', 'left'].map(pos => {
-        const positionEnum = pos === 'top' ? Position.Top : pos === 'right' ? Position.Right : pos === 'bottom' ? Position.Bottom : Position.Left;
-        return (
-          <React.Fragment key={pos}>
-            <Handle type="target" position={positionEnum} id={pos} className="opacity-0" />
-            <Handle type="source" position={positionEnum} id={pos} className="opacity-0" />
-          </React.Fragment>
-        );
-      })}
+      <NodeHandles />
       
       <div className="flex flex-col gap-2">
         <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-background/70 border-b border-background/20 pb-1">

@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { Handle, Position } from "@xyflow/react";
+import { NodeHandles } from './NodeHandles';
 import { motion, AnimatePresence } from "framer-motion";
 import { AnnotationText } from '@/core/ui/components/annotation-text';
 import { IrisText } from '@/core/ui/components/iris-text';
@@ -71,15 +72,7 @@ export const TextNode = React.memo(function TextNode({ data, id }: { data: any, 
         }}
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        {['top', 'right', 'bottom', 'left'].map(pos => {
-          const positionEnum = pos === 'top' ? Position.Top : pos === 'right' ? Position.Right : pos === 'bottom' ? Position.Bottom : Position.Left;
-          return (
-            <React.Fragment key={pos}>
-              <Handle type="target" position={positionEnum} id={pos} className="opacity-0" />
-              <Handle type="source" position={positionEnum} id={pos} className="opacity-0" />
-            </React.Fragment>
-          );
-        })}
+        <NodeHandles />
         
         <div className="flex flex-col gap-4">
           {data.label && (

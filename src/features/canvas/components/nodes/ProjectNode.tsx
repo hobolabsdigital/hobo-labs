@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Handle, Position } from "@xyflow/react";
+import { NodeHandles } from './NodeHandles';
 import { motion, AnimatePresence } from "framer-motion";
 
 // --- Shimmer block for skeleton mode ---
@@ -131,15 +132,7 @@ function ProjectSkeleton() {
       </div>
 
       {/* Handles */}
-      {['top', 'right', 'bottom', 'left'].map(pos => {
-        const positionEnum = pos === 'top' ? Position.Top : pos === 'right' ? Position.Right : pos === 'bottom' ? Position.Bottom : Position.Left;
-        return (
-          <React.Fragment key={pos}>
-            <Handle type="target" position={positionEnum} id={pos} className="opacity-0" />
-            <Handle type="source" position={positionEnum} id={pos} className="opacity-0" />
-          </React.Fragment>
-        );
-      })}
+      <NodeHandles />
     </div>
   );
 }
@@ -159,15 +152,7 @@ function ProjectCompact({ title, role, year, image, quote, onClick }: {
       className="relative bg-background origin-center flex flex-col shadow-2xl border border-foreground/10 cursor-pointer group"
       style={{ width: '800px' }}
     >
-      {['top', 'right', 'bottom', 'left'].map(pos => {
-        const positionEnum = pos === 'top' ? Position.Top : pos === 'right' ? Position.Right : pos === 'bottom' ? Position.Bottom : Position.Left;
-        return (
-          <React.Fragment key={pos}>
-            <Handle type="target" position={positionEnum} id={pos} className="opacity-0" />
-            <Handle type="source" position={positionEnum} id={pos} className="opacity-0" />
-          </React.Fragment>
-        );
-      })}
+      <NodeHandles />
       <div className="w-full aspect-video overflow-hidden bg-foreground/5">
         <img src={heroSrc} alt={title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
       </div>
@@ -432,15 +417,7 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id }: { data:
         )}
 
         {/* Connection Handles */}
-        {['top', 'right', 'bottom', 'left'].map(pos => {
-          const positionEnum = pos === 'top' ? Position.Top : pos === 'right' ? Position.Right : pos === 'bottom' ? Position.Bottom : Position.Left;
-          return (
-            <React.Fragment key={pos}>
-              <Handle type="target" position={positionEnum} id={pos} className="opacity-0" />
-              <Handle type="source" position={positionEnum} id={pos} className="opacity-0" />
-            </React.Fragment>
-          );
-        })}
+        <NodeHandles />
       </motion.div>
     </AnimatePresence>
   );
