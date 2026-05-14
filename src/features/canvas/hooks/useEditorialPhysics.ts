@@ -21,8 +21,24 @@ export function useEditorialPhysics() {
       // Initial physics configuration
       .velocityDecay(physicsConfig.velocityDecay)
       .force('charge', d3.forceManyBody().strength(physicsConfig.chargeStrength))
-      .force('collide', d3.forceCollide().radius((d: any) => d.type === 'hero' ? 250 : 120).iterations(2))
-      .force('link', d3.forceLink().id((d: any) => d.id).distance(physicsConfig.linkDistance).strength(physicsConfig.linkStrength).iterations(physicsConfig.linkIterations));
+      .force('collide', d3.forceCollide().radius((d: any) => {
+        switch (d.type) {
+          case 'hero':    return 300;
+          case 'project': return 280;
+          case 'text':    return 160;
+          case 'ghost':   return 100;
+          case 'dossier': return 80;
+          default:        return 120;
+        }
+      }).iterations(2))
+      .force('link', d3.forceLink().id((d: any) => d.id).distance(physicsConfig.linkDistance).strength(physicsConfig.linkStrength).iterations(physicsConfig.linkIterations))
+      .force('x-flow', d3.forceX().x((d: any) => {
+        // Hero and intro nodes are pinned — don't apply x force
+        if (d.type === 'hero' || d.type === 'intro') return d.x;
+        // Push each subsequent node further right
+        const index = d.data?.creationIndex ?? 0;
+        return index * 350;
+      }).strength(0.05));
 
     simulationRef.current = simulation;
     setSimulationRef(simulation);
@@ -38,7 +54,14 @@ export function useEditorialPhysics() {
           if (simNode) {
             // Frame-by-frame camera tracking for the active node
             if (node.id === currentTrackedId && currentRfInstance) {
-              currentRfInstance.setCenter(simNode.x, simNode.y, { zoom: 0.9, duration: 0 });
+              // Only reposition camera if node moved significantly (prevents jitter)
+              const lastCameraPos = (simulationRef.current as any).__lastCameraPos || { x: 0, y: 0 };
+              const dx = Math.abs(simNode.x - lastCameraPos.x);
+              const dy = Math.abs(simNode.y - lastCameraPos.y);
+              if (dx > 20 || dy > 20) {
+                currentRfInstance.setCenter(simNode.x, simNode.y, { zoom: 0.9, duration: 0 });
+                (simulationRef.current as any).__lastCameraPos = { x: simNode.x, y: simNode.y };
+              }
             }
 
             // Only update if movement is significant to avoid micro-stutters
