@@ -67,6 +67,7 @@ export interface CanvasState {
   activeStreamingTextId: string | null;
   activeStreamingText: string | null;
   lastPlacedNodeId: string | null;
+  nodeCreationCounter: number;
   addPrompt: (text: string) => void;
   createGhost: (text?: string) => void;
   updateGhostText: (text: string) => void;
@@ -75,9 +76,19 @@ export interface CanvasState {
   addProject: (data: any, id: string) => void;
   addText: (text: string, isFinished?: boolean) => void;
   truncateHistory: (cursorIndex: number) => void;
+
+  // Dossier lifecycle (sub-agent visual feedback)
+  activeDossierId: string | null;
+  dossierStatus: 'idle' | 'accessing' | 'source-loaded' | 'rewriting' | 'complete';
+  dossierSlug: string | null;
+  dossierTitle: string | null;
+  skeletonProjectId: string | null;
+  addDossier: (slug: string) => void;
+  updateDossierStatus: (status: CanvasState['dossierStatus'], meta?: { title?: string }) => void;
+  revealProject: (data: any) => void;
 }
 
-import { createPromptNode, createGhostNode, createHeroNode, createTextNode, createProjectNode, createEdge } from './nodeFactories';
+import { createPromptNode, createGhostNode, createHeroNode, createTextNode, createProjectNode, createDossierNode, createSkeletonProjectNode, createEdge } from './nodeFactories';
 
 
 
@@ -123,6 +134,7 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   activeStreamingTextId: null,
   activeStreamingText: null,
   lastPlacedNodeId: null,
+  nodeCreationCounter: 0,
 
   setPhysicsConfig: (config) => set((state) => ({
     physicsConfig: { ...state.physicsConfig, ...config }
@@ -178,18 +190,20 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
     const newNode = createPromptNode(id, text, sourceNode);
 
     set(state => {
+      const ci = state.nodeCreationCounter;
+      newNode.data = { ...newNode.data, creationIndex: ci };
       const newEdges = sourceNode ? [...state.edges, createEdge(sourceNode.id, id)] : state.edges;
       return {
         nodes: [...state.nodes, newNode],
         edges: newEdges,
         lastPlacedNodeId: id,
         trackedNodeId: id,
-        activeStreamingTextId: null // Reset text streaming state
+        activeStreamingTextId: null,
+        nodeCreationCounter: ci + 1,
       };
     });
 
-    const rf = get().rfInstance;
-    if (rf) setTimeout(() => rf.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 }), 50);
+    // Camera tracking handled centrally via trackedNodeId effect in EditorialCanvas
     setTimeout(() => { if (get().trackedNodeId === id) set({ trackedNodeId: null }); }, 1500);
   },
 
@@ -202,7 +216,8 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
       const validNodes = state.nodes.filter(n => n.type !== 'intro');
       const sourceNode = validNodes.find(n => n.id === state.lastPlacedNodeId) || validNodes[validNodes.length - 1];
       const newGhost = createGhostNode(ghostId, sourceNode);
-      newGhost.data.text = text;
+      const ci = state.nodeCreationCounter;
+      newGhost.data = { ...newGhost.data, text, creationIndex: ci };
 
       const newEdges = sourceNode
         ? [...state.edges, createEdge(sourceNode.id, ghostId)]
@@ -215,6 +230,7 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
         activeGhostText: text,
         lastPlacedNodeId: ghostId,
         trackedNodeId: ghostId,
+        nodeCreationCounter: ci + 1,
       };
     });
   },
@@ -256,9 +272,11 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
       const sourceNode = state.nodes.find(n => n.id === state.activeGhostId) || state.nodes.find(n => n.id === state.lastPlacedNodeId);
       console.log(`[DEBUG-FLOW] addHero | heroId=${id} | sourceNode=${sourceNode?.id}`);
       const newNode = createHeroNode(id, data, sourceNode);
+      const ci = state.nodeCreationCounter;
+      newNode.data = { ...newNode.data, creationIndex: ci };
 
       const newEdges = sourceNode ? [...state.edges, createEdge(sourceNode.id, id)] : state.edges;
-      return { nodes: [...state.nodes, newNode], edges: newEdges, lastPlacedNodeId: id, trackedNodeId: id };
+      return { nodes: [...state.nodes, newNode], edges: newEdges, lastPlacedNodeId: id, trackedNodeId: id, nodeCreationCounter: ci + 1 };
     });
   },
 
@@ -267,9 +285,11 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
       const sourceNode = state.nodes.find(n => n.id === state.activeGhostId) || state.nodes.find(n => n.id === state.lastPlacedNodeId);
       console.log(`[DEBUG-FLOW] addProject | projectId=${id} | sourceNode=${sourceNode?.id}`);
       const newNode = createProjectNode(id, data, sourceNode);
+      const ci = state.nodeCreationCounter;
+      newNode.data = { ...newNode.data, creationIndex: ci };
 
       const newEdges = sourceNode ? [...state.edges, createEdge(sourceNode.id, id)] : state.edges;
-      return { nodes: [...state.nodes, newNode], edges: newEdges, lastPlacedNodeId: id, trackedNodeId: id };
+      return { nodes: [...state.nodes, newNode], edges: newEdges, lastPlacedNodeId: id, trackedNodeId: id, nodeCreationCounter: ci + 1 };
     });
   },
 
@@ -335,5 +355,79 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
         activeStreamingTextId: null
       };
     });
-  }
+  },
+
+  // --- Dossier lifecycle ---
+  activeDossierId: null,
+  dossierStatus: 'idle',
+  dossierSlug: null,
+  dossierTitle: null,
+  skeletonProjectId: null,
+
+  addDossier: (slug: string) => {
+    set(state => {
+      const dossierId = `dossier-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+      const skeletonId = `skeleton-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+
+      const sourceNode = state.nodes.find(n => n.id === state.lastPlacedNodeId);
+      const dossierNode = createDossierNode(dossierId, slug, sourceNode);
+      const skeletonNode = createSkeletonProjectNode(skeletonId, slug, dossierNode);
+
+      const newEdges = [
+        ...(sourceNode ? [createEdge(sourceNode.id, dossierId)] : []),
+        createEdge(dossierId, skeletonId),
+      ];
+
+      return {
+        nodes: [...state.nodes, dossierNode, skeletonNode],
+        edges: [...state.edges, ...newEdges],
+        activeDossierId: dossierId,
+        dossierStatus: 'accessing' as const,
+        dossierSlug: slug,
+        dossierTitle: null,
+        skeletonProjectId: skeletonId,
+        lastPlacedNodeId: skeletonId,
+        trackedNodeId: dossierId,
+      };
+    });
+  },
+
+  updateDossierStatus: (status, meta) => {
+    set(state => {
+      if (!state.activeDossierId) return state;
+      return {
+        dossierStatus: status,
+        ...(meta?.title ? { dossierTitle: meta.title } : {}),
+      };
+    });
+  },
+
+  revealProject: (data: any) => {
+    set(state => {
+      if (!state.skeletonProjectId) return state;
+
+      const skeletonId = state.skeletonProjectId;
+      return {
+        nodes: state.nodes.map(n =>
+          n.id === skeletonId
+            ? {
+                ...n,
+                data: {
+                  ...data,
+                  isLoading: false,
+                  isRevealing: true, // Triggers typewriter animation
+                },
+              }
+            : n
+        ),
+        activeDossierId: null,
+        dossierStatus: 'idle' as const,
+        skeletonProjectId: null,
+        trackedNodeId: skeletonId,
+      };
+    });
+
+    const rf = get().rfInstance;
+    if (rf) setTimeout(() => rf.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 }), 50);
+  },
 }));
