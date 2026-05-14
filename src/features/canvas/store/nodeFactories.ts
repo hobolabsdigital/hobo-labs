@@ -91,7 +91,13 @@ export const createProjectNode = (id: string, data: any, sourceNode?: Node): Nod
       summary: data.summary,
       role: data.role,
       year: data.year,
-      image: data.image
+      image: data.image,
+      content: data.content,
+      techStack: data.techStack || [],
+      problem: data.problem,
+      solution: data.solution,
+      quote: data.quote,
+      gallery: data.gallery || [],
     }
   };
 };

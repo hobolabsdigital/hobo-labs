@@ -53,6 +53,17 @@ export function useEditorialChat() {
         case 'createProjectNode':
           addProject(input, toolCall.toolCallId);
           break;
+        case 'showProject': {
+          // Server-executed tool — result comes from the sub-agent
+          const result = (toolCall as any).result || (toolCall as any).output;
+          if (result && !result.error) {
+            console.log('[DEBUG-STREAM] showProject result:', JSON.stringify(result, null, 2));
+            addProject(result, toolCall.toolCallId);
+          } else if (result?.error) {
+            console.warn(`[DEBUG-STREAM] showProject error: ${result.error}`);
+          }
+          return; // Server already provided output, skip addToolOutput
+        }
         default:
           console.warn(`Unhandled tool call: ${toolCall.toolName}`);
           return;
@@ -115,6 +126,7 @@ export function useEditorialChat() {
   }, [messages, status, upsertActiveGhost]);
 
   const lastProcessedTextMsgId = useRef<string | null>(null);
+  const processedShowProjectCalls = useRef<Set<string>>(new Set());
 
   // Text node streaming sync
   useEffect(() => {
@@ -145,6 +157,27 @@ export function useEditorialChat() {
       }
     }
   }, [messages, status, addText]);
+
+  // Server-executed tool result watcher (for showProject sub-agent)
+  useEffect(() => {
+    for (const message of messages) {
+      if (message.role !== 'assistant') continue;
+      const parts = (message as any).parts || [];
+      for (const part of parts) {
+        if (
+          part.type === 'tool-showProject' &&
+          part.state === 'output-available' &&
+          part.output &&
+          !part.output.error &&
+          !processedShowProjectCalls.current.has(part.toolCallId)
+        ) {
+          processedShowProjectCalls.current.add(part.toolCallId);
+          console.log('[DEBUG-STREAM] Caught showProject result from parts:', JSON.stringify(part.output, null, 2));
+          addProject(part.output, part.toolCallId);
+        }
+      }
+    }
+  }, [messages, addProject]);
 
   const handleSend = () => {
     if (!input.trim()) return;

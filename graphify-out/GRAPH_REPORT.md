@@ -1,19 +1,20 @@
-# Graph Report - .  (2026-05-13)
+# Graph Report - portfolio  (2026-05-14)
 
 ## Corpus Check
-- Large corpus: 106 files · ~908,380 words. Semantic extraction will be expensive (many Claude tokens). Consider running on a subfolder, or use --no-semantic to run AST-only.
+- 57 files · ~916,917 words
+- Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 90 nodes · 46 edges · 5 communities detected
+- 106 nodes · 53 edges · 5 communities detected
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_Node Factories|Node Factories]]
-- [[_COMMUNITY_Chat API & RAG|Chat API & RAG]]
-- [[_COMMUNITY_portfolio_postcss_config_config|portfolio_postcss_config_config]]
-- [[_COMMUNITY_eslint_config_mjs|eslint_config_mjs]]
-- [[_COMMUNITY_next_config|next_config]]
+- [[_COMMUNITY_Community 0|Community 0]]
+- [[_COMMUNITY_Community 2|Community 2]]
+- [[_COMMUNITY_Community 5|Community 5]]
+- [[_COMMUNITY_Community 6|Community 6]]
+- [[_COMMUNITY_Community 7|Community 7]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `calculateNodePosition()` - 4 edges
@@ -32,36 +33,36 @@
 
 ## Communities
 
-### Community 0 - "Node Factories"
+### Community 0 - "Community 0"
 Cohesion: 0.31
 Nodes (4): calculateNodePosition(), createHeroNode(), createProjectNode(), getRandomOffset()
 
-### Community 2 - "Chat API & RAG"
+### Community 2 - "Community 2"
 Cohesion: 0.5
 Nodes (2): POST(), findSimilarChunks()
 
-### Community 4 - "portfolio_postcss_config_config"
+### Community 5 - "Community 5"
 Cohesion: 1.0
 Nodes (1): config
 
-### Community 5 - "eslint_config_mjs"
+### Community 6 - "Community 6"
 Cohesion: 1.0
 Nodes (1): eslintConfig
 
-### Community 6 - "next_config"
+### Community 7 - "Community 7"
 Cohesion: 1.0
 Nodes (1): nextConfig
 
 ## Knowledge Gaps
 - **3 isolated node(s):** `config`, `eslintConfig`, `nextConfig`
   These have ≤1 connection - possible missing edges or undocumented components.
-- **Thin community `Chat API & RAG`** (4 nodes): `POST()`, `findSimilarChunks()`, `route.ts`, `vectorStore.ts`
+- **Thin community `Community 2`** (4 nodes): `POST()`, `findSimilarChunks()`, `route.ts`, `vectorStore.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `portfolio_postcss_config_config`** (2 nodes): `config`, `postcss.config.mjs`
+- **Thin community `Community 5`** (2 nodes): `config`, `postcss.config.mjs`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `eslint_config_mjs`** (2 nodes): `eslint.config.mjs`, `eslintConfig`
+- **Thin community `Community 6`** (2 nodes): `eslint.config.mjs`, `eslintConfig`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `next_config`** (2 nodes): `next.config.ts`, `nextConfig`
+- **Thin community `Community 7`** (2 nodes): `next.config.ts`, `nextConfig`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions

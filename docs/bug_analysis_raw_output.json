@@ -1,0 +1,14 @@
+{
+  "finishReason": "stop",
+  "toolCalls": [
+    {
+      "type": "tool-call",
+      "toolCallId": "e930041b-0d87-4e64-844d-6812e7262fda",
+      "toolName": "showProject",
+      "input": {
+        "slug": "monstory"
+      }
+    }
+  ],
+  "rawText": ""
+}

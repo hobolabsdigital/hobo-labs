@@ -5,6 +5,7 @@ import { Handle, Position } from "@xyflow/react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export const ProjectNode = React.memo(function ProjectNode({ data, id }: { data: any, id: string }) {
+  console.log("PROJECT NODE DATA:", data);
   const title = data.title || "UNTITLED PROJECT";
   const summary = data.summary || "Project summary not provided.";
   const content = data.content;
@@ -14,9 +15,9 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id }: { data:
   const techStack = data.techStack || [];
   
   // New AI Schema fields
-  const problem = data.problem || "Async multiplayer feels dead — players drop off when turns take hours.";
-  const solution = data.solution || "Turn-based timeline with emotional moments surfaced as rich push notifications.";
-  const quote = data.quote || "WebSocket latency across six continents without a central game server.";
+  const problem = data.problem || "";
+  const solution = data.solution || "";
+  const quote = data.quote || "";
 
   // Fallback gallery resolution if AI hasn't provided it yet
   let resolvedGallery = data.gallery || [];

@@ -150,6 +150,7 @@ export function FluidBackground() {
       className="fixed inset-0 pointer-events-none z-0"
       style={{
         mixBlendMode: "difference",
+        zIndex: 9999
       }}
     >
       <canvas

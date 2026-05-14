@@ -1,27 +1,18 @@
-# My Mazda App
+---
+title: "My Mazda App"
+year: "2021"
+role: "Lead Developer"
+techStack:
+  - "React Native"
+  - "iOS & Android"
+quote: "The most convenient way to access vehicle documents, history, and manuals on the go."
+---
 
-## Overview
+## The Problem
+Owners previously lacked a unified, mobile-first ecosystem to effortlessly track service histories and access crucial vehicle documents.
 
-My Mazda is the most convenient way to access important vehicle documents, service history, manuals, and more from home or on the go. Available for iOS and Android, it provides service reminders, information updates, dealer locator, and on-demand roadside assistance directly from a smartphone.
+## The Solution
+Architected and developed the 'My Mazda' React Native application for both iOS and Android platforms, unifying service reminders and dealer locating.
 
-## Tech Stack
-
-- React Native
-- iOS & Android
-
-## My Role & Contributions
-
-- **Lead Developer:** Architected and developed the React Native application.
-- **Agency:** Developed in collaboration with Demodern.de for Mazda.
-
-## Interesting Details
-
-- **Features:** Included features like service reminders, interactive dealer locators, and on-demand roadside assistance right inside the user's pocket.
-
-## Media
-
-https://www.youtube.com/watch?v=53cNfzNBAL0
-
-## AI Trigger Keyword
-
-When the AI detects relevant conversation context matching this project, it should use the trigger `[TRIGGER:my-mazda]` which maps to this project.
+## Overview & Impact
+Included features like service reminders, interactive dealer locators, and on-demand roadside assistance directly inside the user's pocket, serving as Mazda's official pan-European mobile ecosystem. It significantly bridged the gap between home and the dealership, improving post-purchase customer satisfaction.

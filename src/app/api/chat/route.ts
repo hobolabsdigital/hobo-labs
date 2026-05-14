@@ -1,7 +1,7 @@
 import { ollama } from 'ai-sdk-ollama';
 import {
   streamText, tool, convertToModelMessages, wrapLanguageModel,
-  extractReasoningMiddleware
+  extractReasoningMiddleware, ToolLoopAgent
 } from 'ai';
 import { z } from 'zod';
 
@@ -60,7 +60,7 @@ export async function POST(req: Request) {
 
     const coreMessages = await convertToModelMessages(messages);
 
-    // --- NEW: Semantic RAG Retrieval ---
+    // --- RAG: Persona DB only (lightweight — identity + project catalog) ---
     const lastUserMessage = [...coreMessages].reverse().find(m => m.role === 'user');
     let contextText = '';
 
@@ -80,26 +80,47 @@ export async function POST(req: Request) {
         const fs = require('fs');
         const path = require('path');
 
-        const dbPath = path.join(process.cwd(), 'docs', 'persona-vector-db.json');
-        if (fs.existsSync(dbPath)) {
-          const db = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
+        // Only load persona DB for main agent — no project bodies here
+        const personaDbPath = path.join(process.cwd(), 'docs', 'persona-vector-db.json');
+        if (fs.existsSync(personaDbPath)) {
+          const personaDb = JSON.parse(fs.readFileSync(personaDbPath, 'utf8'));
           const { embedding } = await embed({
             model: ollama.embedding('nomic-embed-text'),
             value: userQuery,
           });
-          const topChunks = findSimilarChunks(embedding, db, 5);
-          contextText = topChunks.map((c: any) => {
-            if (c.metadata?.type === 'project_detail') {
-              return `[PROJECT CASE STUDY]\nTitle: ${c.metadata.title}\nRole: ${c.metadata.role || 'Unknown'}\nYear: ${c.metadata.year || 'Unknown'}\nImage: ${c.metadata.image}\nContent:\n${c.content}`;
-            }
-            return c.content;
-          }).join('\n\n---\n\n');
+          const topChunks = findSimilarChunks(embedding, personaDb, 5);
+
+          const queryTerms = userQuery.toLowerCase().split(' ').filter((t: string) => t.length > 3);
+          const keywordChunks = personaDb.filter((c: any) => {
+            const contentStr = c.content.toLowerCase();
+            return queryTerms.some((term: string) => contentStr.includes(term));
+          }).slice(0, 3);
+
+          const combinedChunks = [...topChunks, ...keywordChunks];
+          const uniqueChunks = Array.from(new Set(combinedChunks.map((c: any) => JSON.stringify(c)))).map(str => JSON.parse(str as string));
+
+          contextText = uniqueChunks.map((c: any) => c.content).join('\n\n---\n\n');
         } else {
-          console.error("RAG ERROR: Vector DB file not found at", dbPath);
+          console.error('RAG ERROR: Persona DB not found at', personaDbPath);
         }
       } catch (e) {
-        console.error("RAG Retrieval Error:", e);
+        console.error('RAG Retrieval Error:', e);
       }
+    }
+
+    // Always load project catalog for the system prompt
+    let catalogText = '';
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const catalogPath = path.join(process.cwd(), 'docs', 'persona', 'project-catalog.md');
+      if (fs.existsSync(catalogPath)) {
+        const catalogRaw = fs.readFileSync(catalogPath, 'utf8');
+        const { content: catalogBody } = require('gray-matter')(catalogRaw);
+        catalogText = catalogBody.trim();
+      }
+    } catch (e) {
+      console.error('Failed to load project catalog:', e);
     }
 
     const isInitialGreeting = coreMessages.length === 1 && userQuery.includes('Introduce yourself');
@@ -120,6 +141,107 @@ export async function POST(req: Request) {
         tagName: 'think' // Change to 'thought' if your specific GGUF uses <|thought|>
       }),
     });
+
+    // --- Sub-Agent: Creative Project Editor ---
+    let submittedCardData: any = null;
+
+    const projectEditor = new ToolLoopAgent({
+      model: ollama('gemma4'),
+      instructions: `You are a Creative Editor for a Bauhaus-style editorial design system. Your task is to load raw project case study data using your getProjectSource tool, then rewrite it as a compelling, polished project card.
+
+## CREATIVE BRIEF
+- Be bold, editorial, and architecturally precise — like a design magazine meets a tech conference
+- Add creative flair and personality while staying faithful to the project facts
+- The tone should feel sophisticated, confident, and slightly playful
+- Write in complete, well-crafted paragraphs — not bullet points or copy-paste
+- For "summary": write a punchy, magazine-style sub-headline capturing the project's essence
+- Write the "content" as 2-3 substantial editorial paragraphs
+
+## WORKFLOW
+1. Use getProjectSource to load the raw case study data
+2. Study the raw data carefully
+3. Rewrite it with creative editorial flair
+4. Call submitProjectCard with your completed card — this is how you deliver your work`,
+      tools: {
+        getProjectSource: tool({
+          description: 'Load the raw case study data for a project by its slug.',
+          inputSchema: z.object({
+            slug: z.string().describe('Project slug, e.g. "monstory"'),
+          }),
+          execute: async ({ slug }) => {
+            console.log(`[SUB-AGENT-TOOL] getProjectSource("${slug}")`);
+            const fs = require('fs');
+            const path = require('path');
+            const projectsDbPath = path.join(process.cwd(), 'docs', 'projects-vector-db.json');
+
+            if (!fs.existsSync(projectsDbPath)) {
+              return { error: 'Projects database not found.' };
+            }
+
+            const projectsDb = JSON.parse(fs.readFileSync(projectsDbPath, 'utf8'));
+            const normalizedSlug = slug.toLowerCase().replace(/[^a-z0-9-]/g, '');
+
+            let chunk = projectsDb.find(
+              (c: any) => (c.metadata?.slug || '').toLowerCase() === normalizedSlug,
+            );
+
+            if (!chunk) {
+              chunk = projectsDb.find((c: any) => {
+                const title = c.metadata?.title || '';
+                const titleSlug = title
+                  .toLowerCase()
+                  .replace(/[^a-z0-9-]/g, '-')
+                  .replace(/-+/g, '-')
+                  .replace(/^-|-$/g, '');
+                return (
+                  titleSlug === normalizedSlug ||
+                  titleSlug.includes(normalizedSlug) ||
+                  normalizedSlug.includes(titleSlug)
+                );
+              });
+            }
+
+            if (!chunk) {
+              return { error: `Project "${slug}" not found.` };
+            }
+
+            console.log(`[SUB-AGENT-TOOL] Returning source for "${chunk.metadata.title}"`);
+            return {
+              title: chunk.metadata.title,
+              year: chunk.metadata.year,
+              role: chunk.metadata.role,
+              techStack: chunk.metadata.techStack,
+              quote: chunk.metadata.quote,
+              image: chunk.metadata.image,
+              gallery: chunk.metadata.gallery,
+              body: chunk.content,
+            };
+          },
+        }),
+        submitProjectCard: tool({
+          description: 'Submit your completed editorial project card. Call this when your card is ready.',
+          inputSchema: z.object({
+            title: z.string(),
+            summary: z.string(),
+            content: z.string(),
+            techStack: z.array(z.string()),
+            role: z.string(),
+            year: z.string(),
+            image: z.string(),
+            gallery: z.array(z.string()),
+            problem: z.string(),
+            solution: z.string(),
+            quote: z.string(),
+          }),
+          execute: async (args) => {
+            console.log('[SUB-AGENT-TOOL] submitProjectCard called with:', JSON.stringify(args, null, 2));
+            submittedCardData = args;
+            return { success: true };
+          },
+        }),
+      },
+    });
+
     const result = streamText({
       model: modelWithReasoning,
       messages: coreMessages,
@@ -149,12 +271,15 @@ ${isInitialGreeting ?
 Use the following facts from your career to ground your responses:
 ${contextText}
 
-## CRITICAL OPERATIONAL RULES
-1. TOOL USAGE: You may use multiple tools in a single response to architect rich, multi-node canvas layouts (e.g., combining a HeroNode with a ProjectNode). After orchestrating the canvas, provide a brief, witty reflection and then STOP.
-2. HERO NODES: When calling 'createHeroNode', you MUST use '\\n' to stack the headline into 2-3 lines (e.g., 'AGENTIC\\nORCHESTRATION'). Never output a single long horizontal headline.
-3. PROJECTS: When asked about specific work (Moxis, MonstoryX, Hermes, or Mazda), you MUST use 'createProjectNode' to detail the architecture, UX, and technical impact.
-4. AGENTIC SHIFT: Never use the term "Vibe Coding." You are an Architect of Systems, and your work is "Agentic Coding."
-5. NO RAMBLING: If you don't have enough context for a specific project, be honest and direct about your current research and development focus.
+## PROJECT CATALOG
+Use the EXACT slug when calling showProject.
+${catalogText}
+
+## TOOL USAGE
+1. HERO NODES: When calling 'createHeroNode', use '\\n' to stack the headline into 2-3 lines (e.g., 'AGENTIC\\nORCHESTRATION'). Never output a single long horizontal headline.
+2. PROJECTS: When asked about a specific project, call 'showProject' with the EXACT slug from the catalog above. The system's sub-agent will handle everything else — you just provide the slug. Then give a brief conversational reflection.
+3. AGENTIC SHIFT: Never use the term "Vibe Coding." You are an Architect of Systems, and your work is "Agentic Coding."
+4. NO RAMBLING: If you don't have enough context for something, be honest and direct. After tool calls, provide a brief reflection and STOP.
 `,
       tools: {
         createHeroNode: tool({
@@ -169,23 +294,57 @@ ${contextText}
             layoutIntent: z.enum(['top_right', 'bottom_right', 'far_right']).optional().describe('Where to spatially drop the node before physics takes over'),
           })
         }),
-        createProjectNode: tool({
-          description: 'Create a new Bauhaus-style magazine project node on the editorial canvas',
+        showProject: tool({
+          description: 'Show a project case study on the canvas. Provide the project slug from context.',
           inputSchema: z.object({
-            title: z.string().describe('Title for project nodes'),
-            summary: z.string().describe('A catchy, bold sub-headline or short summary'),
-            content: z.string().optional().describe('A detailed, high-quality editorial article explaining the architecture, UX, and impact of the project. Write this like a feature in a design magazine.'),
-            techStack: z.array(z.string()).optional().describe('An array of 3-6 core technologies or tools used (e.g. ["Unreal Engine 5", "Node.js", "Generative AI"]).'),
-            role: z.string().optional().describe('Your role for the project node (e.g. ARCHITECT, ENGINEER). If not explicitly stated, omit this.'),
-            year: z.string().optional().describe('Year of the project. If not explicitly stated, omit this.'),
-            image: z.string().optional().describe('Main image path for project node (e.g. /portfolio/moxis.png)'),
-            gallery: z.array(z.string()).optional().describe('Array of 2-3 additional image paths to create a gallery spread. You can guess these based on the title, e.g. /portfolio/Monstory-01.png, /portfolio/Monstory-02.png'),
-            problem: z.string().optional().describe('A specific problem or challenge that was overcome in this project.'),
-            solution: z.string().optional().describe('The specific solution implemented to solve the problem.'),
-            quote: z.string().optional().describe('A highly impactful quote or metric from the project, suitable for large callout text.'),
-            layoutIntent: z.enum(['top_right', 'bottom_right', 'far_right']).optional().describe('Where to spatially drop the node before physics takes over'),
-          })
+            slug: z.string().describe('The project slug (e.g. "monstory", "moxis", "hermes", "find-my-mazda")'),
+          }),
+          execute: async ({ slug }) => {
+            console.log(`[SHOW-PROJECT] Delegating "${slug}" to sub-agent`);
+
+            submittedCardData = null;
+
+            try {
+              await projectEditor.generate({
+                prompt: `Create a creative editorial project card for the project with slug "${slug}".
+
+WORKFLOW:
+1. Call getProjectSource with slug "${slug}" to load the raw case study data
+2. Study the raw data
+3. Rewrite it into a compelling Bauhaus-style editorial project card
+4. Call submitProjectCard with your completed card`,
+                abortSignal: new AbortController().signal,
+              });
+
+              if (!submittedCardData) {
+                console.error('[SHOW-PROJECT] Sub-agent did not call submitProjectCard');
+                return { error: 'Sub-agent did not submit a project card' };
+              }
+
+              console.log('[SHOW-PROJECT] Got Zod-validated card:', JSON.stringify(submittedCardData, null, 2));
+              return submittedCardData;
+            } catch (e: any) {
+              console.error('[SHOW-PROJECT] Failed:', e.message);
+              return { error: `Sub-agent failed: ${e.message}` };
+            }
+          },
         }),
+      },
+      onFinish: (completionResult) => {
+        const fs = require('fs');
+        const path = require('path');
+        const logPath = path.join(process.cwd(), 'docs', 'bug_analysis_raw_output.json');
+
+        fs.writeFileSync(logPath, JSON.stringify({
+          finishReason: completionResult.finishReason,
+          toolCalls: completionResult.toolCalls,
+          rawText: completionResult.text
+        }, null, 2));
+
+        console.log("================= STREAM FINISH ================");
+        console.log("Finish Reason:", completionResult.finishReason);
+        console.log("Written stream results to docs/bug_analysis_raw_output.json");
+        console.log("=================================================");
       }
     });
 

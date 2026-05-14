@@ -1,28 +1,25 @@
-# moxis (XiTrust E-Digital Signature Platform)
+---
+title: "Moxis (XiTrust)"
+year: "2024"
+role: "Lead Architecture & Engineering"
+image: "/portfolio/Xitrust-Moxis-01.png"
+gallery:
+  - "/portfolio/Xitrust-Moxis-02.png"
+  - "/portfolio/Xitrust-Moxis-03.png"
+  - "/portfolio/Xitrust-Moxis-04.png"
+techStack:
+  - "Next.js 16"
+  - "React 19"
+  - "Python (FastAPI)"
+  - "Ollama"
+quote: "Transformed traditionally static, repetitive forms into AI-augmented fluid conversations."
+---
 
-## Overview
+## The Problem
+Enterprise digital signature platforms are notoriously rigid, bureaucratic, and extremely frustrating for end-users, burdened by outdated compliance checks and static forms.
 
-Spearheaded the architectural reinvention of an enterprise e-digital signature platform. Our core objective was to fundamentally prove that complex corporate data systems can feel fluid, intuitive, and human, rather than rigid and bureaucratic.
+## The Solution
+Architected a highly scalable monorepo unifying multiple complex applications into a single, cohesive ecosystem. Integrated local LLMs via Ollama to transform data input into an intelligent, conversational flow.
 
-## Tech Stack
-
-- Next.js 16 & React 19
-- Custom Atomic Design System (Figma)
-- Python & FastAPI
-- Local LLMs (Ollama)
-- Monorepo Architecture
-
-## My Role & Contributions
-
-- **Lead Architecture & Engineering:** Designed a highly scalable monorepo architecture unifying multiple complex applications into a single, cohesive ecosystem powered by a shared Atomic Design System.
-- **Full-Stack Modernization:** Built the next-generation frontend utilizing Next.js 16 and React 19, backed by a high-performance, strictly typed Python FastAPI service layer.
-- **Design Engineering Strategy:** Built a comprehensive design system directly connecting Figma to our codebase. Orchestrated a rigorous feedback loop: bouncing ideas from high-fidelity Figma models to working code-based prototypes, ensuring perfectly validated interaction models before final production rollout.
-
-## Interesting Details
-
-- **"Vibe Coding" & Intelligent Workflows:** Pushed the boundaries of standard enterprise UX by natively integrating local LLMs via Ollama. This advanced capability successfully transformed traditionally static, repetitive forms into "AI-augmented" fluid conversations.
-- **Humanizing Complexity:** The major achievement of this modernization was taking an extremely complex, security-critical domain (Enterprise Digital Signatures) and creating a frontend interface that felt as dynamic, playful, and responsive as the best modern consumer apps.
-
-## AI Trigger Keyword
-
-When the AI detects relevant conversation context matching this project, it should use the trigger `[TRIGGER:moxis]` which maps to this project.
+## Overview & Impact
+Spearheaded the architectural reinvention of an enterprise e-digital signature platform. Our core objective was to fundamentally prove that complex corporate data systems can feel fluid, intuitive, and human. We built a comprehensive Atomic Design System directly connecting Figma to our codebase. The platform uniquely uses a hybrid approach of geometric CV and Vision Language Models (VLMs) to classify and export form fields from legal contracts. The major achievement was taking an extremely complex, security-critical domain and creating a frontend interface that felt as dynamic, playful, and responsive as the best modern consumer apps.
