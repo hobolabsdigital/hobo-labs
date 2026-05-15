@@ -52,7 +52,7 @@
 ## 8. Timeline Scrubber
 - [x] Timeline scrubber still works (fitView is preserved for time travel)
 - [x] Scrubbing to a past point → camera fitViews all visible nodes at that time
-- [ ] Returning to present → camera behavior normal
+- [x] Returning to present → camera behavior normal
 
 ## 9. Multi-Turn Conversation
 - [x] Have a 4-5 turn conversation with the AI
@@ -65,18 +65,17 @@
 ## Backlog — Future Phases
 
 ### High Priority
-- [ ] **WebGL Project Modal**: Click compact card → WebGL distortion transition → full project spread opens as viewport-level modal (decoupled from canvas nodes)
-- [ ] **Physics fine-tuning session**: Live-test with 5+ turn conversations to validate current soft settings (0.82 decay, -80 charge, 0.04 forceX) don't cause overlap at scale
+- [x] **Physics fine-tuning session**: Live-test with 5+ turn conversations to validate current soft settings (0.82 decay, -80 charge, 0.04 forceX) don't cause overlap at scale
 
 ### Medium Priority
-- [ ] **Persistent node positions**: Save/restore node positions so returning visitors see a stable canvas
-- [ ] **Responsive camera**: Adjust zoom levels for smaller screens (tablet, mobile)
-- [ ] **Timeline return-to-present**: Fix camera behavior when returning from history scrubbing to present state
+- [x] **Persistent node positions**: Save/restore node positions so returning visitors see a stable canvas
+- [x] **Responsive camera**: Adjust zoom levels for smaller screens (tablet, mobile)
+- [x] **Timeline return-to-present**: Fix camera behavior when returning from history scrubbing to present state
 
 ### Low Priority / Polish
-- [ ] **Node entrance animations**: Subtle fade-in or scale-up when new nodes spawn
-- [ ] **Edge styling refinement**: Evaluate if dotted curved edges are the right aesthetic vs. straight muted lines
-- [ ] **Swarm sleep/wake**: Resume swarm agent integration with the sleep state for performance during AI responses
+- [x] **Node entrance animations**: Subtle fade-in or scale-up when new nodes spawn
+- [x] **Edge styling refinement**: Evaluate if dotted curved edges are the right aesthetic vs. straight muted lines
+- [x] **Swarm sleep/wake**: Resume swarm agent integration with the sleep state for performance during AI responses
 
 ## Current Physics Config (reference)
 

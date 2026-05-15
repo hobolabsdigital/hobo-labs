@@ -29,13 +29,37 @@ export function useEditorialChat() {
   const truncateHistory = useCanvasStore(state => state.truncateHistory);
   const nodes = useCanvasStore(state => state.nodes);
 
+  // Dossier lifecycle
+  const addDossier = useCanvasStore(state => state.addDossier);
+  const updateDossierStatus = useCanvasStore(state => state.updateDossierStatus);
+  const revealProject = useCanvasStore(state => state.revealProject);
+
   const { messages, setMessages, sendMessage, status, stop, addToolOutput } = useChat({
     transport: new DefaultChatTransport({
       api: isMockApiEnabled ? '/api/chat?mock=true' : '/api/chat',
     }),
     onFinish: (event) => {
-      // Disabled ghost node sync from onFinish since we handle text and reasoning continuously via state in the effects below.
       return;
+    },
+    onData: (dataPart: any) => {
+      // Route dossier progress events from data-dossier stream parts
+      if (dataPart?.type === 'data-dossier' && dataPart.data) {
+        const { status, slug, title } = dataPart.data;
+        switch (status) {
+          case 'accessing':
+            addDossier(slug);
+            break;
+          case 'source-loaded':
+            updateDossierStatus('source-loaded', { title });
+            break;
+          case 'rewriting':
+            updateDossierStatus('rewriting');
+            break;
+          case 'complete':
+            updateDossierStatus('complete');
+            break;
+        }
+      }
     },
     async onToolCall({ toolCall }) {
       console.log('[DEBUG-STREAM] onToolCall FIRED!', JSON.stringify(toolCall, null, 2));
@@ -59,8 +83,8 @@ export function useEditorialChat() {
           // Server-executed tool — result comes from the sub-agent
           const result = (toolCall as any).result || (toolCall as any).output;
           if (result && !result.error) {
-            console.log('[DEBUG-STREAM] showProject result:', JSON.stringify(result, null, 2));
-            addProject(result, toolCall.toolCallId);
+            // Use revealProject to fill the existing skeleton node
+            revealProject(result);
           } else if (result?.error) {
             console.warn(`[DEBUG-STREAM] showProject error: ${result.error}`);
           }
@@ -172,12 +196,12 @@ export function useEditorialChat() {
           !processedShowProjectCalls.current.has(part.toolCallId)
         ) {
           processedShowProjectCalls.current.add(part.toolCallId);
-          console.log('[DEBUG-STREAM] Caught showProject result from parts:', JSON.stringify(part.output, null, 2));
-          addProject(part.output, part.toolCallId);
+          // Use revealProject to fill the skeleton instead of creating new node
+          revealProject(part.output);
         }
       }
     }
-  }, [messages, addProject]);
+  }, [messages, revealProject]);
 
   const handleSend = () => {
     if (!input.trim()) return;

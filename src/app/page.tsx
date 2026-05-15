@@ -14,6 +14,7 @@ import { FluidBackground } from '@/features/fluid-bg/components/FluidBackground'
 import { InteractiveGrid } from '@/core/ui/InteractiveGrid';
 import { ThemeToggle } from '@/core/ui/ThemeToggle';
 import { CrtEffect } from '@/features/crt/components/CrtEffect';
+import { ProjectModalOverlay } from '@/features/project-modal/components/ProjectModalOverlay';
 
 const EditorialCanvas = dynamic(() => import("@/features/canvas/components/EditorialCanvas"), {
   ssr: false,
@@ -88,9 +89,10 @@ export default function Home() {
           ) : (
             pageContent
           )}
+          <ProjectModalOverlay />
           <DebugPanel />
           <TimelineScrubber />
-          <FluidBackground />
+          {/*<FluidBackground />*/}
           <ThemeToggle />
         </ReactFlowProvider>
       )}

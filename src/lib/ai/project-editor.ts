@@ -1,5 +1,6 @@
 import { ollama } from 'ai-sdk-ollama';
 import { ToolLoopAgent, tool } from 'ai';
+import type { UIMessageStreamWriter } from 'ai';
 import { z } from 'zod';
 import fs from 'fs';
 import path from 'path';
@@ -72,14 +73,31 @@ function findProjectBySlug(slug: string) {
   return chunk ?? null;
 }
 
+/** Helper to safely emit a dossier progress event via the stream writer */
+function emitDossierEvent(writer: UIMessageStreamWriter | null, status: string, meta?: Record<string, unknown>) {
+  if (!writer) return;
+  try {
+    writer.write({
+      type: 'data-dossier',
+      data: { status, ...meta },
+    });
+  } catch {
+    // Stream may have been closed — non-fatal
+  }
+}
+
 /**
  * Create the project editor sub-agent.
  *
- * Returns { editor, getSubmittedCard } — the caller invokes editor.generate(),
+ * Returns { editor, getSubmittedCard, resetSubmittedCard } — the caller invokes editor.generate(),
  * then reads the result via getSubmittedCard().
+ *
+ * @param writer Optional UIMessageStreamWriter to emit dossier progress events
  */
-export function createProjectEditor() {
+export function createProjectEditor(writer: UIMessageStreamWriter | null = null) {
   let submittedCardData: ProjectCardData | null = null;
+  let activeMainImage: string | null = null;
+  let activeGallery: string[] = [];
 
   const editor = new ToolLoopAgent({
     model: ollama('gemma4'),
@@ -93,6 +111,30 @@ export function createProjectEditor() {
         execute: async ({ slug }) => {
           const chunk = findProjectBySlug(slug);
           if (!chunk) return { error: `Project "${slug}" not found.` };
+
+          // Automatically map local images from public/portfolio
+          const portfolioDir = path.join(process.cwd(), 'public', 'portfolio');
+          const files = fs.existsSync(portfolioDir) ? fs.readdirSync(portfolioDir) : [];
+          
+          const slugLower = slug.toLowerCase();
+          const exactMain = files.find(f => f.toLowerCase() === `${slugLower}.png`);
+          
+          const searchKey = slugLower.replace(/-/g, '');
+          const searchTokens = slugLower.split('-');
+          const fallbackToken = searchTokens[searchTokens.length - 1]; // e.g. "wagner" for "nestle-wagner"
+          
+          const relatedFiles = files.filter(f => {
+            const normalizedF = f.toLowerCase().replace(/-/g, '');
+            return (normalizedF.includes(searchKey) || normalizedF.includes(fallbackToken)) && f.match(/\.(png|jpg|jpeg)$/i);
+          });
+
+          activeMainImage = exactMain ? `/portfolio/${exactMain}` : null;
+          activeGallery = relatedFiles
+             .filter(f => f !== exactMain)
+             .map(f => `/portfolio/${f}`);
+
+          // Emit progress: source data loaded
+          emitDossierEvent(writer, 'source-loaded', { title: chunk.metadata.title });
 
           return {
             title: chunk.metadata.title,
@@ -110,7 +152,15 @@ export function createProjectEditor() {
         description: 'Submit your completed editorial project card. Call this when your card is ready.',
         inputSchema: projectCardSchema,
         execute: async (args) => {
+          // Overwrite with actual verified paths
+          if (activeMainImage) args.image = activeMainImage;
+          if (activeGallery.length > 0) args.gallery = activeGallery;
+          
           submittedCardData = args;
+
+          // Emit progress: dossier complete
+          emitDossierEvent(writer, 'complete');
+
           return { success: true };
         },
       }),

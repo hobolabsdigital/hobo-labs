@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { NodeHandles } from './NodeHandles';
+import { useProjectModalStore } from '@/features/project-modal/store/useProjectModalStore';
 
 // --- Shimmer block for skeleton mode ---
 function Shimmer({ className }: { className?: string }) {
@@ -17,7 +18,7 @@ function Shimmer({ className }: { className?: string }) {
   );
 }
 
-// --- Compact Skeleton (matches compact card layout) ---
+// --- Compact Skeleton ---
 function ProjectSkeleton() {
   return (
     <div
@@ -25,7 +26,6 @@ function ProjectSkeleton() {
       style={{ width: '800px' }}
     >
       <NodeHandles />
-      {/* Image skeleton */}
       <div className="w-full aspect-video bg-foreground/5 flex items-center justify-center overflow-hidden relative">
         <motion.div
           animate={{ opacity: [0.3, 0.6, 0.3] }}
@@ -35,7 +35,6 @@ function ProjectSkeleton() {
           LOADING ASSET
         </motion.div>
       </div>
-      {/* Metadata skeleton */}
       <div className="p-8 flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <Shimmer className="h-7 w-2/3 rounded" />
@@ -48,19 +47,21 @@ function ProjectSkeleton() {
   );
 }
 
-// --- Compact Card (the only visual state — expand will be a future WebGL modal) ---
-export const ProjectNode = React.memo(function ProjectNode({ data, id }: { data: any, id: string }) {
-  // Skeleton mode
-  if (data.isLoading) {
-    return <ProjectSkeleton />;
-  }
+// --- Compact Card ---
+export const ProjectNode = React.memo(function ProjectNode({ data }: { data: Record<string, string | boolean | null | undefined> }) {
+  if (data.isLoading) return <ProjectSkeleton />;
 
-  const title = data.title || "UNTITLED PROJECT";
-  const role = data.role || '';
-  const year = data.year || String(new Date().getFullYear());
-  const image = data.image || null;
-  const quote = data.quote || data.summary || '';
-  const heroSrc = image || '/portfolio/placeholder.png';
+  const title = (data.title as string) || "UNTITLED PROJECT";
+  const id = (data.id as string) || title;
+  const role = (data.role as string) || '';
+  const year = (data.year as string) || String(new Date().getFullYear());
+  const image = (data.image as string) || null;
+  const quote = (data.quote as string) || (data.summary as string) || '';
+  const heroSrc = (image && (image.startsWith('http') || image.startsWith('/'))) ? image : '/portfolio/placeholder.png';
+
+  const handleHeroClick = () => {
+    useProjectModalStore.getState().open({ ...data, id, heroSrc });
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -70,18 +71,29 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id }: { data:
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -30 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="relative bg-background origin-center flex flex-col shadow-2xl border border-foreground/10 cursor-pointer group"
+        className="project-node-card relative bg-background origin-center flex flex-col shadow-2xl border border-foreground/10 group"
         style={{ width: '800px' }}
       >
         <NodeHandles />
-        <div className="w-full aspect-video overflow-hidden bg-foreground/5">
-          <img
+
+        {/* Hero image — click opens portal overlay */}
+        <div
+          className="w-full aspect-video overflow-visible bg-transparent relative cursor-pointer"
+          onClick={handleHeroClick}
+        >
+          <motion.img
+            layoutId={`project-hero-${id}`}
             src={heroSrc}
             alt={title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-cover"
+            style={{ objectFit: 'cover' }}
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
           />
         </div>
+
         <div className="p-8 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <h2 className="text-3xl font-sans font-medium tracking-tight text-foreground">{title}</h2>
@@ -89,7 +101,6 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id }: { data:
           </div>
           <p className="font-mono text-xs uppercase tracking-widest text-foreground/50">{role}</p>
           {quote && <p className="text-base text-foreground/60 leading-relaxed line-clamp-2 italic mt-2">&ldquo;{quote}&rdquo;</p>}
-          <div className="font-mono text-xs text-foreground/30 uppercase tracking-widest mt-2 opacity-0 group-hover:opacity-100 transition-opacity">[ CLICK TO EXPAND ]</div>
         </div>
       </motion.div>
     </AnimatePresence>
