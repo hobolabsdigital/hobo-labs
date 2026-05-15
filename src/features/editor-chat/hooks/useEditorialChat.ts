@@ -29,6 +29,9 @@ export function useEditorialChat() {
   const truncateHistory = useCanvasStore(state => state.truncateHistory);
   const nodes = useCanvasStore(state => state.nodes);
 
+  const setActiveSuggestions = useCanvasStore(state => state.setActiveSuggestions);
+  const clearSuggestions = useCanvasStore(state => state.clearSuggestions);
+
   // Dossier lifecycle
   const addDossier = useCanvasStore(state => state.addDossier);
   const updateDossierStatus = useCanvasStore(state => state.updateDossierStatus);
@@ -78,6 +81,9 @@ export function useEditorialChat() {
           break;
         case 'createProjectNode':
           addProject(input, toolCall.toolCallId);
+          break;
+        case 'suggestPrompts':
+          setActiveSuggestions(input.suggestions);
           break;
         case 'showProject': {
           // Server-executed tool — result comes from the sub-agent
@@ -234,6 +240,7 @@ export function useEditorialChat() {
     }
 
     addPrompt(input);
+    clearSuggestions();
     sendMessage({ text: input });
     setInput('');
   };

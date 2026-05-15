@@ -77,6 +77,11 @@ export interface CanvasState {
   addText: (text: string, isFinished?: boolean) => void;
   truncateHistory: (cursorIndex: number) => void;
 
+  // Prompt suggestions
+  activeSuggestions: string[];
+  setActiveSuggestions: (suggestions: string[]) => void;
+  clearSuggestions: () => void;
+
   // Dossier lifecycle (sub-agent visual feedback)
   activeDossierId: string | null;
   dossierStatus: 'idle' | 'accessing' | 'source-loaded' | 'rewriting' | 'complete';
@@ -359,6 +364,11 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
       };
     });
   },
+
+  // --- Prompt suggestions ---
+  activeSuggestions: [],
+  setActiveSuggestions: (suggestions) => set({ activeSuggestions: suggestions }),
+  clearSuggestions: () => set({ activeSuggestions: [] }),
 
   // --- Dossier lifecycle ---
   activeDossierId: null,
