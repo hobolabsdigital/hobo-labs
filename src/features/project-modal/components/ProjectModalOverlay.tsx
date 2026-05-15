@@ -33,8 +33,17 @@ function OverlayContent() {
     }
   }, [isOpen]);
 
+  const handleClose = () => {
+    setIsSettled(false);
+    // Give React a tiny tick to apply the false state (unmount slider, show layout image)
+    // before AnimatePresence freezes the DOM tree for the exit animation.
+    setTimeout(() => {
+      close();
+    }, 20);
+  };
+
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') close(); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') handleClose(); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [close]);
@@ -237,7 +246,7 @@ function OverlayContent() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { delay: 0.4 } }}
             exit={{ opacity: 0 }}
-            onClick={close}
+            onClick={handleClose}
           >
             [ ✕ CLOSE ]
           </motion.button>
