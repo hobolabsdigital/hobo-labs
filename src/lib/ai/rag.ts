@@ -14,23 +14,36 @@ export async function retrievePersonaContext(userQuery: string): Promise<string>
 
   try {
     const personaDbPath = path.join(process.cwd(), 'docs', 'persona-vector-db.json');
-    if (!fs.existsSync(personaDbPath)) {
-      console.error('RAG: Persona DB not found at', personaDbPath);
-      return '';
+    const projectsDbPath = path.join(process.cwd(), 'docs', 'projects-vector-db.json');
+    
+    let combinedDb: any[] = [];
+
+    if (fs.existsSync(personaDbPath)) {
+      const personaDb = JSON.parse(fs.readFileSync(personaDbPath, 'utf8'));
+      combinedDb.push(...personaDb);
+    } else {
+      console.warn('RAG: Persona DB not found at', personaDbPath);
     }
 
-    const personaDb = JSON.parse(fs.readFileSync(personaDbPath, 'utf8'));
+    if (fs.existsSync(projectsDbPath)) {
+      const projectsDb = JSON.parse(fs.readFileSync(projectsDbPath, 'utf8'));
+      combinedDb.push(...projectsDb);
+    } else {
+      console.warn('RAG: Projects DB not found at', projectsDbPath);
+    }
+
+    if (combinedDb.length === 0) return '';
 
     // Vector similarity search
     const { embedding } = await embed({
       model: ollama.embedding('nomic-embed-text'),
       value: userQuery,
     });
-    const topChunks = findSimilarChunks(embedding, personaDb, 5);
+    const topChunks = findSimilarChunks(embedding, combinedDb, 5);
 
     // Keyword fallback for terms the embedding model might miss
     const queryTerms = userQuery.toLowerCase().split(' ').filter(t => t.length > 3);
-    const keywordChunks = personaDb
+    const keywordChunks = combinedDb
       .filter((c: any) => {
         const content = c.content.toLowerCase();
         return queryTerms.some(term => content.includes(term));

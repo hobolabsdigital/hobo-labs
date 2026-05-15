@@ -2,8 +2,11 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from "framer-motion";
+import { experimental_useObject as useObject } from '@ai-sdk/react';
+import { z } from 'zod';
 import { NodeHandles } from './NodeHandles';
 import { useProjectModalStore } from '@/features/project-modal/store/useProjectModalStore';
+import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 
 // --- Shimmer block for skeleton mode ---
 function Shimmer({ className }: { className?: string }) {
@@ -48,7 +51,45 @@ function ProjectSkeleton() {
 }
 
 // --- Compact Card ---
-export const ProjectNode = React.memo(function ProjectNode({ data }: { data: Record<string, string | boolean | null | undefined> }) {
+export const ProjectNode = React.memo(function ProjectNode({ data, id: reactFlowId }: { data: Record<string, string | boolean | null | undefined>; id: string }) {
+  const updateNodeData = useCanvasStore(state => state.updateNodeData);
+
+  const { object, submit, error, isLoading } = useObject({
+    api: '/api/project-context',
+    schema: z.object({ problem: z.string(), solution: z.string(), quote: z.string() }),
+    onFinish: (result: any) => {
+      console.log('[DEBUG-NODE] useObject onFinish:', result);
+      updateNodeData(reactFlowId, { ...result.object, isContextStreaming: false });
+    },
+    onError: (err) => {
+      console.error('[DEBUG-NODE] useObject error:', err);
+    }
+  });
+
+  const hasSubmitted = React.useRef(false);
+
+  React.useEffect(() => {
+    console.log(`[DEBUG-NODE] ${data.slug} isContextStreaming:`, data.isContextStreaming, 'problem:', data.problem);
+    if (data.isContextStreaming && !data.problem && !hasSubmitted.current) {
+      console.log(`[DEBUG-NODE] Submitting useObject for ${data.slug}`);
+      hasSubmitted.current = true;
+      submit({ slug: data.slug, messages: [] });
+    }
+  }, [data.isContextStreaming, data.slug, data.problem, submit]);
+
+  React.useEffect(() => {
+    if (object) {
+      console.log(`[DEBUG-NODE] useObject streaming object for ${data.slug}:`, object);
+      updateNodeData(reactFlowId, object);
+    }
+  }, [object, reactFlowId, updateNodeData]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error(`[DEBUG-NODE] Error streaming for ${data.slug}:`, error);
+    }
+  }, [error, data.slug]);
+
   if (data.isLoading) return <ProjectSkeleton />;
 
   const title = (data.title as string) || "UNTITLED PROJECT";
@@ -57,10 +98,11 @@ export const ProjectNode = React.memo(function ProjectNode({ data }: { data: Rec
   const year = (data.year as string) || String(new Date().getFullYear());
   const image = (data.image as string) || null;
   const quote = (data.quote as string) || (data.summary as string) || '';
+  const isStreaming = data.isContextStreaming as boolean;
   const heroSrc = (image && (image.startsWith('http') || image.startsWith('/'))) ? image : '/portfolio/placeholder.png';
 
   const handleHeroClick = () => {
-    useProjectModalStore.getState().open({ ...data, id, heroSrc });
+    useProjectModalStore.getState().open(reactFlowId, heroSrc);
   };
 
   return (
@@ -100,7 +142,11 @@ export const ProjectNode = React.memo(function ProjectNode({ data }: { data: Rec
             <span className="font-mono text-xs text-foreground/40">{year}</span>
           </div>
           <p className="font-mono text-xs uppercase tracking-widest text-foreground/50">{role}</p>
-          {quote && <p className="text-base text-foreground/60 leading-relaxed line-clamp-2 italic mt-2">&ldquo;{quote}&rdquo;</p>}
+          {isStreaming && !quote ? (
+            <Shimmer className="h-4 w-3/4 rounded mt-2" />
+          ) : (
+            quote && <p className="text-base text-foreground/60 leading-relaxed line-clamp-2 italic mt-2">&ldquo;{quote}&rdquo;</p>
+          )}
         </div>
       </motion.div>
     </AnimatePresence>

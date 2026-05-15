@@ -81,6 +81,8 @@ export const createProjectNode = (id: string, data: any, sourceNode?: Node): Nod
       solution: data.solution,
       quote: data.quote,
       gallery: data.gallery || [],
+      slug: data.slug,
+      isContextStreaming: data.isContextStreaming,
     }
   };
 };

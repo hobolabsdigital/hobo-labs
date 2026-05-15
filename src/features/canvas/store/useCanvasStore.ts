@@ -82,15 +82,7 @@ export interface CanvasState {
   setActiveSuggestions: (suggestions: string[]) => void;
   clearSuggestions: () => void;
 
-  // Dossier lifecycle (sub-agent visual feedback)
-  activeDossierId: string | null;
-  dossierStatus: 'idle' | 'accessing' | 'source-loaded' | 'rewriting' | 'complete';
-  dossierSlug: string | null;
-  dossierTitle: string | null;
-  skeletonProjectId: string | null;
-  addDossier: (slug: string) => void;
-  updateDossierStatus: (status: CanvasState['dossierStatus'], meta?: { title?: string }) => void;
-  revealProject: (data: any) => void;
+  updateNodeData: (id: string, partialData: Record<string, any>) => void;
 }
 
 import { createPromptNode, createGhostNode, createHeroNode, createTextNode, createProjectNode, createDossierNode, createSkeletonProjectNode, createEdge } from './nodeFactories';
@@ -370,77 +362,13 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   setActiveSuggestions: (suggestions) => set({ activeSuggestions: suggestions }),
   clearSuggestions: () => set({ activeSuggestions: [] }),
 
-  // --- Dossier lifecycle ---
-  activeDossierId: null,
-  dossierStatus: 'idle',
-  dossierSlug: null,
-  dossierTitle: null,
-  skeletonProjectId: null,
-
-  addDossier: (slug: string) => {
-    set(state => {
-      const dossierId = `dossier-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
-      const skeletonId = `skeleton-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
-
-      const sourceNode = state.nodes.find(n => n.id === state.lastPlacedNodeId);
-      const dossierNode = createDossierNode(dossierId, slug, sourceNode);
-      const skeletonNode = createSkeletonProjectNode(skeletonId, slug, dossierNode);
-
-      const newEdges = [
-        ...(sourceNode ? [createEdge(sourceNode.id, dossierId)] : []),
-        createEdge(dossierId, skeletonId),
-      ];
-
-      return {
-        nodes: [...state.nodes, dossierNode, skeletonNode],
-        edges: [...state.edges, ...newEdges],
-        activeDossierId: dossierId,
-        dossierStatus: 'accessing' as const,
-        dossierSlug: slug,
-        dossierTitle: null,
-        skeletonProjectId: skeletonId,
-        lastPlacedNodeId: skeletonId,
-        trackedNodeId: dossierId,
-      };
-    });
-  },
-
-  updateDossierStatus: (status, meta) => {
-    set(state => {
-      if (!state.activeDossierId) return state;
-      return {
-        dossierStatus: status,
-        ...(meta?.title ? { dossierTitle: meta.title } : {}),
-      };
-    });
-  },
-
-  revealProject: (data: any) => {
-    set(state => {
-      if (!state.skeletonProjectId) return state;
-
-      const skeletonId = state.skeletonProjectId;
-      return {
-        nodes: state.nodes.map(n =>
-          n.id === skeletonId
-            ? {
-              ...n,
-              data: {
-                ...data,
-                isLoading: false,
-                isRevealing: true, // Triggers typewriter animation
-              },
-            }
-            : n
-        ),
-        activeDossierId: null,
-        dossierStatus: 'idle' as const,
-        skeletonProjectId: null,
-        trackedNodeId: skeletonId,
-      };
-    });
-
-    const rf = get().rfInstance;
-    if (rf) setTimeout(() => rf.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 }), 50);
+  updateNodeData: (id: string, partialData: Record<string, any>) => {
+    set(state => ({
+      nodes: state.nodes.map(n =>
+        n.id === id
+          ? { ...n, data: { ...n.data, ...partialData } }
+          : n
+      )
+    }));
   },
 }));

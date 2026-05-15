@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { useProjectModalStore } from '../store/useProjectModalStore';
+import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 import { X } from 'lucide-react';
 
 const stagger: Variants = {
@@ -19,7 +20,8 @@ const item: Variants = {
 };
 
 function OverlayContent() {
-  const { isOpen, projectData, close } = useProjectModalStore();
+  const { isOpen, activeNodeId, heroSrc, close } = useProjectModalStore();
+  const projectData = useCanvasStore(state => state.nodes.find(n => n.id === activeNodeId)?.data);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSettled, setIsSettled] = useState(false);
 
@@ -55,10 +57,11 @@ function OverlayContent() {
   const techStack: string[] = Array.isArray(projectData?.techStack) ? projectData.techStack as string[] : [];
 
   const galleryRaw = Array.isArray(projectData?.gallery) ? projectData.gallery as string[] : [];
-  const heroSrc = (projectData?.heroSrc as string) || galleryRaw[0] || '/portfolio/placeholder.png';
+  const finalHeroSrc = heroSrc || galleryRaw[0] || '/portfolio/placeholder.png';
+  const isStreaming = projectData?.isContextStreaming as boolean;
   
   // Bulletproof deduplication using word intersection for visually identical files (e.g. my-mazda.png vs Find-My-Mazda-01.png)
-  const normalizedHeroSrc = heroSrc.toLowerCase().trim();
+  const normalizedHeroSrc = finalHeroSrc.toLowerCase().trim();
   const getWords = (s: string) => s.split('/').pop()?.replace(/[^a-z0-9]/g, ' ').split(' ').filter(w => w.length > 2) || [];
   const heroWords = getWords(normalizedHeroSrc);
   
@@ -105,11 +108,11 @@ function OverlayContent() {
             >
               {/* ── Title & meta ── */}
               <motion.header variants={item} className="mb-10">
-                <h1 className="text-4xl md:text-6xl font-mono mb-3 leading-tight">{title}</h1>
+                <h1 className="text-4xl md:text-6xl font-mono mb-3 leading-tight">{(title as string) || ''}</h1>
                 <div className="flex gap-3 font-mono text-sm uppercase opacity-60">
-                  {year && <span>{year}</span>}
-                  {year && role && <span>•</span>}
-                  {role && <span>{role}</span>}
+                  {!!year && <span>{year as string}</span>}
+                  {!!year && !!role && <span>•</span>}
+                  {!!role && <span>{role as string}</span>}
                 </div>
               </motion.header>
 
@@ -120,8 +123,8 @@ function OverlayContent() {
                 {/* 1. The pristine layoutId hero image (Hidden once settled) */}
                 <motion.img
                   layoutId={`project-hero-${id}`}
-                  src={heroSrc}
-                  alt={title}
+                  src={finalHeroSrc}
+                  alt={title as string}
                   className="w-full h-full object-cover shadow-2xl block relative z-0"
                   transition={{ type: 'spring', stiffness: 280, damping: 32, mass: 0.8 }}
                   style={{ opacity: isSettled ? 0 : 1 }}
@@ -150,8 +153,8 @@ function OverlayContent() {
                     {/* The Swapped Hero Image (Index 0) */}
                     <motion.img
                       draggable={false}
-                      src={heroSrc}
-                      alt={title}
+                      src={finalHeroSrc}
+                      alt={title as string}
                       className="absolute top-0 left-0 w-full h-full object-cover shadow-2xl block cursor-pointer"
                       animate={{ opacity: currentIndex === 0 ? 1 : 0.3 }}
                       whileHover={{ opacity: 1 }}
@@ -200,29 +203,39 @@ function OverlayContent() {
               </motion.div>
 
               {/* ── Problem / Solution ── */}
-              {(problem || solution) && (
+              {(problem || solution || isStreaming) && (
                 <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
-                  {problem && (
-                    <div className="border-t border-foreground/15 pt-5">
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-foreground/40 mb-3">Problem</p>
-                      <p className="text-sm text-foreground/70 leading-relaxed">{problem}</p>
-                    </div>
-                  )}
-                  {solution && (
-                    <div className="border-t border-foreground/15 pt-5">
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-foreground/40 mb-3">Solution</p>
-                      <p className="text-sm text-foreground/70 leading-relaxed">{solution}</p>
-                    </div>
-                  )}
+                  <div className="border-t border-foreground/15 pt-5">
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-foreground/40 mb-3">Problem</p>
+                    {isStreaming && !problem ? (
+                      <div className="h-16 w-full rounded bg-foreground/10 animate-pulse" />
+                    ) : (
+                      !!problem && <p className="text-sm text-foreground/70 leading-relaxed">{problem as string}</p>
+                    )}
+                  </div>
+                  <div className="border-t border-foreground/15 pt-5">
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-foreground/40 mb-3">Solution</p>
+                    {isStreaming && !solution ? (
+                      <div className="h-16 w-full rounded bg-foreground/10 animate-pulse" />
+                    ) : (
+                      !!solution && <p className="text-sm text-foreground/70 leading-relaxed">{solution as string}</p>
+                    )}
+                  </div>
                 </motion.div>
               )}
 
               {/* ── Pull quote ── */}
-              {quote && (
+              {(quote || isStreaming) && (
                 <motion.div variants={item} className="border-l-2 border-foreground/20 pl-6 mb-12">
-                  <p className="text-xl md:text-3xl font-light text-foreground/75 leading-snug italic">
-                    &ldquo;{quote}&rdquo;
-                  </p>
+                  {isStreaming && !quote ? (
+                    <div className="h-8 w-2/3 rounded bg-foreground/10 animate-pulse" />
+                  ) : (
+                    quote && (
+                      <p className="text-xl md:text-3xl font-light text-foreground/75 leading-snug italic">
+                        &ldquo;{quote}&rdquo;
+                      </p>
+                    )
+                  )}
                 </motion.div>
               )}
 

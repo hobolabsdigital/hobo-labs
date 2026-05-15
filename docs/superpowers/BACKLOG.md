@@ -102,3 +102,19 @@ The ReactFlow canvas is not keyboard-navigable:
 **Impact:** Type safety  
 
 `addHero(data: any)`, `addProject(data: any)`, and node component props all use `data: any`. These should use discriminated union types matching each node type's expected fields (HeroNodeData, TextNodeData, ProjectNodeData, etc.). The simulation ref was already typed — these are the remaining `any` leaks in the canvas pipeline.
+
+---
+
+## B-010: Speed Up Project Creation Node
+**Priority:** High  
+**Impact:** User Experience  
+
+The project creation node takes too long to spawn/render. Investigate bottlenecks in animation, ReactFlow rendering, or WebGL shader compilation and optimize.
+
+---
+
+## B-011: UI Design Review (Huashu Design)
+**Priority:** Medium  
+**Impact:** Visual Quality  
+
+Conduct a comprehensive UI design review using the `impeccable` skill, drawing inspiration from [huashu-design](https://github.com/alchaincyf/huashu-design). Look for opportunities to elevate the aesthetic, typography, spacing, and micro-interactions.

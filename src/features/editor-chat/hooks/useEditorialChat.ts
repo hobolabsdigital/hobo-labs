@@ -32,10 +32,7 @@ export function useEditorialChat() {
   const setActiveSuggestions = useCanvasStore(state => state.setActiveSuggestions);
   const clearSuggestions = useCanvasStore(state => state.clearSuggestions);
 
-  // Dossier lifecycle
-  const addDossier = useCanvasStore(state => state.addDossier);
-  const updateDossierStatus = useCanvasStore(state => state.updateDossierStatus);
-  const revealProject = useCanvasStore(state => state.revealProject);
+  // Dossier lifecycle removed
 
   const { messages, setMessages, sendMessage, status, stop, addToolOutput } = useChat({
     transport: new DefaultChatTransport({
@@ -45,24 +42,7 @@ export function useEditorialChat() {
       return;
     },
     onData: (dataPart: any) => {
-      // Route dossier progress events from data-dossier stream parts
-      if (dataPart?.type === 'data-dossier' && dataPart.data) {
-        const { status, slug, title } = dataPart.data;
-        switch (status) {
-          case 'accessing':
-            addDossier(slug);
-            break;
-          case 'source-loaded':
-            updateDossierStatus('source-loaded', { title });
-            break;
-          case 'rewriting':
-            updateDossierStatus('rewriting');
-            break;
-          case 'complete':
-            updateDossierStatus('complete');
-            break;
-        }
-      }
+      // data-dossier parsing removed
     },
     async onToolCall({ toolCall }) {
       console.log('[DEBUG-STREAM] onToolCall FIRED!', JSON.stringify(toolCall, null, 2));
@@ -86,15 +66,37 @@ export function useEditorialChat() {
           setActiveSuggestions(input.suggestions);
           break;
         case 'showProject': {
-          // Server-executed tool — result comes from the sub-agent
-          const result = (toolCall as any).result || (toolCall as any).output;
-          if (result && !result.error) {
-            // Use revealProject to fill the existing skeleton node
-            revealProject(result);
-          } else if (result?.error) {
-            console.warn(`[DEBUG-STREAM] showProject error: ${result.error}`);
+          const slug = input.slug;
+          if (slug) {
+            fetch(`/api/project-data?slug=${slug}`)
+              .then(res => res.json())
+              .then(data => {
+                if (data && !data.error) {
+                  addProject(data, toolCall.toolCallId);
+                  addToolOutput({
+                    tool: toolCall.toolName,
+                    toolCallId: toolCall.toolCallId,
+                    output: data
+                  });
+                } else {
+                  console.warn(`[DEBUG-STREAM] showProject error:`, data.error);
+                  addToolOutput({
+                    tool: toolCall.toolName,
+                    toolCallId: toolCall.toolCallId,
+                    output: { error: data.error }
+                  });
+                }
+              })
+              .catch(err => {
+                console.error(`[DEBUG-STREAM] showProject fetch error:`, err);
+                addToolOutput({
+                  tool: toolCall.toolName,
+                  toolCallId: toolCall.toolCallId,
+                  output: { error: err.message }
+                });
+              });
           }
-          return; // Server already provided output, skip addToolOutput
+          return;
         }
         default:
           console.warn(`Unhandled tool call: ${toolCall.toolName}`);
@@ -188,26 +190,6 @@ export function useEditorialChat() {
     }
   }, [messages, status, addText]);
 
-  // Server-executed tool result watcher (for showProject sub-agent)
-  useEffect(() => {
-    for (const message of messages) {
-      if (message.role !== 'assistant') continue;
-      const parts = (message as any).parts || [];
-      for (const part of parts) {
-        if (
-          part.type === 'tool-showProject' &&
-          part.state === 'output-available' &&
-          part.output &&
-          !part.output.error &&
-          !processedShowProjectCalls.current.has(part.toolCallId)
-        ) {
-          processedShowProjectCalls.current.add(part.toolCallId);
-          // Use revealProject to fill the skeleton instead of creating new node
-          revealProject(part.output);
-        }
-      }
-    }
-  }, [messages, revealProject]);
 
   const handleSend = () => {
     if (!input.trim()) return;

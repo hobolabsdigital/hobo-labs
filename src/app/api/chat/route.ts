@@ -6,7 +6,7 @@ import { createModel, withReasoning, SAMPLING_CONFIG } from '@/lib/ai/config';
 import { retrievePersonaContext, loadProjectCatalog } from '@/lib/ai/rag';
 import { buildSystemPrompt } from '@/lib/ai/prompts';
 import { createHeroNode, suggestPrompts } from '@/lib/ai/tools';
-import { createProjectEditor } from '@/lib/ai/project-editor';
+import { getProjectStaticData } from '@/lib/ai/project-editor';
 import { createMockStreamResponse } from '@/lib/ai/mock-stream';
 import { extractUserQuery } from '@/lib/ai/messages';
 
@@ -37,9 +37,6 @@ export async function POST(req: Request) {
     // --- Stream with data annotations for dossier progress ---
     const stream = createUIMessageStream({
       execute: async ({ writer }) => {
-        // Sub-agent gets access to writer for progress events
-        const { editor, getSubmittedCard, resetSubmittedCard } = createProjectEditor(writer);
-
         const result = streamText({
           model,
           messages: coreMessages,
@@ -48,58 +45,13 @@ export async function POST(req: Request) {
           system: buildSystemPrompt({ isInitialGreeting, contextText, catalogText }),
           tools: {
             createHeroNode,
-            suggestPrompts,
             showProject: tool({
               description: 'Show a project case study on the canvas. Provide the project slug from context.',
               inputSchema: z.object({
                 slug: z.string().describe('The project slug (e.g. "monstory", "moxis", "hermes", "find-my-mazda")'),
               }),
-              execute: async ({ slug }) => {
-                resetSubmittedCard();
-
-                // Emit: dossier starting (client spawns DossierNode + skeleton)
-                writer.write({
-                  type: 'data-dossier',
-                  data: { status: 'accessing', slug },
-                });
-
-                try {
-                  // Emit: rewriting phase (timed estimate since sub-agent doesn't have a clear signal)
-                  const rewritingTimeout = setTimeout(() => {
-                    try {
-                      writer.write({
-                        type: 'data-dossier',
-                        data: { status: 'rewriting' },
-                      });
-                    } catch { /* stream may be closed */ }
-                  }, 2000);
-
-                  await editor.generate({
-                    prompt: `Create a creative editorial project card for the project with slug "${slug}".
-
-WORKFLOW:
-1. Call getProjectSource with slug "${slug}" to load the raw case study data
-2. Study the raw data
-3. Rewrite it into a compelling Bauhaus-style editorial project card
-4. Call submitProjectCard with your completed card`,
-                    abortSignal: new AbortController().signal,
-                  });
-
-                  clearTimeout(rewritingTimeout);
-
-                  const card = getSubmittedCard();
-                  if (!card) {
-                    console.error('[showProject] Sub-agent did not submit a card');
-                    return { error: 'Sub-agent did not submit a project card' };
-                  }
-
-                  return card;
-                } catch (e: any) {
-                  console.error('[showProject] Failed:', e.message);
-                  return { error: `Sub-agent failed: ${e.message}` };
-                }
-              },
             }),
+            suggestPrompts,
           },
         });
 
