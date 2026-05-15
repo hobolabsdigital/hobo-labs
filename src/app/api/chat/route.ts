@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { createModel, withReasoning, SAMPLING_CONFIG } from '@/lib/ai/config';
 import { retrievePersonaContext, loadProjectCatalog } from '@/lib/ai/rag';
 import { buildSystemPrompt } from '@/lib/ai/prompts';
-import { createHeroNode } from '@/lib/ai/tools';
+import { createHeroNode, suggestPrompts } from '@/lib/ai/tools';
 import { createProjectEditor } from '@/lib/ai/project-editor';
 import { createMockStreamResponse } from '@/lib/ai/mock-stream';
 import { extractUserQuery } from '@/lib/ai/messages';
@@ -48,6 +48,7 @@ export async function POST(req: Request) {
           system: buildSystemPrompt({ isInitialGreeting, contextText, catalogText }),
           tools: {
             createHeroNode,
+            suggestPrompts,
             showProject: tool({
               description: 'Show a project case study on the canvas. Provide the project slug from context.',
               inputSchema: z.object({

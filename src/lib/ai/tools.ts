@@ -24,3 +24,15 @@ export const createHeroNode = tool({
       .describe('Where to spatially drop the node before physics takes over'),
   }),
 });
+
+/**
+ * Client-executed tool: suggests 3 follow-up prompts.
+ * MUST be called at the very end of the AI's response.
+ */
+export const suggestPrompts = tool({
+  description: 'Suggest exactly 3 context-aware follow-up prompts for the user. MUST be called at the end of your turn.',
+  inputSchema: z.object({
+    suggestions: z.array(z.string()).length(3)
+      .describe('An array of exactly 3 short suggestion strings (max 5-7 words each).')
+  }),
+});
