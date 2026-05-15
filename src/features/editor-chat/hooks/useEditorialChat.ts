@@ -245,10 +245,37 @@ export function useEditorialChat() {
     setInput('');
   };
 
+  const submitPrompt = (text: string) => {
+    if (!text.trim()) return;
+
+    if (timeCursor !== null) {
+      truncateHistory(timeCursor);
+      const nodesToKeep = nodes.slice(0, timeCursor + 1);
+      const userPromptCount = nodesToKeep.filter(n => n.type === 'prompt').length;
+      let promptIndex = 0;
+      let cutIndex = messages.length;
+      for (let i = 0; i < messages.length; i++) {
+        if (messages[i].role === 'user') {
+          promptIndex++;
+          if (promptIndex > userPromptCount) {
+            cutIndex = i;
+            break;
+          }
+        }
+      }
+      setMessages(messages.slice(0, cutIndex));
+    }
+
+    addPrompt(text);
+    clearSuggestions();
+    sendMessage({ text });
+  };
+
   return {
     input,
     setInput,
     handleSend,
+    submitPrompt,
     status,
     stop,
     messages

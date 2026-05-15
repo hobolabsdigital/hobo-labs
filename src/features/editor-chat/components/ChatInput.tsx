@@ -10,8 +10,15 @@ export function ChatInput() {
   const timeCursor = useCanvasStore((state) => state.timeCursor);
   const isHistoryMode = timeCursor !== null;
 
-  const { input, setInput, handleSend, status } = useEditorialChat();
+  const activeSuggestions = useCanvasStore((state) => state.activeSuggestions);
+  const clearSuggestions = useCanvasStore((state) => state.clearSuggestions);
+
+  const { input, setInput, handleSend, submitPrompt, status } = useEditorialChat();
   const isLoading = status === 'submitted' || status === 'streaming';
+
+  const handleSuggestionClick = (suggestion: string) => {
+    submitPrompt(suggestion);
+  };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,6 +34,21 @@ export function ChatInput() {
   return (
     <div className={`bg-transparent absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-[100] pointer-events-auto ${INTRO_REVEAL_CLASSES} flex flex-col gap-3 ${isIntroAnimationFinished ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0'
       }`}>
+
+      {activeSuggestions.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-1 justify-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {activeSuggestions.map((suggestion, idx) => (
+            <button
+              key={idx}
+              onClick={() => handleSuggestionClick(suggestion)}
+              disabled={isLoading}
+              className="px-4 py-2 rounded-full text-sm font-medium bg-zinc-900/80 text-white border border-white/10 hover:bg-white hover:text-black hover:border-white transition-all shadow-lg backdrop-blur-md disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {suggestion}
+            </button>
+          ))}
+        </div>
+      )}
 
       <form
         onSubmit={onSubmit}
