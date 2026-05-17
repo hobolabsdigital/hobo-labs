@@ -4,7 +4,6 @@ import { useCrtStore } from "../store/useCrtStore";
 import { BarrelFilter } from "./BarrelFilter";
 import { ExperimentalBarrel } from "./ExperimentalBarrel";
 import { GrainCanvas } from "./GrainCanvas";
-import { CrtControls } from "./CrtControls";
 import { CrtModeSelector } from "./CrtModeSelector";
 
 /**
@@ -21,6 +20,7 @@ import { CrtModeSelector } from "./CrtModeSelector";
  * - GrainCanvas: disabled (the shader handles vignette + grain)
  * 
  * CrtModeSelector: popup shown once to let the user choose.
+ * Controls are now in the Playground panel (DebugPanel).
  */
 export function CrtEffect() {
   const crtMode = useCrtStore((s) => s.crtMode);
@@ -41,9 +41,6 @@ export function CrtEffect() {
       {/* Experimental mode: drawElementImage barrel distortion */}
       {/* The barrel shader handles vignette + grain internally, no GrainCanvas needed */}
       {crtMode === "experimental" && <ExperimentalBarrel />}
-
-      {/* Controls panel (both modes) */}
-      {crtMode !== null && <CrtControls />}
     </>
   );
 }

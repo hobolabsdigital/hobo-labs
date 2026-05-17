@@ -43,7 +43,7 @@ export const createHeroNode = (id: string, data: any, sourceNode?: Node): Node =
 
   return {
     id,
-    type: data.type === 'hero' ? 'hero' : 'text',
+    type: 'hero',
     position: { x, y },
     data: {
       headline: data.headline,

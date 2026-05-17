@@ -25,13 +25,13 @@ export function CrtControls() {
       {/* Tab button */}
       <button
         onClick={() => setCrtPanelOpen(!isCrtPanelOpen)}
-        className="bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-mono absolute left-[100%] top-0 hover:opacity-80 transition-all duration-300 whitespace-nowrap ml-4"
+        className="bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-ui absolute left-[100%] top-0 hover:opacity-80 transition-all duration-300 whitespace-nowrap ml-4"
       >
         [ CRT ]
       </button>
 
       {/* Panel body */}
-      <div className="bg-[var(--background)] border border-[var(--foreground)] border-l-0 p-4 shadow-2xl flex flex-col gap-4 font-mono w-72 max-h-[90vh] overflow-y-auto">
+      <div className="bg-[var(--background)] border border-[var(--foreground)] border-l-0 p-4 shadow-2xl flex flex-col gap-4 font-ui w-72 max-h-[90vh] overflow-y-auto">
         {/* Master toggle */}
         <div className="flex items-center justify-between border-b border-[var(--foreground)] pb-3">
           <h3 className="text-xs uppercase tracking-wider font-bold">CRT Effect</h3>

@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, startTransition, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { useProjectModalStore } from '../store/useProjectModalStore';
+import Image from 'next/image';
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 import { X } from 'lucide-react';
+import { useTheme } from '@/core/theme/theme-provider';
+import { getMotion } from '@/core/theme/theme-motion';
 
 const stagger: Variants = {
   hidden: { opacity: 0 },
@@ -13,34 +16,66 @@ const stagger: Variants = {
   exit: { opacity: 0, transition: { staggerChildren: 0.05, staggerDirection: -1 } }
 };
 
-const item: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } },
-  exit: { opacity: 0, y: -20 }
-};
+/** Build Framer Motion item variants from the centralized motion config */
+function buildItemVariants(theme: string): Variants {
+  const m = getMotion(theme).modal;
+  if (m.type === 'tween') {
+    return {
+      hidden: { opacity: 0 },
+      show: { opacity: 1, transition: { duration: m.enterDuration, ease: [0.16, 1, 0.3, 1] } },
+      exit: { opacity: 0, transition: { duration: m.exitDuration } },
+    };
+  }
+  return {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: m.stiffness, damping: m.damping } },
+    exit: { opacity: 0, y: m.exitY, transition: { duration: m.exitDuration } },
+  };
+}
 
 function OverlayContent() {
-  const { isOpen, activeNodeId, heroSrc, close } = useProjectModalStore();
+  const { isOpen, activeNodeId, heroSrc, sourceRect, close } = useProjectModalStore();
   const projectData = useCanvasStore(state => state.nodes.find(n => n.id === activeNodeId)?.data);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSettled, setIsSettled] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const m = getMotion(resolvedTheme ?? 'light');
+  const activeItem = useMemo(() => buildItemVariants(resolvedTheme ?? 'light'), [resolvedTheme]);
+  const heroSlotRef = useRef<HTMLDivElement>(null);
+  const [targetRect, setTargetRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
 
   useEffect(() => {
-    if (!isOpen) {
-      setCurrentIndex(0);
-      setIsSettled(false);
-    } else {
+    if (isOpen) {
       const timer = setTimeout(() => setIsSettled(true), 800);
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
 
+  // Measure hero slot position after mount so flying hero lands in the right spot
+  useEffect(() => {
+    if (isOpen && heroSlotRef.current && !targetRect) {
+      // Use rAF to ensure layout has been computed
+      requestAnimationFrame(() => {
+        const rect = heroSlotRef.current?.getBoundingClientRect();
+        if (rect) {
+          setTargetRect({ top: rect.top, left: rect.left, width: rect.width, height: rect.height });
+        }
+      });
+    }
+    if (!isOpen) {
+      setTargetRect(null);
+    }
+  }, [isOpen, targetRect]);
+
   const handleClose = () => {
     setIsSettled(false);
+    setCurrentIndex(0);
     // Give React a tiny tick to apply the false state (unmount slider, show layout image)
     // before AnimatePresence freezes the DOM tree for the exit animation.
     setTimeout(() => {
-      close();
+      startTransition(() => {
+        close();
+      });
     }, 20);
   };
 
@@ -60,7 +95,7 @@ function OverlayContent() {
   const finalHeroSrc = heroSrc || galleryRaw[0] || '/portfolio/placeholder.png';
   const isStreaming = projectData?.isContextStreaming as boolean;
   
-  // Bulletproof deduplication using word intersection for visually identical files (e.g. my-mazda.png vs Find-My-Mazda-01.png)
+  // Bulletproof deduplication using word intersection for visually identical files
   const normalizedHeroSrc = finalHeroSrc.toLowerCase().trim();
   const getWords = (s: string) => s.split('/').pop()?.replace(/[^a-z0-9]/g, ' ').split(' ').filter(w => w.length > 2) || [];
   const heroWords = getWords(normalizedHeroSrc);
@@ -87,17 +122,49 @@ function OverlayContent() {
           {/* Backdrop — solid, hides the canvas entirely */}
           <motion.div
             key="backdrop"
-            className="fixed inset-0 z-[200] bg-background"
+            className="fixed inset-0 z-[10000] bg-background"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
           />
 
+          {/* ── Flying hero image — animates from card position to modal hero slot ── */}
+          {sourceRect && (
+            <motion.img
+              key="flying-hero"
+              src={finalHeroSrc}
+              alt={title as string}
+              data-modal-image
+              className="fixed object-cover z-[10002] shadow-2xl pointer-events-none"
+              initial={{
+                top: sourceRect.y,
+                left: sourceRect.x,
+                width: sourceRect.width,
+                height: sourceRect.height,
+                opacity: 1,
+              }}
+              animate={targetRect ? {
+                top: targetRect.top,
+                left: targetRect.left,
+                width: targetRect.width,
+                height: targetRect.height,
+                opacity: isSettled ? 0 : 1,
+              } : {
+                top: sourceRect.y,
+                left: sourceRect.x,
+                width: sourceRect.width,
+                height: sourceRect.height,
+                opacity: 1,
+              }}
+              transition={{ type: 'spring', stiffness: 200, damping: 30, mass: 0.8 }}
+            />
+          )}
+
           {/* Full-screen scrollable portal — the ProjectExpandedView layout */}
           <motion.div
             key="modal"
-            className="fixed inset-0 z-[201] overflow-y-auto overflow-x-hidden"
+            className="fixed inset-0 z-[10001] overflow-y-auto overflow-x-hidden"
           >
             <motion.div
               variants={stagger}
@@ -107,27 +174,26 @@ function OverlayContent() {
               className="w-full max-w-5xl mx-auto px-8 md:px-16 pt-16 pb-24 flex flex-col gap-0"
             >
               {/* ── Title & meta ── */}
-              <motion.header variants={item} className="mb-10">
-                <h1 className="text-4xl md:text-6xl font-mono mb-3 leading-tight">{(title as string) || ''}</h1>
-                <div className="flex gap-3 font-mono text-sm uppercase opacity-60">
+              <motion.header variants={activeItem} className="mb-10">
+                <h1 className="text-4xl md:text-6xl mb-3 leading-tight font-heading brutalist:text-[var(--brutalist-cyan)]">{(title as string) || ''}</h1>
+                <div className="flex gap-3 font-ui text-sm uppercase opacity-60">
                   {!!year && <span>{year as string}</span>}
                   {!!year && !!role && <span>•</span>}
                   {!!role && <span>{role as string}</span>}
                 </div>
               </motion.header>
 
-              {/* ── Hero image SLOT ── */}
+              {/* ── Hero image SLOT — visible once flying hero settles ── */}
               <motion.div
+                ref={heroSlotRef}
                 className="w-full shrink-0 aspect-video bg-transparent overflow-visible mb-12 relative"
               >
-                {/* 1. The pristine layoutId hero image (Hidden once settled) */}
-                <motion.img
-                  layoutId={`project-hero-${id}`}
+                <img
                   src={finalHeroSrc}
                   alt={title as string}
+                  data-modal-image
                   className="w-full h-full object-cover shadow-2xl block relative z-0"
-                  transition={{ type: 'spring', stiffness: 280, damping: 32, mass: 0.8 }}
-                  style={{ opacity: isSettled ? 0 : 1 }}
+                  style={{ opacity: isSettled ? 1 : 0 }}
                 />
 
                 {/* 2. The completely isolated, native dragging slider (Visible once settled) */}
@@ -135,7 +201,7 @@ function OverlayContent() {
                   <motion.div
                     className="absolute inset-0 w-full h-full z-10"
                     animate={{ x: `calc(-${currentIndex * 100}% - ${currentIndex * 32}px)` }}
-                    transition={{ type: 'spring', stiffness: 200, damping: 30 }}
+                    transition={{ type: 'spring', stiffness: m.modal.stiffness, damping: m.modal.damping }}
                     drag={imagesCount > 1 ? "x" : false}
                     dragConstraints={{ left: 0, right: 0 }}
                     dragElastic={0.2}
@@ -151,31 +217,43 @@ function OverlayContent() {
                     whileTap={{ cursor: imagesCount > 1 ? 'grabbing' : 'auto' }}
                   >
                     {/* The Swapped Hero Image (Index 0) */}
-                    <motion.img
-                      draggable={false}
-                      src={finalHeroSrc}
-                      alt={title as string}
-                      className="absolute top-0 left-0 w-full h-full object-cover shadow-2xl block cursor-pointer"
+                    <motion.div
+                      className="absolute top-0 left-0 w-full h-full cursor-pointer bg-black"
                       animate={{ opacity: currentIndex === 0 ? 1 : 0.3 }}
                       whileHover={{ opacity: 1 }}
                       onClick={() => setCurrentIndex(0)}
-                    />
+                    >
+                      <Image
+                        draggable={false}
+                        src={finalHeroSrc}
+                        alt={title as string}
+                        fill
+                        data-modal-image
+                        className="object-cover shadow-2xl"
+                      />
+                    </motion.div>
 
                     {/* Gallery Images (Index 1+) */}
                     {gallery.map((src, i) => {
                       const index = i + 1;
                       return (
-                        <motion.img
+                        <motion.div
                           key={src}
-                          draggable={false}
-                          src={src}
-                          alt={`${title} gallery ${index}`}
-                          className="absolute top-0 w-full h-full object-cover shadow-2xl cursor-pointer"
+                          className="absolute top-0 w-full h-full cursor-pointer bg-black"
                           style={{ left: `calc(${index * 100}% + ${index * 32}px)` }}
                           animate={{ opacity: currentIndex === index ? 1 : 0.3 }}
                           whileHover={{ opacity: 1 }}
                           onClick={() => setCurrentIndex(index)}
-                        />
+                        >
+                          <Image
+                            draggable={false}
+                            src={src}
+                            alt={`${title} gallery ${index}`}
+                            fill
+                            data-modal-image
+                            className="object-cover shadow-2xl"
+                          />
+                        </motion.div>
                       );
                     })}
                   </motion.div>
@@ -192,9 +270,10 @@ function OverlayContent() {
                       <button
                         key={`dot-${i}`}
                         onClick={() => setCurrentIndex(i)}
-                        className={`h-1.5 rounded-full transition-all duration-300 ${
-                          i === currentIndex ? 'w-6 bg-foreground' : 'w-1.5 bg-foreground/20 hover:bg-foreground/50'
+                        className={`h-1.5 transition-all duration-300 ${
+                          i === currentIndex ? `w-6 bg-foreground` : `w-1.5 bg-foreground/20 hover:bg-foreground/50`
                         }`}
+                        style={{ borderRadius: 'var(--radius-pill)' }}
                         aria-label={`Go to slide ${i + 1}`}
                       />
                     ))}
@@ -204,21 +283,21 @@ function OverlayContent() {
 
               {/* ── Problem / Solution ── */}
               {(problem || solution || isStreaming) && (
-                <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
+                <motion.div variants={activeItem} className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
                   <div className="border-t border-foreground/15 pt-5">
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-foreground/40 mb-3">Problem</p>
+                    <p className="font-ui text-[10px] uppercase tracking-widest text-foreground/40 mb-3 brutalist:text-foreground brutalist:text-xs">Problem</p>
                     {isStreaming && !problem ? (
                       <div className="h-16 w-full rounded bg-foreground/10 animate-pulse" />
                     ) : (
-                      !!problem && <p className="text-sm text-foreground/70 leading-relaxed">{problem as string}</p>
+                      !!problem && <p className="text-sm text-foreground/70 leading-relaxed font-body brutalist:text-base brutalist:text-foreground brutalist:font-bold">{problem as string}</p>
                     )}
                   </div>
                   <div className="border-t border-foreground/15 pt-5">
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-foreground/40 mb-3">Solution</p>
+                    <p className="font-ui text-[10px] uppercase tracking-widest text-foreground/40 mb-3 brutalist:text-foreground brutalist:text-xs">Solution</p>
                     {isStreaming && !solution ? (
                       <div className="h-16 w-full rounded bg-foreground/10 animate-pulse" />
                     ) : (
-                      !!solution && <p className="text-sm text-foreground/70 leading-relaxed">{solution as string}</p>
+                      !!solution && <p className="text-sm text-foreground/70 leading-relaxed font-body brutalist:text-base brutalist:text-foreground brutalist:font-bold">{solution as string}</p>
                     )}
                   </div>
                 </motion.div>
@@ -226,12 +305,12 @@ function OverlayContent() {
 
               {/* ── Pull quote ── */}
               {(quote || isStreaming) && (
-                <motion.div variants={item} className="border-l-2 border-foreground/20 pl-6 mb-12">
+                <motion.div variants={activeItem} className="border-l-2 border-foreground/20 pl-6 mb-12 brutalist:border-l-0 brutalist:border-t-[3px] brutalist:border-foreground brutalist:pl-0 brutalist:pt-6">
                   {isStreaming && !quote ? (
                     <div className="h-8 w-2/3 rounded bg-foreground/10 animate-pulse" />
                   ) : (
                     quote && (
-                      <p className="text-xl md:text-3xl font-light text-foreground/75 leading-snug italic">
+                      <p className="text-xl md:text-3xl font-light text-foreground/75 leading-snug italic font-body brutalist:text-2xl brutalist:md:text-4xl brutalist:text-[var(--brutalist-cyan)] brutalist:font-bold brutalist:not-italic brutalist:leading-tight">
                         &ldquo;{quote}&rdquo;
                       </p>
                     )
@@ -241,9 +320,9 @@ function OverlayContent() {
 
               {/* ── Tech stack ── */}
               {techStack.length > 0 && (
-                <motion.div variants={item} className="flex flex-wrap gap-2">
+                <motion.div variants={activeItem} className="flex flex-wrap gap-2">
                   {techStack.map((tech, i) => (
-                    <span key={i} className="px-2 py-1 border border-foreground/15 font-mono text-[10px] uppercase tracking-wider text-foreground/50">
+                    <span key={i} className="px-2 py-1 border border-foreground/15 font-ui text-[10px] uppercase tracking-wider text-foreground/50 brutalist:text-foreground brutalist:border-foreground brutalist:text-xs" style={{ borderRadius: 'var(--radius-pill)' }}>
                       {tech}
                     </span>
                   ))}
@@ -255,7 +334,11 @@ function OverlayContent() {
           {/* Close */}
           <motion.button
             key="close-btn"
-            className="fixed top-5 right-6 z-[203] font-mono text-[10px] uppercase tracking-widest text-foreground/40 hover:text-foreground transition-colors"
+            className={[
+              'fixed top-5 right-6 z-[10002] font-ui uppercase tracking-widest transition-colors',
+              'text-foreground/40 hover:text-foreground text-[10px]',
+              'brutalist:bg-foreground brutalist:text-background brutalist:px-3 brutalist:py-1 brutalist:text-xs brutalist:hover:opacity-80',
+            ].join(' ')}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { delay: 0.4 } }}
             exit={{ opacity: 0 }}

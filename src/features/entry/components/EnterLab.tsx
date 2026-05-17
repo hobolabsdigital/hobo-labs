@@ -2,6 +2,8 @@
 import React, { useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { useTheme } from '@/core/theme/theme-provider';
+import { getMotion } from '@/core/theme/theme-motion';
 
 // Helper to split text into words for GSAP staggering
 function SplitWords({ text, className }: { text: string; className?: string }) {
@@ -18,9 +20,12 @@ function SplitWords({ text, className }: { text: string; className?: string }) {
 
 export function EnterLab({ onAnimationComplete }: { onAnimationComplete?: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
 
   useGSAP(() => {
     if (!containerRef.current) return;
+
+    const m = getMotion(resolvedTheme ?? 'light');
 
     // We set initial state in inline styles to prevent FOUC, but GSAP takes over here
     gsap.set(containerRef.current, { opacity: 1 });
@@ -35,39 +40,60 @@ export function EnterLab({ onAnimationComplete }: { onAnimationComplete?: () => 
 
     const buildSequence = (boxClass: string, wordClass: string) => {
       // 1. Box pops into the middle
-      tl.to(boxClass, { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.5)' });
+      tl.to(boxClass, { 
+        opacity: 1, 
+        scale: 1, 
+        duration: m.intro.scaleDuration, 
+        ease: m.intro.scaleEase,
+      });
       
       // 2. Box moves up while words animate in
-      tl.to(boxClass, { y: 0, duration: 0.6, ease: 'power3.out' }, '+=0.2');
+      tl.to(boxClass, { y: 0, duration: m.intro.boxDuration, ease: m.intro.boxEase }, '+=0.2');
       tl.to(wordClass, {
-        opacity: 1, y: 0, duration: 0.4, stagger: 0.04, ease: 'power2.out'
+        opacity: 1, y: 0, 
+        duration: m.intro.textDuration, 
+        stagger: m.intro.textStagger, 
+        ease: m.intro.textEase,
       }, '<0.1');
 
       // 3. Hold so the user can read it
-      tl.to({}, { duration: 2.5 });
+      tl.to({}, { duration: m.intro.holdDuration });
 
-      // 4. Fly away (dead drop style)
-      tl.to([boxClass, wordClass], {
-        y: '50vh', 
-        opacity: 0, 
-        duration: 0.4, 
-        stagger: { amount: 0.1, from: 'random' },
-        ease: 'power4.in'
-      });
+      // 4. Exit (driven by exitStyle config, not theme name)
+      if (m.intro.exitStyle === 'float') {
+        // Smooth upward float with gentle scale-down
+        tl.to([boxClass, wordClass], {
+          y: '-30vh',
+          scale: 0.9,
+          opacity: 0, 
+          duration: m.intro.exitDuration, 
+          stagger: { amount: 0.15, from: 'start' },
+          ease: m.intro.exitEase,
+        });
+      } else {
+        // 'slam' or 'fade': dead drop / fast exit
+        tl.to([boxClass, wordClass], {
+          y: '50vh', 
+          opacity: 0, 
+          duration: m.intro.exitDuration, 
+          stagger: { amount: 0.1, from: 'random' },
+          ease: m.intro.exitEase,
+        });
+      }
     };
 
     buildSequence('.anim-box-1', '.word-1');
     buildSequence('.anim-box-2', '.word-2');
     buildSequence('.anim-box-3', '.word-3');
 
-  }, { scope: containerRef });
+  }, { scope: containerRef, dependencies: [resolvedTheme] });
 
   return (
-    <div ref={containerRef} style={{ opacity: 0 }} className="min-h-[500px] pointer-events-none relative flex w-full flex-col items-center justify-center px-6 text-4xl font-extrabold font-sans tracking-tight whitespace-normal text-zinc-900 md:w-[60vw] md:px-0 md:text-6xl dark:text-zinc-100">
+    <div ref={containerRef} style={{ opacity: 0, fontWeight: 'var(--intro-weight, 800)' as any }} className="min-h-[500px] pointer-events-none relative flex w-full flex-col items-center justify-center px-6 text-4xl font-heading tracking-tight whitespace-normal text-[var(--foreground)] md:w-[60vw] md:px-0 md:text-6xl">
       
       {/* BLOCK 1 */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-12">
-        <div className="anim-box-1 mx-8 max-w-[80vw] rotate-1 transform rounded-2xl border-4 border-black bg-gradient-to-br from-blue-400 to-indigo-500 px-8 py-4 text-4xl text-black shadow-xl md:text-5xl dark:border-white/20">
+        <div className="anim-box-1 mx-8 max-w-[80vw] rotate-1 transform border-4 px-8 py-4 text-4xl shadow-xl md:text-5xl" style={{ background: 'var(--box-1-bg, linear-gradient(to bottom right, #60a5fa, #6366f1))', color: 'var(--box-text, #000)', borderColor: 'var(--box-border, #000)', borderRadius: 'var(--box-radius, 0.5rem)' }}>
           Systems Architect
         </div>
         <div className="flex w-full flex-wrap items-center justify-center gap-y-6 gap-x-2 text-center">
@@ -80,7 +106,7 @@ export function EnterLab({ onAnimationComplete }: { onAnimationComplete?: () => 
 
       {/* BLOCK 2 */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-12">
-        <div className="anim-box-2 mx-8 max-w-[80vw] -rotate-2 transform rounded-2xl border-4 border-black bg-gradient-to-br from-pink-400 to-rose-500 px-8 py-4 text-4xl text-black shadow-xl md:text-5xl dark:border-white/20">
+        <div className="anim-box-2 mx-8 max-w-[80vw] -rotate-2 transform border-4 px-8 py-4 text-4xl shadow-xl md:text-5xl" style={{ background: 'var(--box-2-bg, linear-gradient(to bottom right, #f472b6, #f43f5e))', color: 'var(--box-2-text, var(--box-text, #000))', borderColor: 'var(--box-border, #000)', borderRadius: 'var(--box-radius, 0.5rem)' }}>
           Chief Creative Technologist
         </div>
         <div className="flex w-full flex-wrap items-center justify-center gap-y-6 gap-x-2 text-center">
@@ -93,7 +119,7 @@ export function EnterLab({ onAnimationComplete }: { onAnimationComplete?: () => 
 
       {/* BLOCK 3 */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-12">
-        <div className="anim-box-3 mx-8 max-w-[80vw] rotate-2 transform rounded-2xl border-4 border-black bg-gradient-to-br from-green-400 to-emerald-500 px-8 py-4 text-4xl text-black shadow-xl md:text-5xl dark:border-white/20">
+        <div className="anim-box-3 mx-8 max-w-[80vw] rotate-2 transform border-4 px-8 py-4 text-4xl shadow-xl md:text-5xl" style={{ background: 'var(--box-3-bg, linear-gradient(to bottom right, #4ade80, #10b981))', color: 'var(--box-3-text, var(--box-text, #000))', borderColor: 'var(--box-border, #000)', borderRadius: 'var(--box-radius, 0.5rem)' }}>
           Systems Whisperer
         </div>
         <div className="flex w-full flex-wrap items-center justify-center gap-y-6 gap-x-2 text-center">

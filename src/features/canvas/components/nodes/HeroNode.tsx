@@ -1,9 +1,9 @@
 "use client";
 
 import React from 'react';
-import { Handle, Position } from "@xyflow/react";
 import { NodeHandles } from './NodeHandles';
 import { motion, AnimatePresence } from "framer-motion";
+import Image from 'next/image';
 
 export const HeroNode = React.memo(function HeroNode({ data, id }: { data: any, id: string }) {
   const rawHeadline = data.headline || data.title || "THE\nCREATIVE\nENGINE";
@@ -30,7 +30,7 @@ export const HeroNode = React.memo(function HeroNode({ data, id }: { data: any, 
       >
         <motion.div className="mb-4" variants={typewriterContainer} initial="hidden" animate="visible">
           {headlineLines.map((line: string, i: number) => (
-            <h1 key={i} className="text-7xl md:text-9xl font-sans font-medium text-foreground leading-[0.85] tracking-tighter uppercase" style={{ overflowWrap: 'break-word' }}>
+            <h1 key={i} className={`text-7xl md:text-9xl font-heading font-medium text-foreground leading-[0.85] tracking-tighter uppercase ${i > 0 ? 'brutalist:text-[var(--brutalist-cyan)]' : ''}`} style={{ overflowWrap: 'break-word' }}>
               {line.split('').map((char, charIdx) => (
                 <motion.span key={charIdx} variants={typewriterChar}>{char}</motion.span>
               ))}
@@ -46,14 +46,14 @@ export const HeroNode = React.memo(function HeroNode({ data, id }: { data: any, 
               boxShadow: "10px 10px 0px 0px var(--color-accent-lime)"
             }}
           >
-            <img src={data.imageUrl} alt="mask" className="w-full h-full object-cover" />
+            <Image src={data.imageUrl} alt="mask" fill className="object-cover" />
           </div>
         )}
 
         {data.subline && (
           <div className="mt-8 max-w-sm">
-            <p className="font-mono text-sm text-foreground/70 uppercase tracking-widest mb-2">[OVERVIEW]</p>
-            <motion.p variants={typewriterContainer} initial="hidden" animate="visible" className="font-sans text-xl leading-relaxed text-foreground">
+            <p className="font-ui text-sm text-foreground/70 uppercase tracking-widest mb-2">[OVERVIEW]</p>
+            <motion.p variants={typewriterContainer} initial="hidden" animate="visible" className="font-body text-xl leading-relaxed text-foreground">
               {data.subline.split('').map((char: string, charIdx: number) => (
                 <motion.span key={charIdx} variants={typewriterChar}>{char}</motion.span>
               ))}

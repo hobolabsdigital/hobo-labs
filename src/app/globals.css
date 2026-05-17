@@ -3,12 +3,20 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant blueprint (&:is(.blueprint *));
+@custom-variant cyberpunk (&:is(.cyberpunk *));
+@custom-variant brutalist (&:is(.brutalist *));
+@custom-variant retro (&:is(.retro *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans), 'Inter', sans-serif;
   --font-mono: var(--font-space-mono), monospace;
+  --font-display: var(--font-saira), 'Saira Condensed', sans-serif;
+  --font-heading: var(--font-heading), sans-serif;
+  --font-body: var(--font-body), sans-serif;
+  --font-ui: var(--font-ui), monospace;
   --color-primary: var(--primary);
   --color-primary-foreground: #ffffff;
   --color-accent-blue: #5E9BFF;
@@ -29,33 +37,351 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #000000;
+  --background: #faf9f7;
+  --foreground: #0a0a0c;
   --primary: #1a73e8;
   --border: #e2e8f0;
   --input: #e2e8f0;
   --ring: #1a73e8;
   --radius: 0.625rem;
+
+  /* Typography tokens — components use these, never raw font names */
+  --font-heading: var(--font-sans);
+  --font-body: var(--font-sans);
+  --font-ui: var(--font-space-mono);
+
+  /* Shape tokens */
+  --radius-pill: 9999px;
+  --radius-card: var(--radius);
+  --radius-input: 2rem;
+  --radius-btn: 9999px;
+  --border-width: 1px;
+
+  /* Canvas background — transparent lets InteractiveGrid gradient show */
+  --canvas-bg: var(--background);
+
+  /* Intro box corner radius */
+  --box-radius: 0.5rem;
 }
 
 .dark {
-  --background: #111111;
-  --foreground: #ffffff;
+  --background: #0a0a0c;
+  --foreground: #f4f4f5;
   --primary: #5E9BFF;
   --border: #333333;
   --input: #333333;
   --ring: #5E9BFF;
 }
 
+.blueprint {
+  --background: #f0ede6;
+  --foreground: #2a3db5;
+  --primary: #2a3db5;
+  --border: #2a3db5;
+  --input: #c8c4ba;
+  --ring: #2a3db5;
+
+  --hero-gradient: none;
+  --hero-clip: border-box;
+  --hero-fill: currentColor;
+
+  /* Typography: monospace for technical drawing feel */
+  --font-heading: var(--font-space-mono);
+  --font-body: var(--font-space-mono);
+  --font-ui: var(--font-space-mono);
+
+  /* Shape */
+  --radius-pill: 0;
+  --radius-card: 0;
+  --radius-input: 0;
+  --radius-btn: 0;
+  --border-width: 1px;
+  --box-radius: 0;
+}
+
+/* Blueprint body: fine technical grid + custom crosshair cursor */
+.blueprint body {
+  background-color: var(--background);
+  background-image:
+    linear-gradient(rgba(42, 61, 181, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42, 61, 181, 0.06) 1px, transparent 1px);
+  background-size: 80px 80px;
+  cursor: crosshair;
+}
+
+/* All interactive elements get crosshair too */
+.blueprint button,
+.blueprint a,
+.blueprint input {
+  cursor: crosshair;
+}
+
+/* Blueprint intro boxes: stripped gradients, cobalt outlines only */
+.blueprint {
+  --box-1-bg: transparent;
+  --box-2-bg: transparent;
+  --box-3-bg: transparent;
+  --box-text: #2a3db5;
+  --box-border: #2a3db5;
+}
+
+.cyberpunk {
+  --background: #0c0612;
+  --foreground: #e8e0f0;
+  --primary: #ff2d7b;
+  --border: #2a1540;
+  --input: #2a1540;
+  --ring: #ff2d7b;
+
+  --hero-gradient: linear-gradient(90deg, #ff2d7b, #ff2d7b);
+
+  /* Typography: Saira Condensed — industrial compressed gothic */
+  --font-heading: var(--font-saira);
+  --font-body: var(--font-saira);
+  --font-ui: var(--font-saira);
+
+  /* Shape */
+  --radius-pill: 0;
+  --radius-card: 0;
+  --radius-input: 0;
+  --radius-btn: 0;
+  --border-width: 2px;
+}
+
+.cyberpunk body {
+  background-color: var(--background);
+  /* Subtle horizontal scanlines */
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 45, 123, 0.03) 2px,
+      rgba(255, 45, 123, 0.03) 4px
+    );
+}
+
+/* Cyberpunk intro — lighter weights to match the sleek condensed canvas look */
+.cyberpunk {
+  --hero-weight-line1: 400;
+  --hero-weight-line2: 600;
+  --intro-weight: 400;
+}
+
+/* Cyberpunk intro boxes — cold neons only */
+.cyberpunk {
+  --box-1-bg: linear-gradient(to bottom right, #ff2d7b, #9b0040);
+  --box-2-bg: linear-gradient(to bottom right, #b83dff, #6a00ff);
+  --box-3-bg: linear-gradient(to bottom right, #00f0ff, #0080ff);
+  --box-text: #0c0612;
+  --box-border: transparent;
+  --box-radius: 0;
+}
+
+.brutalist {
+  --background: #E8200E;
+  --foreground: #F5F0E8;
+  --primary: #0A0A0A;
+  --border: #0A0A0A;
+  --input: #C41A0B;
+  --ring: #0A0A0A;
+
+  --hero-gradient: none;
+  --hero-clip: border-box;
+  --hero-fill: currentColor;
+
+  /* Typography: 3-tier brutalist hierarchy */
+  --font-heading: var(--font-brutalist);            /* Anton — display */
+  --font-body: var(--font-darker-grotesque);        /* Darker Grotesque — body */
+  --font-ui: var(--font-space-mono);                /* Space Mono — labels/UI */
+
+  /* Shape: hard edges, thick borders */
+  --radius-pill: 0;
+  --radius-card: 0;
+  --radius-input: 0;
+  --radius-btn: 0;
+  --border-width: 3px;
+  --box-radius: 0;
+}
+
+.brutalist body {
+  background-color: var(--background);
+}
+
+/* Flat — no elevation in brutalist */
+.brutalist img,
+.brutalist .shadow-2xl,
+.brutalist .shadow-xl,
+.brutalist .shadow-lg {
+  box-shadow: none !important;
+}
+
+/* Desaturated images — raw, stripped of color polish (except project modal) */
+.brutalist img:not([data-modal-image]) {
+  filter: grayscale(0.8) contrast(1.2);
+}
+
+/* Heavier body weight + larger size for readability on red */
+.brutalist body {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+/* Brutalist intro boxes: solid blocks on red */
+.brutalist {
+  --box-1-bg: #0A0A0A;      /* solid black */
+  --box-2-bg: #F5F0E8;      /* concrete white */
+  --box-3-bg: #17DFF1;      /* cyan accent */
+  --box-text: #F5F0E8;      /* light on dark boxes */
+  --box-border: #0A0A0A;
+
+  /* Per-box text overrides */
+  --box-2-text: #0A0A0A;    /* dark text on white box */
+  --box-3-text: #0A0A0A;    /* dark text on cyan box */
+
+  /* Accent cyan — complement of #E8200E via difference blend */
+  --brutalist-cyan: #17DFF1;
+
+  /* Hero text: no gradient, solid cyan */
+  --hero-gradient: none;
+  --hero-clip: border-box;
+  --hero-fill: #17DFF1;
+}
+
+
+
+.retro {
+  --background: #F0D8C0;
+  --foreground: #3D2B1F;
+  --primary: #E8668A;
+  --border: #C8B8A8;
+  --input: #F0E0D0;
+  --ring: #E8668A;
+
+  --hero-gradient: linear-gradient(90deg, #E8668A, #FF8C42, #A0D8E8);
+
+  /* Typography: Fraunces — warm variable serif */
+  --font-heading: var(--font-retro);
+  --font-body: var(--font-retro);
+  --font-ui: var(--font-retro);
+
+  /* Shape: soft, rounded */
+  --radius-pill: 9999px;
+  --radius-card: 1rem;
+  --radius-input: 2rem;
+  --radius-btn: 9999px;
+  --border-width: 1px;
+  --box-radius: 1rem;
+
+  /* Canvas: transparent so gradient shows through */
+  --canvas-bg: transparent;
+
+  /* Intro boxes */
+  --box-1-bg: linear-gradient(135deg, #FF8C42, #E8668A);
+  --box-2-bg: linear-gradient(135deg, #E8668A, #A0D8E8);
+  --box-3-bg: linear-gradient(135deg, #A0D8E8, #FF8C42);
+  --box-text: #3D2B1F;
+  --box-border: transparent;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
+  }
+  button, a, [role="button"], summary, select, label[for] {
+    cursor: pointer;
+  }
+  button:hover, a:hover, [role="button"]:hover {
+    opacity: 0.85;
   }
   body {
     @apply bg-background text-foreground;
   }
   html {
-    @apply font-sans;
+    @apply font-body;
+    scrollbar-width: thin;
+    scrollbar-color: var(--foreground) transparent;
+  }
+  /* Webkit scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--foreground);
+    border-radius: 0;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--foreground);
+    opacity: 0.8;
+  }
+
+  /* ReactFlow must be transparent so InteractiveGrid canvas dots show through.
+     The EditorialCanvas wrapper div provides the actual bg via --canvas-bg. */
+  .react-flow {
+    background-color: transparent !important;
+  }
+
+  /* ReactFlow controls — theme-aware */
+  .react-flow__controls {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+  .react-flow__controls-button {
+    background: var(--background) !important;
+    border: 1px solid var(--foreground) !important;
+    border-radius: 0 !important;
+    fill: var(--foreground) !important;
+    color: var(--foreground) !important;
+    width: 28px;
+    height: 28px;
+  }
+  .react-flow__controls-button:hover {
+    background: var(--foreground) !important;
+    fill: var(--background) !important;
+    color: var(--background) !important;
+  }
+  .react-flow__controls-button svg {
+    fill: inherit !important;
+  }
+  
+  .theme-logo-container {
+    mix-blend-mode: difference;
+  }
+  .theme-logo {
+    color: white;
+  }
+  
+  .blueprint .theme-logo-container {
+    mix-blend-mode: normal;
+  }
+  .blueprint .theme-logo {
+    color: #2a3db5;
+  }
+  
+  .cyberpunk .theme-logo-container {
+    mix-blend-mode: normal;
+  }
+  .cyberpunk .theme-logo {
+    color: #ff2d7b;
+  }
+  
+  .brutalist .theme-logo-container {
+    mix-blend-mode: normal;
+  }
+  .brutalist .theme-logo {
+    color: #F5F0E8;
+  }
+  
+  .retro .theme-logo-container {
+    mix-blend-mode: normal;
+  }
+  .retro .theme-logo {
+    color: #E8668A;
   }
 }
 
@@ -73,9 +399,43 @@
       linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
   }
 
+  .blueprint .grid-bg {
+    background-image: 
+      linear-gradient(to right, rgba(42,61,181,0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(42,61,181,0.08) 1px, transparent 1px);
+  }
+
+  .brutalist .grid-bg {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, rgba(10,10,10,0.12) 2px, transparent 2px),
+      linear-gradient(to bottom, rgba(10,10,10,0.12) 2px, transparent 2px);
+  }
+
+  .retro .grid-bg {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, rgba(168,216,176,0.12) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(168,216,176,0.12) 1px, transparent 1px);
+  }
+
+  .cyberpunk .grid-bg {
+    background-image: 
+      linear-gradient(to right, rgba(255,45,123,0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,45,123,0.06) 1px, transparent 1px);
+  }
+
   .animate-wing-flap {
     animation: wing-flap 0.15s ease-in-out infinite;
     transform-origin: center;
+  }
+
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
   }
 }
 

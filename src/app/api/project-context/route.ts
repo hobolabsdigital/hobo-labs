@@ -12,7 +12,6 @@ const contextSchema = z.object({
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    console.log('[DEBUG-CONTEXT] Incoming req body:', body);
     const { slug, messages } = body;
     const projectData = getProjectStaticData(slug);
 

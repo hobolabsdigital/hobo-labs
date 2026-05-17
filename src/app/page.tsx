@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { Preloader } from '@/core/ui/Preloader';
 import { ReactFlowProvider } from '@xyflow/react';
 import { useCrtStore } from '@/features/crt/store/useCrtStore';
+import { useTheme } from '@/core/theme/theme-provider';
 
 // UI Components
 import { ChatInput } from '@/features/editor-chat/components/ChatInput';
@@ -12,7 +13,7 @@ import { DebugPanel } from '@/features/canvas/components/DebugPanel';
 import { TimelineScrubber } from '@/features/timeline/components/TimelineScrubber';
 import { FluidBackground } from '@/features/fluid-bg/components/FluidBackground';
 import { InteractiveGrid } from '@/core/ui/InteractiveGrid';
-import { ThemeToggle } from '@/core/ui/ThemeToggle';
+
 import { CrtEffect } from '@/features/crt/components/CrtEffect';
 import { ProjectModalOverlay } from '@/features/project-modal/components/ProjectModalOverlay';
 
@@ -25,7 +26,9 @@ import { IntroNode } from '@/features/canvas/components/nodes/IntroNode';
 
 export default function Home() {
   const crtMode = useCrtStore((s) => s.crtMode);
+  const { resolvedTheme } = useTheme();
   const isExperimental = crtMode === "experimental";
+  const isBrutalist = resolvedTheme === 'brutalist';
   const captureRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -37,10 +40,10 @@ export default function Home() {
     };
   }, [isExperimental]);
 
-  // SVG chromatic aberration filter only used in standard mode
+  // SVG chromatic aberration filter — disabled for brutalist (material honesty)
   const mainStyle = useMemo(
-    () => (isExperimental ? undefined : { filter: "url(#crt-barrel)" }),
-    [isExperimental]
+    () => (isExperimental || isBrutalist ? undefined : { filter: "url(#crt-barrel)" }),
+    [isExperimental, isBrutalist]
   );
 
   /*
@@ -51,12 +54,12 @@ export default function Home() {
   const pageContent = (
     <main
       id="crt-main"
-      className="w-full h-screen overflow-hidden bg-white dark:bg-black relative"
+      className="w-full h-screen overflow-hidden bg-transparent relative"
       style={mainStyle}
     >
       <IntroNode />
       <EditorialCanvas>
-        <InteractiveGrid gap={24} size={2} color="var(--grid-color)" repelRadius={150} repelStrength={15} />
+        <InteractiveGrid />
       </EditorialCanvas>
       <ChatInput />
     </main>
@@ -92,8 +95,8 @@ export default function Home() {
           <ProjectModalOverlay />
           <DebugPanel />
           <TimelineScrubber />
-          {/*<FluidBackground />*/}
-          <ThemeToggle />
+          <FluidBackground />
+
         </ReactFlowProvider>
       )}
     </>

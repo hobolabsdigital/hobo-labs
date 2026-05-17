@@ -27,7 +27,7 @@ const GhostText = React.memo(function GhostText({ id, fallbackText, isFinished, 
       <div
         ref={textRef}
         style={{ maxHeight: '300px', overflowY: 'auto' }}
-        className="text-lg font-mono text-foreground/50 leading-snug whitespace-pre-wrap break-words"
+        className="text-lg font-ui text-foreground/50 leading-snug whitespace-pre-wrap break-words"
       >
         {textToDisplay || "..."}
       </div>
@@ -44,7 +44,7 @@ const GhostText = React.memo(function GhostText({ id, fallbackText, isFinished, 
         WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 20%, black 100%)',
         maskImage: 'linear-gradient(to bottom, transparent 0%, black 20%, black 100%)',
       }}
-      className="text-lg font-mono text-foreground/50 leading-snug whitespace-pre-wrap break-words"
+      className="text-lg font-ui text-foreground/50 leading-snug whitespace-pre-wrap break-words"
     >
       {textToDisplay || "..."}
     </div>
@@ -60,7 +60,7 @@ export const GhostNode = React.memo(function GhostNode({ id, data }: { id: strin
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className={`max-w-md p-6 bg-[var(--background)] relative border-l-4 border-dashed border-foreground/30 ${isFinished ? 'opacity-50' : 'opacity-80'}`}
+      className={`max-w-md p-6 relative ${isFinished ? 'bg-[var(--background)] opacity-50' : 'bg-foreground/5 animate-pulse opacity-80'}`}
     >
       <NodeHandles />
       
@@ -69,7 +69,7 @@ export const GhostNode = React.memo(function GhostNode({ id, data }: { id: strin
           animate={!isFinished ? { opacity: [0.5, 1, 0.5] } : { opacity: 1 }}
           transition={!isFinished ? { repeat: Infinity, duration: 2 } : {}}
           onClick={() => isFinished && setIsExpanded(!isExpanded)}
-          className={`font-mono text-xs font-bold uppercase tracking-widest self-start px-2 py-1 ${isFinished ? 'bg-foreground/5 text-foreground/50 cursor-pointer hover:bg-foreground/10' : 'bg-foreground/10 text-foreground'}`}
+          className={`font-ui text-xs font-bold uppercase tracking-widest self-start px-2 py-1 ${isFinished ? 'bg-foreground/5 text-foreground/50 cursor-pointer hover:bg-foreground/10' : 'bg-foreground/10 text-foreground'}`}
         >
           {isFinished ? (isExpanded ? '[ - REASONING ]' : '[ + REASONING ]') : '[ THINKING... ]'}
         </motion.div>

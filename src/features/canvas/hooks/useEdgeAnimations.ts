@@ -26,7 +26,7 @@ export function useEdgeAnimations() {
             sourceHandle: 'src-right', 
             targetHandle: 'tgt-left',
             animated: isLatest,
-            style: { stroke: 'var(--foreground)', strokeWidth, opacity, transition: 'opacity 0.5s ease, stroke-width 0.5s ease' }
+            style: { stroke: 'var(--foreground)', strokeWidth, opacity, transform: isLatest ? 'scaleX(1)' : 'scaleX(0.95)', transformOrigin: 'left', transition: 'opacity 0.5s ease, stroke-width 0.5s ease, transform 0.5s ease' }
           };
         }
         return edge;

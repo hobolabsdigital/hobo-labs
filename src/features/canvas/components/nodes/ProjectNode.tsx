@@ -33,7 +33,7 @@ function ProjectSkeleton() {
         <motion.div
           animate={{ opacity: [0.3, 0.6, 0.3] }}
           transition={{ repeat: Infinity, duration: 2 }}
-          className="font-mono text-xs text-foreground/30 uppercase tracking-widest"
+          className="font-ui text-xs text-foreground/30 uppercase tracking-widest"
         >
           LOADING ASSET
         </motion.div>
@@ -58,20 +58,17 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id: reactFlow
     api: '/api/project-context',
     schema: z.object({ problem: z.string(), solution: z.string(), quote: z.string() }),
     onFinish: (result: any) => {
-      console.log('[DEBUG-NODE] useObject onFinish:', result);
       updateNodeData(reactFlowId, { ...result.object, isContextStreaming: false });
     },
     onError: (err) => {
-      console.error('[DEBUG-NODE] useObject error:', err);
+      if (process.env.NODE_ENV !== 'production') console.error('[ProjectNode] useObject error:', err);
     }
   });
 
   const hasSubmitted = React.useRef(false);
 
   React.useEffect(() => {
-    console.log(`[DEBUG-NODE] ${data.slug} isContextStreaming:`, data.isContextStreaming, 'problem:', data.problem);
     if (data.isContextStreaming && !data.problem && !hasSubmitted.current) {
-      console.log(`[DEBUG-NODE] Submitting useObject for ${data.slug}`);
       hasSubmitted.current = true;
       submit({ slug: data.slug, messages: [] });
     }
@@ -79,16 +76,11 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id: reactFlow
 
   React.useEffect(() => {
     if (object) {
-      console.log(`[DEBUG-NODE] useObject streaming object for ${data.slug}:`, object);
       updateNodeData(reactFlowId, object);
     }
   }, [object, reactFlowId, updateNodeData]);
 
-  React.useEffect(() => {
-    if (error) {
-      console.error(`[DEBUG-NODE] Error streaming for ${data.slug}:`, error);
-    }
-  }, [error, data.slug]);
+
 
   if (data.isLoading) return <ProjectSkeleton />;
 
@@ -101,8 +93,12 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id: reactFlow
   const isStreaming = data.isContextStreaming as boolean;
   const heroSrc = (image && (image.startsWith('http') || image.startsWith('/'))) ? image : '/portfolio/placeholder.png';
 
+  const heroImgRef = React.useRef<HTMLImageElement>(null);
+
   const handleHeroClick = () => {
-    useProjectModalStore.getState().open(reactFlowId, heroSrc);
+    const rect = heroImgRef.current?.getBoundingClientRect();
+    const sourceRect = rect ? { x: rect.x, y: rect.y, width: rect.width, height: rect.height } : undefined;
+    useProjectModalStore.getState().open(reactFlowId, heroSrc, sourceRect);
   };
 
   return (
@@ -113,35 +109,39 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id: reactFlow
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -30 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="project-node-card relative bg-background origin-center flex flex-col shadow-2xl border border-foreground/10 group"
+        className="project-node-card relative bg-background origin-center flex flex-col shadow-2xl border border-foreground/10 group cursor-pointer hover:border-foreground/30 transition-all duration-300"
         style={{ width: '800px' }}
+        onClick={handleHeroClick}
+        role="button"
+        tabIndex={0}
+        aria-label={`Open project details for ${title}`}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleHeroClick(); }}
       >
         <NodeHandles />
 
-        {/* Hero image — click opens portal overlay */}
-        <div
-          className="w-full aspect-video overflow-visible bg-transparent relative cursor-pointer"
-          onClick={handleHeroClick}
-        >
-          <motion.img
-            layoutId={`project-hero-${id}`}
+        {/* Hero image */}
+        <div className="w-full aspect-video overflow-hidden bg-transparent relative">
+          <img
+            ref={heroImgRef}
             src={heroSrc}
             alt={title}
             className="w-full h-full object-cover"
-            style={{ objectFit: 'cover' }}
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
           />
+          {/* Hover overlay */}
+          <div className="absolute inset-0 z-10 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center pointer-events-none">
+            <span className="font-ui text-xs uppercase tracking-[0.25em] text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-white/60 px-4 py-2">
+              View Project →
+            </span>
+          </div>
         </div>
 
         <div className="p-8 flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-sans font-medium tracking-tight text-foreground">{title}</h2>
-            <span className="font-mono text-xs text-foreground/40">{year}</span>
+            <h2 className="text-3xl font-heading font-medium tracking-tight text-foreground brutalist:text-[var(--brutalist-cyan)]">{title}</h2>
+            <span className="font-ui text-xs text-foreground/40">{year}</span>
           </div>
-          <p className="font-mono text-xs uppercase tracking-widest text-foreground/50">{role}</p>
+          <p className="font-ui text-xs uppercase tracking-widest text-foreground/50">{role}</p>
           {isStreaming && !quote ? (
             <Shimmer className="h-4 w-3/4 rounded mt-2" />
           ) : (

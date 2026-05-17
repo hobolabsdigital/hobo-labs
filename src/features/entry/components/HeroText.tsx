@@ -2,6 +2,8 @@
 import React, { useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { useTheme } from '@/core/theme/theme-provider';
+import { getMotion } from '@/core/theme/theme-motion';
 
 const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?';
 
@@ -13,6 +15,7 @@ export function HeroText({
   const containerRef = useRef<HTMLDivElement>(null);
   const line1Ref = useRef<HTMLSpanElement>(null);
   const line2Ref = useRef<HTMLSpanElement>(null);
+  const { resolvedTheme } = useTheme();
 
   const text1 = "Welcome to";
   const text2 = "Hobo:labs";
@@ -20,6 +23,7 @@ export function HeroText({
   useGSAP(() => {
     if (!containerRef.current || !line1Ref.current || !line2Ref.current) return;
 
+    const m = getMotion(resolvedTheme ?? 'light');
     const chars = SCRAMBLE_CHARS.split('');
     const tl = gsap.timeline({
       onComplete: () => {
@@ -27,23 +31,18 @@ export function HeroText({
       }
     });
 
-    // We use a proxy object to animate the text scrambling
     const state = {
       t1: 0,
       t2: 0,
-      out1: 1, // for play-out
-      out2: 1, // for play-out
     };
 
     // Pre-fill with random chars for line 1
     line1Ref.current.textContent = text1.split('').map(c => c === ' ' ? '\u00a0' : chars[Math.floor(Math.random() * chars.length)]).join('');
 
     // --- PLAY IN ---
-    
-    // Animate Line 1 In
     tl.to(state, {
       t1: 1,
-      duration: 1.4,
+      duration: m.hero.enterDuration,
       ease: 'none',
       onUpdate() {
         let out = '';
@@ -59,10 +58,9 @@ export function HeroText({
       }
     }, 0.3);
 
-    // Animate Line 2 In (Split chars)
     tl.to(state, {
       t2: 1,
-      duration: 1.4,
+      duration: m.hero.enterDuration,
       ease: 'none',
       onUpdate() {
         for (let i = 0; i < text2.length; i++) {
@@ -82,25 +80,20 @@ export function HeroText({
     }, 1.0);
 
     // --- HOLD ---
-    tl.to({}, { duration: 1.5 }); // Hold for 1.5s so user can read it
+    tl.to({}, { duration: m.hero.holdDuration });
 
-    // --- PLAY OUT ---
+    // --- PLAY OUT (direction-driven, not theme-name-driven) ---
+    const exitProps: Record<string, gsap.TweenVars> = {
+      left:  { x: '-100vw', opacity: 0, duration: m.hero.exitDuration, ease: m.hero.exitEase },
+      right: { x: '100vw',  opacity: 0, duration: m.hero.exitDuration, ease: m.hero.exitEase },
+      up:    { y: '-50vh',  opacity: 0, duration: m.hero.exitDuration, ease: m.hero.exitEase },
+      down:  { y: '100vh',  opacity: 0, duration: m.hero.exitDuration, ease: m.hero.exitEase },
+    };
 
-    // Fly out Line 1 to the left
-    tl.to(line1Ref.current, {
-      x: '-100vw',
-      opacity: 0,
-      duration: 1.0,
-      ease: 'power3.inOut',
-    }, '>');
+    const exit = exitProps[m.hero.exitDirection] ?? exitProps.left;
 
-    // Fly out Line 2 to the left with a slight delay
-    tl.to(line2Ref.current, {
-      x: '-100vw',
-      opacity: 0,
-      duration: 1.0,
-      ease: 'power3.inOut',
-    }, '<0.15');
+    tl.to(line1Ref.current, exit, '>');
+    tl.to(line2Ref.current, exit, '<0.1');
 
     // Fade entire container out smoothly at the end
     tl.to(containerRef.current, {
@@ -109,7 +102,7 @@ export function HeroText({
       ease: 'power2.inOut',
     }, '<0.5');
 
-  }, []);
+  }, [resolvedTheme]);
 
   return (
     <div
@@ -131,11 +124,11 @@ export function HeroText({
       {/* Line 1 — "WELCOME TO" */}
       <span
         ref={line1Ref}
-        className="welcome-to-text text-black/90 dark:text-white/80 font-sans"
+        className="welcome-to-text text-[var(--foreground)] opacity-90 font-heading"
         style={{
           display: 'block',
           fontSize: 'clamp(48px, 14vw, 280px)',
-          fontWeight: 800,
+          fontWeight: 'var(--hero-weight-line1, 800)' as any,
           lineHeight: 0.9,
           letterSpacing: '-0.05em',
           whiteSpace: 'nowrap',
@@ -147,16 +140,17 @@ export function HeroText({
       {/* Line 2 — "HOBOLABS" sleek gradient */}
       <span
         ref={line2Ref}
-        className="font-sans"
+        className="font-heading"
         style={{
           display: 'block',
           fontSize: 'clamp(60px, 17vw, 360px)',
-          fontWeight: 900,
+          fontWeight: 'var(--hero-weight-line2, 900)' as any,
           lineHeight: 0.9,
           letterSpacing: '-0.06em',
-          color: 'transparent',
-          background: 'linear-gradient(90deg, #ff5c34, #ff007b)',
-          WebkitBackgroundClip: 'text',
+          color: 'var(--foreground)',
+          background: 'var(--hero-gradient, linear-gradient(90deg, #ff5c34, #ff007b))',
+          WebkitBackgroundClip: 'var(--hero-clip, text)',
+          WebkitTextFillColor: 'var(--hero-fill, transparent)',
           whiteSpace: 'nowrap',
         }}
       >

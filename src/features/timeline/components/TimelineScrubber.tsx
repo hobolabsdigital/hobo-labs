@@ -143,7 +143,7 @@ export function TimelineScrubber() {
 
   return (
     <div 
-      className={`fixed top-[10vh] h-[80vh] w-16 z-[60] mix-blend-difference ${INTRO_REVEAL_CLASSES} ${
+      className={`fixed top-[10vh] h-[80vh] w-16 z-[60] ${INTRO_REVEAL_CLASSES} ${
         !isIntroAnimationFinished ? 'translate-x-[150%] opacity-0 pointer-events-none' : 'translate-x-0 opacity-100 pointer-events-auto'
       } ${
         isDebugDrawerOpen ? 'right-[340px]' : 'right-8'
@@ -155,7 +155,7 @@ export function TimelineScrubber() {
       <svg viewBox={`0 0 64 ${CH}`} className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
         <motion.path 
           d={path} 
-          className="fill-white drop-shadow-[0_0_15px_rgba(0,0,0,0.3)] dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" 
+          className="fill-foreground opacity-25" 
         />
       </svg>
       
@@ -177,7 +177,7 @@ export function TimelineScrubber() {
       {/* Floating Monospace Indicator */}
       {(isHovered || isDragging) && (
         <motion.div 
-          className="absolute right-full mr-4 text-[10px] uppercase font-mono bg-[var(--foreground)] text-[var(--background)] px-3 py-2 shadow-2xl pointer-events-none tracking-widest whitespace-nowrap"
+          className="absolute right-full mr-4 text-[10px] uppercase font-ui bg-[var(--foreground)] text-[var(--background)] px-3 py-2 shadow-2xl pointer-events-none tracking-widest whitespace-nowrap"
           style={{ y: springY, top: -12 }}
         >
           {timeCursor === null ? "PRESENT" : `HISTORY: -${maxIndex - currentValue} TURNS`}

@@ -9,7 +9,7 @@ export function Preloader() {
       <motion.div 
         animate={{ opacity: [1, 0, 1] }} 
         transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-        className="font-mono text-sm tracking-widest uppercase text-foreground/50"
+        className="font-ui text-sm tracking-widest uppercase text-foreground/50"
       >
         [ LOADING NEURAL MESH... ]
       </motion.div>

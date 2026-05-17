@@ -20,17 +20,20 @@ export function ThemeToggle() {
   }
 
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    const themes = ["light", "dark", "blueprint", "cyberpunk", "brutalist", "retro"] as const;
+    const currentIndex = themes.indexOf((theme as typeof themes[number]) || "light");
+    const nextIndex = (currentIndex + 1) % themes.length;
+    setTheme(themes[nextIndex]);
   };
 
   return (
     <button
       onClick={toggleTheme}
-      className={`fixed bottom-4 left-4 z-50 bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-mono uppercase hover:bg-opacity-80 ${INTRO_REVEAL_CLASSES} ${
+      className={`fixed bottom-4 left-4 z-50 bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-ui uppercase hover:opacity-80 transition-opacity ${INTRO_REVEAL_CLASSES} ${
         isIntroAnimationFinished ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
       }`}
     >
-      [ THEME: {theme} ]
+      {theme === 'blueprint' ? '[ BLUEPRINT // REAL ]' : theme === 'cyberpunk' ? '[ CYBER // PUNK ]' : theme === 'brutalist' ? '[ BRUT // AL ]' : theme === 'retro' ? '[ RETRO // 70s ]' : theme === 'dark' ? '[ DARK ]' : '[ LIGHT ]'}
     </button>
   );
 }

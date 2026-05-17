@@ -70,7 +70,7 @@ export function BarrelFilter() {
             )
           `;
           overlayRef.current.style.borderRadius = `${radius}px`;
-          overlayRef.current.style.boxShadow = 
+          overlayRef.current.style.boxShadow =
             `inset 0 0 ${inset}px ${insetSpread}px rgba(0, 0, 0, ${edgeAlpha * 0.4})`;
         }
       }

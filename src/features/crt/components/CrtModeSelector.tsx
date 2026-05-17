@@ -40,9 +40,9 @@ export function CrtModeSelector() {
   if (crtMode !== null) return null;
 
   return (
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-[var(--background)]/80 backdrop-blur-sm">
       <div
-        className="bg-[var(--background)] border-2 border-[var(--foreground)] p-8 max-w-md w-full mx-4 font-mono"
+        className="bg-[var(--background)] border-2 border-[var(--foreground)] p-8 max-w-md w-full mx-4 font-ui"
         style={{ boxShadow: "8px 8px 0 var(--foreground)" }}
       >
         {/* Header */}

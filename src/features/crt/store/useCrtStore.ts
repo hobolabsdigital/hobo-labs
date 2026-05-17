@@ -35,10 +35,10 @@ interface CrtStore {
 
 export const DEFAULT_CRT_CONFIG: CrtConfig = {
   enabled: true,
-  barrelStrength: 10,
-  aberrationOffset: 1.8,
-  vignetteStrength: 0.36,
-  vignetteRadius: 0.75,
+  barrelStrength: 15,
+  aberrationOffset: 0.8,
+  vignetteStrength: 0.34,
+  vignetteRadius: 0.85,
   grainOpacity: 0.115,
   grainSpeed: 1.5,
   cornerRadius: 0.18,

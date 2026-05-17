@@ -15,10 +15,10 @@ export const PromptNode = React.memo(function PromptNode({ data }: { data: any }
       <NodeHandles />
       
       <div className="flex flex-col gap-2">
-        <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-background/70 border-b border-background/20 pb-1">
+        <div className="font-ui text-[10px] font-bold uppercase tracking-widest text-background/70 border-b border-background/20 pb-1">
           [ PROMPT ]
         </div>
-        <p className="text-sm font-sans leading-snug whitespace-pre-wrap">
+        <p className="text-sm font-body leading-snug whitespace-pre-wrap">
           {data.text}
         </p>
       </div>

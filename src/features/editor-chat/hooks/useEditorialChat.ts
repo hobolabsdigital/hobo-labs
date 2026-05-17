@@ -45,7 +45,7 @@ export function useEditorialChat() {
       // data-dossier parsing removed
     },
     async onToolCall({ toolCall }) {
-      console.log('[DEBUG-STREAM] onToolCall FIRED!', JSON.stringify(toolCall, null, 2));
+
 
       let input: any = {};
       try {
@@ -79,7 +79,7 @@ export function useEditorialChat() {
                     output: data
                   });
                 } else {
-                  console.warn(`[DEBUG-STREAM] showProject error:`, data.error);
+                  if (process.env.NODE_ENV !== 'production') console.warn('[showProject] error:', data.error);
                   addToolOutput({
                     tool: toolCall.toolName,
                     toolCallId: toolCall.toolCallId,
@@ -88,7 +88,7 @@ export function useEditorialChat() {
                 }
               })
               .catch(err => {
-                console.error(`[DEBUG-STREAM] showProject fetch error:`, err);
+                if (process.env.NODE_ENV !== 'production') console.error('[showProject] fetch error:', err);
                 addToolOutput({
                   tool: toolCall.toolName,
                   toolCallId: toolCall.toolCallId,

@@ -213,7 +213,7 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
   }, []);
 
   return (
-    <div className="w-full h-screen bg-[var(--background)] relative">
+    <div className="w-full h-screen relative bg-[var(--canvas-bg)]">
       <ReactFlow
         nodes={visibleNodes}
         edges={visibleEdges}
