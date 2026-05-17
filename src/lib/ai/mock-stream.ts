@@ -1,38 +1,39 @@
+import { createUIMessageStream, createUIMessageStreamResponse } from 'ai';
+
 /**
  * Mock stream for development/testing.
- * Returns a pre-baked hero node creation without hitting Ollama.
+ * Returns a pre-baked hero node creation using the same UIMessageStream
+ * protocol as the real chat route.
  */
 export function createMockStreamResponse(): Response {
-  const stream = new ReadableStream({
-    async start(controller) {
-      const encoder = new TextEncoder();
-      const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+  const textId = `mock-text-${Date.now()}`;
 
-      controller.enqueue(encoder.encode('0:"Thinking about the design...\\\\n"\\n'));
-      await delay(1000);
+  const stream = createUIMessageStream({
+    execute: async ({ writer }) => {
+      writer.write({ type: 'text-start', id: textId });
+      writer.write({ type: 'text-delta', id: textId, delta: 'Thinking about the design...\n' });
 
-      const toolCall = {
+      // Simulate latency
+      await new Promise(res => setTimeout(res, 1000));
+
+      // Tool call — uses `tool-input-available` which is the SDK's chunk type
+      writer.write({
+        type: 'tool-input-available',
         toolCallId: `call_${Date.now()}`,
-        toolName: 'createNode',
-        args: {
+        toolName: 'createHeroNode',
+        input: {
           type: 'hero',
           headline: 'MOCK GENERATION',
           subline: 'This node was spawned instantly via the Route Handler.',
         },
-      };
+      });
 
-      controller.enqueue(encoder.encode(`9:${JSON.stringify(toolCall)}\n`));
-      await delay(500);
+      await new Promise(res => setTimeout(res, 500));
 
-      controller.enqueue(encoder.encode('0:"\\\\nNode generated successfully."\\n'));
-      controller.close();
+      writer.write({ type: 'text-delta', id: textId, delta: '\nNode generated successfully.' });
+      writer.write({ type: 'text-end', id: textId });
     },
   });
 
-  return new Response(stream, {
-    headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'no-cache',
-    },
-  });
+  return createUIMessageStreamResponse({ stream });
 }

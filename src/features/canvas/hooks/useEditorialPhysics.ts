@@ -1,6 +1,12 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3-force';
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
+import {
+  DEFAULT_Y,
+  FORCE_X_STRIDE,
+  COLLIDE_RADII,
+  COLLIDE_RADIUS_DEFAULT,
+} from '@/features/canvas/constants';
 
 export function useEditorialPhysics() {
   const nodesLength = useCanvasStore(state => state.nodes.length);
@@ -22,14 +28,7 @@ export function useEditorialPhysics() {
       .velocityDecay(physicsConfig.velocityDecay)
       .force('charge', d3.forceManyBody().strength(physicsConfig.chargeStrength))
       .force('collide', d3.forceCollide().radius((d: any) => {
-        switch (d.type) {
-          case 'hero':    return 300;
-          case 'project': return 350;
-          case 'text':    return 160;
-          case 'ghost':   return 100;
-          case 'dossier': return 100;
-          default:        return 120;
-        }
+        return COLLIDE_RADII[d.type] ?? COLLIDE_RADIUS_DEFAULT;
       }).iterations(3))
       .force('link', d3.forceLink().id((d: any) => d.id).distance(physicsConfig.linkDistance).strength(physicsConfig.linkStrength).iterations(physicsConfig.linkIterations))
       .force('x-flow', d3.forceX().x((d: any) => {
@@ -37,10 +36,10 @@ export function useEditorialPhysics() {
         if (d.type === 'hero' || d.type === 'intro') return d.x;
         // Push each subsequent node further right based on creation order
         const index = d.data?.creationIndex ?? 0;
-        return index * 350;
+        return index * FORCE_X_STRIDE;
       }).strength(0.04))
       // Gentle vertical centering — keeps nodes from drifting too far up/down
-      .force('y-center', d3.forceY().y(400).strength(0.01));
+      .force('y-center', d3.forceY().y(DEFAULT_Y).strength(0.01));
 
     simulationRef.current = simulation;
     setSimulationRef(simulation);

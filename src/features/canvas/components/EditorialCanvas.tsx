@@ -8,6 +8,7 @@ import {
   useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import { INTRO_CAMERA_Y } from '@/features/canvas/constants';
 
 import { HeroNode } from '@/features/canvas/components/nodes/HeroNode';
 import { TextNode } from '@/features/canvas/components/nodes/TextNode';
@@ -116,7 +117,7 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
     if (rfInstance) {
       if (isIntroActive) {
         // Snap immediately to intro node without animation so user sees it right away
-        rfInstance.setCenter(0, -2000, { zoom: 1, duration: 0 });
+        rfInstance.setCenter(0, INTRO_CAMERA_Y, { zoom: 1, duration: 0 });
       } else {
         // Fit all spawned nodes into view after intro completes
         setTimeout(() => {

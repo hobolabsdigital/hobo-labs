@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls } from 'ai';
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
+import { dispatchToolCall } from './dispatchToolCall';
 
 interface MessagePart {
   type: string;
@@ -32,8 +33,6 @@ export function useEditorialChat() {
   const setActiveSuggestions = useCanvasStore(state => state.setActiveSuggestions);
   const clearSuggestions = useCanvasStore(state => state.clearSuggestions);
 
-  // Dossier lifecycle removed
-
   const { messages, setMessages, sendMessage, status, stop, addToolOutput } = useChat({
     transport: new DefaultChatTransport({
       api: isMockApiEnabled ? '/api/chat?mock=true' : '/api/chat',
@@ -45,73 +44,18 @@ export function useEditorialChat() {
       // data-dossier parsing removed
     },
     async onToolCall({ toolCall }) {
-
-
-      let input: any = {};
-      try {
-        input = (toolCall as any).args || (toolCall as any).input || JSON.parse((toolCall as any).argsText || "{}");
-      } catch (e) {
-        console.error("Failed to parse tool args", e);
-      }
-
-      switch (toolCall.toolName) {
-        case 'createHeroNode':
-        case 'createNode':
-          addHero(input, toolCall.toolCallId);
-          break;
-        case 'createProjectNode':
-          addProject(input, toolCall.toolCallId);
-          break;
-        case 'suggestPrompts':
-          setActiveSuggestions(input.suggestions);
-          break;
-        case 'showProject': {
-          const slug = input.slug;
-          if (slug) {
-            fetch(`/api/project-data?slug=${slug}`)
-              .then(res => res.json())
-              .then(data => {
-                if (data && !data.error) {
-                  addProject(data, toolCall.toolCallId);
-                  addToolOutput({
-                    tool: toolCall.toolName,
-                    toolCallId: toolCall.toolCallId,
-                    output: data
-                  });
-                } else {
-                  if (process.env.NODE_ENV !== 'production') console.warn('[showProject] error:', data.error);
-                  addToolOutput({
-                    tool: toolCall.toolName,
-                    toolCallId: toolCall.toolCallId,
-                    output: { error: data.error }
-                  });
-                }
-              })
-              .catch(err => {
-                if (process.env.NODE_ENV !== 'production') console.error('[showProject] fetch error:', err);
-                addToolOutput({
-                  tool: toolCall.toolName,
-                  toolCallId: toolCall.toolCallId,
-                  output: { error: err.message }
-                });
-              });
-          }
-          return;
-        }
-        default:
-          console.warn(`Unhandled tool call: ${toolCall.toolName}`);
-          return;
-      }
-
-      addToolOutput({
-        tool: toolCall.toolName,
-        toolCallId: toolCall.toolCallId,
-        output: { success: true }
+      await dispatchToolCall(toolCall, {
+        addHero,
+        addProject,
+        setActiveSuggestions,
+        addToolOutput,
       });
     }
   });
 
+  // ---------------------------------------------------------------------------
   // Initial AI Greeting Trigger
+  // ---------------------------------------------------------------------------
   const hasInitialized = useRef(false);
   useEffect(() => {
     if (!hasInitialized.current && messages.length === 0) {
@@ -122,7 +66,9 @@ export function useEditorialChat() {
     }
   }, [sendMessage, messages.length]);
 
+  // ---------------------------------------------------------------------------
   // Ghost node streaming sync
+  // ---------------------------------------------------------------------------
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
     if (!lastMessage) return;
@@ -157,10 +103,12 @@ export function useEditorialChat() {
 
   }, [messages, status, createGhost, updateGhostText, finishGhost]);
 
+  // ---------------------------------------------------------------------------
+  // Text node streaming sync
+  // ---------------------------------------------------------------------------
   const lastProcessedTextMsgId = useRef<string | null>(null);
   const processedShowProjectCalls = useRef<Set<string>>(new Set());
 
-  // Text node streaming sync
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
     if (!lastMessage || lastMessage?.role === 'user') {
@@ -190,8 +138,9 @@ export function useEditorialChat() {
     }
   }, [messages, status, addText]);
 
-
-  /** Shared send logic — handles time-travel truncation and dispatches to the AI */
+  // ---------------------------------------------------------------------------
+  // Send Logic — handles time-travel truncation and dispatches to the AI
+  // ---------------------------------------------------------------------------
   const sendPromptText = (text: string) => {
     if (!text.trim()) return;
 

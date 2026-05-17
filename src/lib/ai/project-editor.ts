@@ -1,7 +1,5 @@
 import { RAGChunk } from './types';
-import projectsDbRaw from '../../../docs/projects-vector-db.json';
-
-const projectsDb = projectsDbRaw as RAGChunk[];
+import { projectsDb } from './data';
 
 /**
  * Look up a project from the vector DB by slug.

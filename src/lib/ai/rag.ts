@@ -2,13 +2,7 @@ import { ollama } from 'ai-sdk-ollama';
 import { embed } from 'ai';
 import { findSimilarChunks } from '@/lib/vectorStore';
 import { RAGChunk } from './types';
-
-// Statically import the JSON files to support Vercel Edge Runtime
-import personaDbRaw from '../../../docs/persona-vector-db.json';
-import projectsDbRaw from '../../../docs/projects-vector-db.json';
-
-const personaDb = personaDbRaw as RAGChunk[];
-const projectsDb = projectsDbRaw as RAGChunk[];
+import { personaDb, projectsDb } from './data';
 
 const PROJECT_CATALOG_CONTENT = `
 ## AVAILABLE PROJECTS
