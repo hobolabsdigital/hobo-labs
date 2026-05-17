@@ -17,6 +17,7 @@ Use the exact slug when calling showProject.
 - Editorial Canvas Portfolio | 2026 | Chief Creative Technologist | slug: "editorial-canvas"
 - RISE ePA+ (Electronic Patient Record) | 2023 | iOS Developer | slug: "epa"
 - Find My Mazda | 2022 | Lead Developer | slug: "find-my-mazda"
+- Global Innovation Summit | 2021 | Developer & UI/UX | slug: "innovation-summit"
 - Hermes | 2024 | Lead Architect | slug: "hermes"
 - MonstoryX | 2025 | Chief Creative Technologist | slug: "monstory"
 - Moxis (XiTrust) | 2024 | Lead Architecture & Engineering | slug: "moxis"
