@@ -13,6 +13,7 @@ techStack:
   - "Python (FastAPI)"
   - "Ollama"
 quote: "Transformed traditionally static, repetitive forms into AI-augmented fluid conversations."
+galleryCount: 4
 ---
 
 ## The Problem

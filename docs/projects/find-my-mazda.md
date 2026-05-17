@@ -7,6 +7,7 @@ techStack:
   - "Elastic Search"
   - "Node.js"
 quote: "Achieved an 18% increase in overall conversion rate and 30% rise in dealer inquiries."
+galleryCount: 4
 ---
 
 ## The Problem

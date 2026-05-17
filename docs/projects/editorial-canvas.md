@@ -8,6 +8,7 @@ techStack:
   - "Vercel AI SDK"
   - "Ollama (Local RAG)"
 quote: "An experimental, AI-native interactive portfolio where users chat with a Digital Twin."
+galleryCount: 0
 ---
 
 ## The Problem

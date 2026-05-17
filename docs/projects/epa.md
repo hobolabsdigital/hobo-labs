@@ -7,6 +7,7 @@ techStack:
   - "SwiftUI"
   - "gematik Security"
 quote: "Connecting patients with doctors and insurance providers safely."
+galleryCount: 0
 ---
 
 ## The Problem

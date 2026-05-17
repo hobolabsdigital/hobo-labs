@@ -8,6 +8,7 @@ techStack:
   - "C++ / Blueprints"
   - "Node.js"
 quote: "Transformed children from passive consumers into active digital directors through a Voice-First Generative Loop."
+galleryCount: 5
 ---
 
 ## The Problem

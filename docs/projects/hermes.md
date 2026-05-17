@@ -8,6 +8,7 @@ techStack:
   - "Python"
   - "Multi-Agent AI"
 quote: "Reduced content production costs by 95% using a serverless multi-agent GPU architecture."
+galleryCount: 0
 ---
 
 ## The Problem

@@ -8,6 +8,7 @@ techStack:
   - "Python (Twitter Scraping)"
   - "AWS"
 quote: "Every shared social media post adds a unique fish to a real-time, lively virtual ocean."
+galleryCount: 2
 ---
 
 ## The Problem

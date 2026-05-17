@@ -7,6 +7,7 @@ techStack:
   - "Facial Recognition"
   - "Image Tracking"
 quote: "Garnered over 1,000,000 impressions and more than 20,000 documented user reactions."
+galleryCount: 2
 ---
 
 ## The Problem

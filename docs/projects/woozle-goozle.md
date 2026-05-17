@@ -8,6 +8,7 @@ techStack:
   - "TensorFlow"
   - "Dialogflow"
 quote: "Cultivate a conversational friendship with a living 3D digital transformation of the original hand puppet."
+galleryCount: 2
 ---
 
 ## The Problem

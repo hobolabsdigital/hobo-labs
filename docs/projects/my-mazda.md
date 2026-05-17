@@ -6,6 +6,7 @@ techStack:
   - "React Native"
   - "iOS & Android"
 quote: "The most convenient way to access vehicle documents, history, and manuals on the go."
+galleryCount: 1
 ---
 
 ## The Problem
