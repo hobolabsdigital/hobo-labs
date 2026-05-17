@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, startTransition, useMemo } from 'react';
+import { useCallback, useEffect, useRef, useState, startTransition, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { useProjectModalStore } from '../store/useProjectModalStore';
@@ -67,7 +67,7 @@ function OverlayContent() {
     }
   }, [isOpen, targetRect]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsSettled(false);
     setCurrentIndex(0);
     // Give React a tiny tick to apply the false state (unmount slider, show layout image)
@@ -77,13 +77,13 @@ function OverlayContent() {
         close();
       });
     }, 20);
-  };
+  }, [close]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') handleClose(); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [close]);
+  }, [handleClose]);
 
   if (!isOpen || !projectData) return null;
 

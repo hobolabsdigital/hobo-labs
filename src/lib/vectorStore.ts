@@ -1,12 +1,10 @@
 import { cosineSimilarity } from 'ai';
+import type { RAGChunk } from '@/lib/ai/types';
 
-export interface Chunk {
-  content: string;
-  metadata: Record<string, any>;
-  embedding: number[];
-}
+/** @deprecated Use RAGChunk instead — kept as alias for backwards compatibility */
+export type Chunk = RAGChunk;
 
-export function findSimilarChunks(queryEmbedding: number[], chunks: Chunk[], topK: number = 3): Chunk[] {
+export function findSimilarChunks(queryEmbedding: number[], chunks: RAGChunk[], topK: number = 3): RAGChunk[] {
   const scored = chunks.map(chunk => ({
     chunk,
     score: cosineSimilarity(queryEmbedding, chunk.embedding)

@@ -1,4 +1,5 @@
 import { Node, Edge } from '@xyflow/react';
+import type { HeroNodeData, DossierNodeData } from '@/lib/ai/types';
 
 /** Horizontal spacing between nodes — matches forceX target in useEditorialPhysics */
 const H_SPACING = 300;
@@ -17,7 +18,7 @@ export const createGhostNode = (id: string, sourceNode?: Node): Node => {
   return { id, type: 'ghost', position: { x, y }, data: { text: "Organizing thoughts...", isFinished: false } };
 };
 
-export const calculateNodePosition = (data: any, sourceNode?: Node, defaultOffset: number = 300) => {
+export const calculateNodePosition = (data: { layoutIntent?: string } | undefined, sourceNode?: Node, defaultOffset: number = 300) => {
   let x = 600;
   let y = 400;
 
@@ -38,7 +39,7 @@ export const calculateNodePosition = (data: any, sourceNode?: Node, defaultOffse
   return { x, y };
 };
 
-export const createHeroNode = (id: string, data: any, sourceNode?: Node): Node => {
+export const createHeroNode = (id: string, data: HeroNodeData, sourceNode?: Node): Node => {
   const { x, y } = calculateNodePosition(data, sourceNode, H_SPACING);
 
   return {
@@ -62,7 +63,7 @@ export const createTextNode = (id: string, text: string, sourceNode?: Node): Nod
   return { id, type: 'text', position: { x, y }, data: { text, label: 'INSIGHT', animationEffect: 'annotation' } };
 };
 
-export const createProjectNode = (id: string, data: any, sourceNode?: Node): Node => {
+export const createProjectNode = (id: string, data: Record<string, unknown>, sourceNode?: Node): Node => {
   const { x, y } = calculateNodePosition(data, sourceNode, 400);
 
   return {
