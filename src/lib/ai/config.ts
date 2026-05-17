@@ -13,8 +13,9 @@ export const SAMPLING_CONFIG = {
  * Reasoning is disabled for the initial greeting to reduce latency.
  */
 export function createModel(enableReasoning: boolean) {
-  return ollama('gemma4:31b-cloud', {
+  return ollama('gemma4', {
     think: enableReasoning,
+    structuredOutputs: true,
     options: {
       temperature: SAMPLING_CONFIG.temperature,
       top_p: SAMPLING_CONFIG.topP,
