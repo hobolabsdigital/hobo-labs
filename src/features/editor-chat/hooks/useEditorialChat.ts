@@ -191,49 +191,17 @@ export function useEditorialChat() {
   }, [messages, status, addText]);
 
 
-  const handleSend = () => {
-    if (!input.trim()) return;
-
-    if (timeCursor !== null) {
-      // Branching from history!
-      // 1. Truncate visual canvas
-      truncateHistory(timeCursor);
-
-      // 2. Truncate AI SDK messages
-      // We map the remaining nodes to approximate how many messages should be kept.
-      // A simple approximation: keep messages that correspond to the kept nodes.
-      // Since it's hard to map exactly, a reliable approach for a portfolio is to count user prompts.
-      const nodesToKeep = nodes.slice(0, timeCursor + 1);
-      const userPromptCount = nodesToKeep.filter(n => n.type === 'prompt').length;
-
-      let promptIndex = 0;
-      let cutIndex = messages.length;
-      for (let i = 0; i < messages.length; i++) {
-        if (messages[i].role === 'user') {
-          promptIndex++;
-          if (promptIndex > userPromptCount) {
-            cutIndex = i;
-            break;
-          }
-        }
-      }
-
-      setMessages(messages.slice(0, cutIndex));
-    }
-
-    addPrompt(input);
-    clearSuggestions();
-    sendMessage({ text: input });
-    setInput('');
-  };
-
-  const submitPrompt = (text: string) => {
+  /** Shared send logic — handles time-travel truncation and dispatches to the AI */
+  const sendPromptText = (text: string) => {
     if (!text.trim()) return;
 
     if (timeCursor !== null) {
+      // Branching from history — truncate canvas and AI message history
       truncateHistory(timeCursor);
+
       const nodesToKeep = nodes.slice(0, timeCursor + 1);
       const userPromptCount = nodesToKeep.filter(n => n.type === 'prompt').length;
+
       let promptIndex = 0;
       let cutIndex = messages.length;
       for (let i = 0; i < messages.length; i++) {
@@ -252,6 +220,13 @@ export function useEditorialChat() {
     clearSuggestions();
     sendMessage({ text });
   };
+
+  const handleSend = () => {
+    sendPromptText(input);
+    setInput('');
+  };
+
+  const submitPrompt = (text: string) => sendPromptText(text);
 
   return {
     input,

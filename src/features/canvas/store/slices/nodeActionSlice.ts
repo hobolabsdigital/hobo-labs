@@ -22,6 +22,42 @@ export interface NodeActionSlice {
   updateNodeData: (id: string, partialData: Record<string, any>) => void;
 }
 
+/**
+ * Shared helper for addHero/addProject — encapsulates the repeated pattern of:
+ * 1. Finding the source node (ghost or last placed)
+ * 2. Creating the new node via factory
+ * 3. Stamping creationIndex
+ * 4. Creating the edge
+ * 5. Updating tracking state
+ */
+function addNodeToCanvas(
+  set: (fn: (state: CanvasState) => Partial<CanvasState>) => void,
+  get: () => CanvasState,
+  factory: (id: string, data: any, source?: Node) => Node,
+  id: string,
+  data: any
+) {
+  set(state => {
+    const sourceNode = state.nodes.find(n => n.id === state.activeGhostId)
+      || state.nodes.find(n => n.id === state.lastPlacedNodeId);
+    const newNode = factory(id, data, sourceNode);
+    const ci = state.nodeCreationCounter;
+    newNode.data = { ...newNode.data, creationIndex: ci };
+
+    const newEdges = sourceNode
+      ? [...state.edges, createEdge(sourceNode.id, id)]
+      : state.edges;
+
+    return {
+      nodes: [...state.nodes, newNode],
+      edges: newEdges,
+      lastPlacedNodeId: id,
+      trackedNodeId: id,
+      nodeCreationCounter: ci + 1,
+    };
+  });
+}
+
 export const createNodeActionSlice: StateCreator<CanvasState, [], [], NodeActionSlice> = (set, get) => ({
   activeGhostId: null,
   activeGhostText: null,
@@ -108,28 +144,13 @@ export const createNodeActionSlice: StateCreator<CanvasState, [], [], NodeAction
     });
   },
 
+  /** Shared helper — finds source, stamps creationIndex, creates edge, tracks camera */
   addHero: (data: any, id: string) => {
-    set(state => {
-      const sourceNode = state.nodes.find(n => n.id === state.activeGhostId) || state.nodes.find(n => n.id === state.lastPlacedNodeId);
-      const newNode = createHeroNode(id, data, sourceNode);
-      const ci = state.nodeCreationCounter;
-      newNode.data = { ...newNode.data, creationIndex: ci };
-
-      const newEdges = sourceNode ? [...state.edges, createEdge(sourceNode.id, id)] : state.edges;
-      return { nodes: [...state.nodes, newNode], edges: newEdges, lastPlacedNodeId: id, trackedNodeId: id, nodeCreationCounter: ci + 1 };
-    });
+    addNodeToCanvas(set, get, createHeroNode, id, data);
   },
 
   addProject: (data: any, id: string) => {
-    set(state => {
-      const sourceNode = state.nodes.find(n => n.id === state.activeGhostId) || state.nodes.find(n => n.id === state.lastPlacedNodeId);
-      const newNode = createProjectNode(id, data, sourceNode);
-      const ci = state.nodeCreationCounter;
-      newNode.data = { ...newNode.data, creationIndex: ci };
-
-      const newEdges = sourceNode ? [...state.edges, createEdge(sourceNode.id, id)] : state.edges;
-      return { nodes: [...state.nodes, newNode], edges: newEdges, lastPlacedNodeId: id, trackedNodeId: id, nodeCreationCounter: ci + 1 };
-    });
+    addNodeToCanvas(set, get, createProjectNode, id, data);
   },
 
   addText: (text: string, isFinished: boolean = false) => {
