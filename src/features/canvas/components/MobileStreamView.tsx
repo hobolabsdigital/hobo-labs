@@ -25,30 +25,38 @@ export function MobileStreamView() {
   const isIntroReasoningFinished = useCanvasStore(state => state.isIntroReasoningFinished);
   const timeCursor = useCanvasStore(state => state.timeCursor);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const isInitialLoad = useRef(true);
 
   const isIntroActive = !(isIntroAnimationFinished && isIntroReasoningFinished);
 
   // Auto-scroll to bottom on new node or streaming text updates
   useEffect(() => {
-    if (bottomRef.current && !isIntroActive) {
+    if (isIntroActive) return;
+
+    if (isInitialLoad.current) {
+      isInitialLoad.current = false;
+      return; // Skip scrolling on the very first reveal
+    }
+
+    if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [nodes, isIntroActive]);
 
   return (
-    <div className={`w-full h-full overflow-y-auto overflow-x-hidden p-4 pt-32 pb-40 flex flex-col gap-12 scroll-smooth transition-opacity duration-1000 ease-in-out ${isIntroActive ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto bg-[var(--canvas-bg)]'}`}>
+    <div className={`w-full h-full overflow-y-auto overflow-x-hidden p-4 pt-32 pb-40 flex flex-col gap-12 scroll-smooth transition-opacity duration-1000 ease-in-out ${isIntroActive ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto bg-transparent'}`}>
       {!isIntroActive && nodes.map((node, index) => {
         if (node.type === 'intro') return null;
 
         const Component = nodeTypes[node.type || 'text'];
         if (!Component) return null;
-        
+
         const isPastCursor = timeCursor !== null && index > timeCursor;
 
         return (
-          <div 
-            key={node.id} 
-            className={`w-full flex flex-col items-start relative transition-opacity duration-500 ease-in-out animate-in fade-in slide-in-from-bottom-4 ${isPastCursor ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'}`}
+          <div
+            key={node.id}
+            className={`w-full flex flex-col items-start relative transition-opacity duration-500 ease-in-out animate-in fade-in slide-in-from-bottom-4 ${isPastCursor ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto bg-transparent'}`}
           >
             <Component data={node.data} id={node.id} />
           </div>

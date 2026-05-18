@@ -15,9 +15,10 @@ import { TimelineScrubber } from '@/features/timeline/components/TimelineScrubbe
 import { InteractiveGrid } from '@/core/ui/InteractiveGrid';
 import { MobileHeader } from '@/core/ui/MobileHeader';
 import { FerrofluidCanvas } from '@/features/ferrofluid/components/FerrofluidCanvas';
-
+import { FluidBackground } from "@/features/fluid-bg/components/FluidBackground";
 import { CrtEffect } from '@/features/crt/components/CrtEffect';
 import { ProjectModalOverlay } from '@/features/project-modal/components/ProjectModalOverlay';
+import { RetroGradient } from '@/core/ui/RetroGradient';
 
 const EditorialCanvas = dynamic(() => import("@/features/canvas/components/EditorialCanvas"), {
   ssr: false,
@@ -51,12 +52,6 @@ export default function Home() {
     };
   }, [isExperimental]);
 
-  // SVG chromatic aberration filter — disabled for brutalist (material honesty)
-  const mainStyle = useMemo(
-    () => (isExperimental || isBrutalist ? undefined : { filter: "url(#crt-barrel)" }),
-    [isExperimental, isBrutalist]
-  );
-
   /*
    * Shared page content — used in both modes.
    * In experimental mode, this is placed inside <canvas layoutsubtree>
@@ -66,7 +61,6 @@ export default function Home() {
     <main
       id="crt-main"
       className="w-full h-[100dvh] overflow-hidden bg-transparent relative"
-      style={mainStyle}
     >
       <IntroNode />
       <MobileStreamView />
@@ -76,7 +70,6 @@ export default function Home() {
     <main
       id="crt-main"
       className="w-full h-[100dvh] overflow-hidden bg-transparent relative"
-      style={mainStyle}
     >
       <IntroNode />
       <EditorialCanvas>
@@ -90,7 +83,6 @@ export default function Home() {
     <>
       {/* CRT mode selector + effects — always rendered */}
       <CrtEffect />
-
       {/* Page content only mounts after user selects a CRT mode.
           This ensures the intro animation doesn't start until the
           mode selector popup is dismissed. */}
@@ -117,7 +109,9 @@ export default function Home() {
           {isMounted && <div className="md:hidden"><MobileHeader /></div>}
           {isMounted && <div className="hidden md:block"><DebugPanel /></div>}
           {isMounted && <div className="hidden md:block"><TimelineScrubber /></div>}
-          {isMounted && <div className="hidden md:block"><FerrofluidCanvas /></div>}
+          {isMounted && <RetroGradient />}
+          {isMounted && <FerrofluidCanvas />}
+          {isMounted && <FluidBackground />}
 
         </ReactFlowProvider>
       )}

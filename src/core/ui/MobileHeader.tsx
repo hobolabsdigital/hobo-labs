@@ -40,7 +40,7 @@ export function MobileHeader() {
   return (
     <header 
       ref={headerRef}
-      className={`fixed md:hidden top-0 left-0 w-full z-[100] flex items-center justify-between px-4 py-4 backdrop-blur-md bg-[var(--background)]/80 border-b border-[var(--border)] transition-opacity duration-700 ${INTRO_REVEAL_CLASSES} ${
+      className={`fixed md:hidden top-0 left-0 w-full z-[10000] flex items-center justify-between px-4 py-4 backdrop-blur-md bg-[var(--background)]/80 border-b border-[var(--border)] transition-opacity duration-700 ${INTRO_REVEAL_CLASSES} ${
         isIntroAnimationFinished ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
       }`}
     >

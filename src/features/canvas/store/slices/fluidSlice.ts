@@ -21,7 +21,7 @@ export interface FluidSlice {
 
 export const createFluidSlice: StateCreator<CanvasState, [], [], FluidSlice> = (set) => ({
   fluidConfig: {
-    SPLAT_RADIUS: 0.15,
+    SPLAT_RADIUS: 0.035,
     SPLAT_FORCE: 1000,
     DENSITY_DISSIPATION: 5.0,
     VELOCITY_DISSIPATION: 0.8,

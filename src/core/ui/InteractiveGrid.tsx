@@ -77,33 +77,8 @@ export function InteractiveGrid({
       ctx.clearRect(0, 0, width, height);
 
       // ── Background gradient (driven by config, not theme name) ──
-      if (cfg.background === 'gradient' && cfg.gradientStops) {
-        const nmx = mouseRef.current.x / (width || 1);
-        const nmy = mouseRef.current.y / (height || 1);
-        const glowLerp = 0.03;
-        retroGlowRef.current.x += (nmx - retroGlowRef.current.x) * glowLerp;
-        retroGlowRef.current.y += (nmy - retroGlowRef.current.y) * glowLerp;
-
-        const baseGrad = ctx.createLinearGradient(0, height, 0, 0);
-        for (const stop of cfg.gradientStops) {
-          baseGrad.addColorStop(stop.offset, stop.color);
-        }
-        ctx.fillStyle = baseGrad;
-        ctx.fillRect(0, 0, width, height);
-
-        // Mouse-reactive glow
-        if (cfg.glowColor) {
-          const glowX = retroGlowRef.current.x * width;
-          const glowY = retroGlowRef.current.y * height;
-          const glowR = Math.max(width, height) * (cfg.glowRadius ?? 0.6);
-          const radGrad = ctx.createRadialGradient(glowX, glowY, 0, glowX, glowY, glowR);
-          radGrad.addColorStop(0, cfg.glowColor);
-          radGrad.addColorStop(0.4, cfg.glowColor.replace(/[\d.]+\)$/, '0.15)'));
-          radGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-          ctx.fillStyle = radGrad;
-          ctx.fillRect(0, 0, width, height);
-        }
-      }
+      // Removed gradient drawing from here to allow RetroGradient to be placed
+      // behind the FerrofluidCanvas in the global stacking order.
       
       const { x: vx, y: vy, zoom: vzoom } = viewportRef.current;
       

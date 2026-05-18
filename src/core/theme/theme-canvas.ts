@@ -38,7 +38,7 @@ const defaultCanvas: CanvasConfig = {
 
 const canvasMap: Record<string, Partial<CanvasConfig>> = {
   dark: {
-    dotColor: 'rgba(255, 255, 255, 0.5)',
+    dotColor: 'rgba(255, 255, 255, 0.15)',
   },
   blueprint: {
     dotShape: 'crosshair',

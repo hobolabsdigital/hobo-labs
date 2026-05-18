@@ -116,7 +116,7 @@ export function HeroText({
         overflow: 'hidden',
         userSelect: 'none',
       }}
-      className="flex flex-col justify-center px-4 md:px-[0.5vw]"
+      className="flex flex-col justify-center pl-16 pr-6 md:pl-24 md:pr-12 lg:pl-32 lg:pr-20"
     >
       {/* Line 1 — "WELCOME TO" */}
       <span

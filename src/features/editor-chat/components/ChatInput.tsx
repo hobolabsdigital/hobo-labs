@@ -32,11 +32,11 @@ export function ChatInput() {
   const isIntroAnimationFinished = useCanvasStore((state) => state.isIntroAnimationFinished);
 
   return (
-    <div className={`fixed md:absolute bottom-0 md:bottom-10 left-0 md:left-1/2 md:-translate-x-1/2 w-full md:max-w-4xl z-[200] pointer-events-auto transition-all duration-700 ${INTRO_REVEAL_CLASSES} bg-background/90 md:bg-transparent backdrop-blur-xl md:backdrop-blur-none border-t md:border-t-0 border-foreground/10 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] md:shadow-none pt-4 pb-6 md:p-0 flex flex-col gap-3 items-center ${isIntroAnimationFinished ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0'
+    <div className={`fixed md:absolute bottom-0 md:bottom-10 left-0 md:left-1/2 md:-translate-x-1/2 w-full md:max-w-4xl z-[200] pointer-events-auto transition-all duration-700 ${INTRO_REVEAL_CLASSES} bg-background/40 md:bg-transparent backdrop-blur-xl md:backdrop-blur-none border-t md:border-t-0 border-foreground/10 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] md:shadow-none pt-4 pb-6 md:p-0 flex flex-col gap-3 items-center ${isIntroAnimationFinished ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0'
       }`}>
 
       {activeSuggestions.length > 0 && (
-        <div 
+        <div
           className="relative w-full max-md:[-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_15%,black_85%,transparent_100%)] max-md:[mask-image:linear-gradient(to_right,transparent_0%,black_15%,black_85%,transparent_100%)]"
         >
           <div className="flex gap-2 justify-start md:justify-center w-full overflow-x-auto scrollbar-none animate-in fade-in slide-in-from-bottom-4 duration-500 px-8 md:px-2 pb-2 snap-x">

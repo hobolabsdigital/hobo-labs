@@ -75,11 +75,8 @@ export function useWebGLBarrel(glRef: RefObject<HTMLCanvasElement | null>) {
       const loc = {
         tex: gl.getUniformLocation(prog, "uTexture"),
         barrel: gl.getUniformLocation(prog, "uBarrelStrength"),
-        aberration: gl.getUniformLocation(prog, "uAberrationOffset"),
         vigStr: gl.getUniformLocation(prog, "uVignetteStrength"),
         vigRad: gl.getUniformLocation(prog, "uVignetteRadius"),
-        grain: gl.getUniformLocation(prog, "uGrainOpacity"),
-        time: gl.getUniformLocation(prog, "uTime"),
         res: gl.getUniformLocation(prog, "uResolution"),
         corner: gl.getUniformLocation(prog, "uCornerRadius"),
         edge: gl.getUniformLocation(prog, "uEdgeSoftness"),
@@ -134,11 +131,8 @@ export function useWebGLBarrel(glRef: RefObject<HTMLCanvasElement | null>) {
         gl!.useProgram(prog);
         gl!.uniform1i(loc.tex, 0);
         gl!.uniform1f(loc.barrel, config.barrelStrength);
-        gl!.uniform1f(loc.aberration, config.aberrationOffset);
         gl!.uniform1f(loc.vigStr, config.vignetteStrength);
         gl!.uniform1f(loc.vigRad, config.vignetteRadius);
-        gl!.uniform1f(loc.grain, config.grainOpacity);
-        gl!.uniform1f(loc.time, performance.now() * 0.001 * config.grainSpeed);
         gl!.uniform2f(loc.res, w, h);
         gl!.uniform1f(loc.corner, config.cornerRadius);
         gl!.uniform1f(loc.edge, config.edgeSoftness);

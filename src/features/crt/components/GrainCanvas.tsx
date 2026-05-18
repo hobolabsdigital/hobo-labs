@@ -32,17 +32,6 @@ uniform float u_vignetteStrength;
 uniform float u_vignetteRadius;
 uniform float u_grainOpacity;
 
-// Hash-based noise (no texture needed)
-float hash(vec2 p) {
-  vec3 p3 = fract(vec3(p.xyx) * 0.1031);
-  p3 += dot(p3, p3.yzx + 33.33);
-  return fract((p3.x + p3.y) * p3.z);
-}
-
-float grain(vec2 uv, float t) {
-  return hash(uv * u_resolution + vec2(t * 100.0, t * 57.0));
-}
-
 void main() {
   vec2 uv = v_uv;
   
@@ -53,22 +42,7 @@ void main() {
   float vignette = smoothstep(u_vignetteRadius, u_vignetteRadius + 1.0, dist);
   vignette *= u_vignetteStrength;
   
-  // --- Film Grain ---
-  float noise = grain(uv, u_time) * 2.0 - 1.0; // -1 to 1
-  float grainEffect = noise * u_grainOpacity;
-  
-  // Combine: vignette darkens, grain adds texture
-  // Output as premultiplied alpha for proper blending
-  float darkness = vignette;
-  outColor = vec4(
-    grainEffect - darkness,
-    grainEffect - darkness,
-    grainEffect - darkness,
-    max(darkness, abs(grainEffect))
-  );
-  
-  // Simple additive grain + subtractive vignette
-  outColor = vec4(vec3(grainEffect), 0.0) + vec4(0.0, 0.0, 0.0, darkness);
+  outColor = vec4(0.0, 0.0, 0.0, vignette);
 }`;
 
 function createShader(gl: WebGL2RenderingContext, type: number, source: string): WebGLShader | null {
@@ -138,18 +112,12 @@ export function GrainCanvas() {
     gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 
     const locs = {
-      u_time: gl.getUniformLocation(program, "u_time"),
       u_resolution: gl.getUniformLocation(program, "u_resolution"),
       u_vignetteStrength: gl.getUniformLocation(program, "u_vignetteStrength"),
       u_vignetteRadius: gl.getUniformLocation(program, "u_vignetteRadius"),
-      u_grainOpacity: gl.getUniformLocation(program, "u_grainOpacity"),
     };
 
     glRef.current = { gl, program, locs };
-
-    // Enable blending for the overlay
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
@@ -169,7 +137,6 @@ export function GrainCanvas() {
       const { gl, program, locs } = ctx;
 
       const config = useCrtStore.getState().crtConfig;
-      const time = ((performance.now() - startTime) / 1000) * config.grainSpeed;
 
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
@@ -180,11 +147,9 @@ export function GrainCanvas() {
       }
 
       gl.useProgram(program);
-      gl.uniform1f(locs.u_time, time);
       gl.uniform2f(locs.u_resolution, canvas!.width, canvas!.height);
       gl.uniform1f(locs.u_vignetteStrength, config.vignetteStrength);
       gl.uniform1f(locs.u_vignetteRadius, config.vignetteRadius);
-      gl.uniform1f(locs.u_grainOpacity, config.grainOpacity);
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       rafRef.current = requestAnimationFrame(render);

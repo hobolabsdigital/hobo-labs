@@ -24,23 +24,12 @@ import { useCrtStore } from "../store/useCrtStore";
 
 export function BarrelFilter() {
   const overlayRef = useRef<HTMLDivElement>(null);
-  const redOffsetRef = useRef<SVGFEOffsetElement>(null);
-  const blueOffsetRef = useRef<SVGFEOffsetElement>(null);
 
   useEffect(() => {
     let raf: number;
 
     function update() {
       const config = useCrtStore.getState().crtConfig;
-
-      // Update chromatic aberration offsets
-      if (redOffsetRef.current && blueOffsetRef.current) {
-        const offset = config.enabled ? config.aberrationOffset : 0;
-        redOffsetRef.current.setAttribute("dx", String(offset));
-        redOffsetRef.current.setAttribute("dy", "0");
-        blueOffsetRef.current.setAttribute("dx", String(-offset));
-        blueOffsetRef.current.setAttribute("dy", "0");
-      }
 
       // Update CRT curvature overlay
       if (overlayRef.current) {
@@ -91,42 +80,6 @@ export function BarrelFilter() {
         style={{ zIndex: 9998, opacity: 0 }}
       />
 
-      {/* SVG chromatic aberration filter */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}
-        aria-hidden="true"
-      >
-        <defs>
-          <filter id="crt-barrel" x="-2%" y="-2%" width="104%" height="104%" colorInterpolationFilters="sRGB">
-            <feColorMatrix
-              in="SourceGraphic"
-              type="matrix"
-              values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"
-              result="redChannel"
-            />
-            <feOffset ref={redOffsetRef} in="redChannel" dx="1.5" dy="0" result="redShifted" />
-
-            <feColorMatrix
-              in="SourceGraphic"
-              type="matrix"
-              values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0"
-              result="greenChannel"
-            />
-
-            <feColorMatrix
-              in="SourceGraphic"
-              type="matrix"
-              values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0"
-              result="blueChannel"
-            />
-            <feOffset ref={blueOffsetRef} in="blueChannel" dx="-1.5" dy="0" result="blueShifted" />
-
-            <feComposite in="redShifted" in2="greenChannel" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="rg" />
-            <feComposite in="rg" in2="blueShifted" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="final" />
-          </filter>
-        </defs>
-      </svg>
     </>
   );
 }

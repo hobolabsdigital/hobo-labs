@@ -93,10 +93,10 @@ export function EnterLab({ onAnimationComplete }: { onAnimationComplete?: () => 
   }, { scope: containerRef, dependencies: [resolvedTheme] });
 
   return (
-    <div ref={containerRef} style={{ opacity: 0, fontWeight: 'var(--intro-weight, 800)' as React.CSSProperties['fontWeight'] }} className="absolute inset-0 pointer-events-none flex w-full h-full flex-col justify-center px-4 md:px-[0.5vw] overflow-hidden text-[var(--foreground)] font-heading">
+    <div ref={containerRef} style={{ opacity: 0, fontWeight: 'var(--intro-weight, 800)' as React.CSSProperties['fontWeight'] }} className="absolute inset-0 pointer-events-none flex w-full h-full flex-col justify-center overflow-hidden text-[var(--foreground)] font-heading">
 
       {/* BLOCK 1 */}
-      <div className="absolute inset-0 flex flex-col items-start justify-center gap-4 px-4 md:px-0">
+      <div className="absolute inset-0 flex flex-col items-start justify-center gap-4 pl-16 pr-6 md:pl-24 md:pr-12 lg:pl-32 lg:pr-20">
         <div className="anim-box-1 text-left text-4xl tracking-tighter uppercase md:text-7xl text-[var(--foreground)]">
           Systems Architect
         </div>
@@ -109,7 +109,7 @@ export function EnterLab({ onAnimationComplete }: { onAnimationComplete?: () => 
       </div>
 
       {/* BLOCK 2 */}
-      <div className="absolute inset-0 flex flex-col items-start justify-center gap-4 px-4 md:px-0">
+      <div className="absolute inset-0 flex flex-col items-start justify-center gap-4 pl-16 pr-6 md:pl-24 md:pr-12 lg:pl-32 lg:pr-20">
         <div className="anim-box-2 text-left text-4xl tracking-tighter uppercase md:text-7xl text-[var(--foreground)]">
           Chief Creative Technologist
         </div>
@@ -122,7 +122,7 @@ export function EnterLab({ onAnimationComplete }: { onAnimationComplete?: () => 
       </div>
 
       {/* BLOCK 3 */}
-      <div className="absolute inset-0 flex flex-col items-start justify-center gap-4 px-4 md:px-0">
+      <div className="absolute inset-0 flex flex-col items-start justify-center gap-4 pl-16 pr-6 md:pl-24 md:pr-12 lg:pl-32 lg:pr-20">
         <div className="anim-box-3 text-left text-4xl tracking-tighter uppercase md:text-7xl text-[var(--foreground)]">
           Systems Whisperer
         </div>

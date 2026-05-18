@@ -78,20 +78,6 @@ export function CrtControls() {
           />
         </div>
 
-        {/* Chromatic Aberration */}
-        <div className="flex flex-col gap-2 border-b border-[var(--foreground)] pb-3">
-          <h4 className="text-[10px] uppercase tracking-wider font-bold">Chromatic Aberration</h4>
-          <Slider
-            label="Offset"
-            value={config.aberrationOffset}
-            min={0}
-            max={5}
-            step={0.1}
-            onChange={(v) => setConfig({ aberrationOffset: v })}
-            format={(v) => v.toFixed(1) + "px"}
-          />
-        </div>
-
         {/* Vignette */}
         <div className="flex flex-col gap-2 border-b border-[var(--foreground)] pb-3">
           <h4 className="text-[10px] uppercase tracking-wider font-bold">Vignette</h4>
@@ -112,29 +98,6 @@ export function CrtControls() {
             step={0.05}
             onChange={(v) => setConfig({ vignetteRadius: v })}
             format={(v) => v.toFixed(2)}
-          />
-        </div>
-
-        {/* Film Grain */}
-        <div className="flex flex-col gap-2 border-b border-[var(--foreground)] pb-3">
-          <h4 className="text-[10px] uppercase tracking-wider font-bold">Film Grain</h4>
-          <Slider
-            label="Opacity"
-            value={config.grainOpacity}
-            min={0}
-            max={0.3}
-            step={0.005}
-            onChange={(v) => setConfig({ grainOpacity: v })}
-            format={(v) => v.toFixed(3)}
-          />
-          <Slider
-            label="Speed"
-            value={config.grainSpeed}
-            min={0.1}
-            max={5}
-            step={0.1}
-            onChange={(v) => setConfig({ grainSpeed: v })}
-            format={(v) => v.toFixed(1) + "x"}
           />
         </div>
 
