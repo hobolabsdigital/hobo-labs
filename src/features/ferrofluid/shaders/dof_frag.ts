@@ -11,7 +11,7 @@ uniform float u_focusDistance;
 uniform float u_dofStrength;
 
 const float GOLDEN_ANGLE = 2.39996323;
-const int SAMPLES = 32;
+const int SAMPLES = 48;
 
 void main() {
     float depth = texture(u_depthTexture, v_texcoord).r;
@@ -27,11 +27,16 @@ void main() {
         linearDepth = far;
     }
 
-    // Compute Circle of Confusion
-    float coc = abs(linearDepth - u_focusDistance) * u_dofStrength;
+    // Compute Circle of Confusion with a focal dead zone
+    // This allows the entire 3D object to be sharp when centered
+    float distFromFocus = abs(linearDepth - u_focusDistance);
+    float focalRange = 2.5; // Dead zone to encompass the whole blob
+    float blurAmount = max(0.0, distFromFocus - focalRange);
     
-    // Smooth falloff and scale
-    coc = smoothstep(0.0, 3.0, coc) * 12.0; // Max blur radius
+    float coc = blurAmount * u_dofStrength;
+    
+    // Smooth falloff and scale for high quality bokeh
+    coc = smoothstep(0.0, 3.0, coc) * 24.0; // Max blur radius
 
     vec4 centerColor = texture(u_colorTexture, v_texcoord);
     

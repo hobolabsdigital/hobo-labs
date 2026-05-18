@@ -225,12 +225,23 @@ export class FerrofluidSystem {
 
             gl.useProgram(this.dofProgramInfo.program);
             twgl.setBuffersAndAttributes(gl, this.dofProgramInfo, this.quadBufferInfo);
+            
+            // Hack: Dynamically scale DoF strength based on mouse distance from center
+            // This ensures it's razor sharp at the center and blurry at the edges
+            let dynamicDofStrength = 0;
+            if (this.mouse.x < 1000.0) {
+                // mouseMag goes from 0 at center to ~1.414 at corners. 
+                // We square it so the center stays sharper for a bit longer before blurring.
+                const mag = Math.min(1.0, mouseMag);
+                dynamicDofStrength = this.params.dofStrength * (mag * mag);
+            }
+
             twgl.setUniforms(this.dofProgramInfo, {
                 u_colorTexture: this.fboInfo.attachments[0],
                 u_depthTexture: this.fboInfo.attachments[1],
                 u_resolution: [gl.canvas.width, gl.canvas.height],
                 u_focusDistance: this.params.focusDistance,
-                u_dofStrength: this.params.dofStrength
+                u_dofStrength: dynamicDofStrength
             });
 
             twgl.drawBufferInfo(gl, this.quadBufferInfo);

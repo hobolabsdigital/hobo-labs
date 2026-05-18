@@ -87,12 +87,21 @@ export function DebugPanel() {
     <div className={`fixed top-8 right-0 z-50 ${INTRO_REVEAL_CLASSES} ${
       !isIntroAnimationFinished ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
     } ${isDebugDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-      <button 
-        onClick={() => setDebugDrawerOpen(!isDebugDrawerOpen)}
-        className={`bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-ui absolute right-[100%] top-0 hover:bg-opacity-80 transition-all duration-300 whitespace-nowrap mr-4`}
-      >
-        [ PLAYGROUND ]
-      </button>
+      <div className="absolute right-[100%] top-0 mr-4 flex gap-2">
+        <button 
+          onClick={() => toggleAudioFn?.()}
+          className="bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-ui hover:bg-opacity-80 transition-all duration-300 whitespace-nowrap"
+          title={isPlaying ? "Pause Audio" : "Play Audio"}
+        >
+          {isPlaying ? '[ 🔊 ]' : '[ 🔇 ]'}
+        </button>
+        <button 
+          onClick={() => setDebugDrawerOpen(!isDebugDrawerOpen)}
+          className="bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-ui hover:bg-opacity-80 transition-all duration-300 whitespace-nowrap"
+        >
+          [ PLAYGROUND ]
+        </button>
+      </div>
 
       <div className="bg-[var(--background)] border border-[var(--foreground)] border-r-0 p-4 shadow-2xl flex flex-col gap-3 font-ui w-80 h-auto max-h-[90vh] overflow-y-auto">
 

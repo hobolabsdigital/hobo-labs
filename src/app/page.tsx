@@ -19,6 +19,7 @@ import { FluidBackground } from "@/features/fluid-bg/components/FluidBackground"
 import { CrtEffect } from '@/features/crt/components/CrtEffect';
 import { ProjectModalOverlay } from '@/features/project-modal/components/ProjectModalOverlay';
 import { RetroGradient } from '@/core/ui/RetroGradient';
+import { ThemeIntro } from '@/core/ui/ThemeIntro';
 
 const EditorialCanvas = dynamic(() => import("@/features/canvas/components/EditorialCanvas"), {
   ssr: false,
@@ -34,6 +35,7 @@ export default function Home() {
   const { resolvedTheme } = useTheme();
   const isMobile = useMediaQuery('(max-width: 767px)');
   const [isMounted, setIsMounted] = useState(false);
+  const [introComplete, setIntroComplete] = useState(false);
   const isExperimental = crtMode === "experimental";
   const isBrutalist = resolvedTheme === 'brutalist';
   const captureRef = useRef<HTMLCanvasElement>(null);
@@ -62,20 +64,20 @@ export default function Home() {
       id="crt-main"
       className="w-full h-[100dvh] overflow-hidden bg-transparent relative"
     >
-      <IntroNode />
+      {introComplete && <IntroNode />}
       <MobileStreamView />
-      <ChatInput />
+      {introComplete && <ChatInput />}
     </main>
   ) : (
     <main
       id="crt-main"
       className="w-full h-[100dvh] overflow-hidden bg-transparent relative"
     >
-      <IntroNode />
+      {introComplete && <IntroNode />}
       <EditorialCanvas>
         <InteractiveGrid />
       </EditorialCanvas>
-      <ChatInput />
+      {introComplete && <ChatInput />}
     </main>
   );
 
@@ -88,28 +90,34 @@ export default function Home() {
           mode selector popup is dismissed. */}
       {crtMode !== null && (
         <ReactFlowProvider>
-          {isExperimental ? (
-            <canvas
-              id="crt-capture"
-              ref={captureRef}
-              style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-              }}
-            >
-              {pageContent}
-            </canvas>
-          ) : (
-            pageContent
+          {isMounted && !introComplete && <ThemeIntro onComplete={() => setIntroComplete(true)} />}
+
+          {isMounted && (
+            isExperimental ? (
+              <canvas
+                id="crt-capture"
+                ref={captureRef}
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100vw",
+                  height: "100vh",
+                }}
+              >
+                {pageContent}
+              </canvas>
+            ) : (
+              pageContent
+            )
           )}
-          <ProjectModalOverlay />
-          {isMounted && <div className="md:hidden"><MobileHeader /></div>}
-          {isMounted && <div className="hidden md:block"><DebugPanel /></div>}
-          {isMounted && <div className="hidden md:block"><TimelineScrubber /></div>}
+          
+          {isMounted && introComplete && <ProjectModalOverlay />}
+          {isMounted && introComplete && <div className="md:hidden"><MobileHeader /></div>}
+          {isMounted && introComplete && <div className="hidden md:block"><DebugPanel /></div>}
+          {isMounted && introComplete && <div className="hidden md:block"><TimelineScrubber /></div>}
           {isMounted && <RetroGradient />}
+          
           {isMounted && <FerrofluidCanvas />}
           {isMounted && <FluidBackground />}
 

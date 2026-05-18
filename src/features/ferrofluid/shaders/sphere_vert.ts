@@ -108,18 +108,12 @@ vec3 getDisplacedPosition(vec3 p) {
         mousePull = 0.0;
     }
     
-    // Audio dynamically increases the overall base spike height
-    float dynamicSpikeHeight = u_spikeHeight + (u_audioLevel * u_audioMultiplier * 0.2);
+    // Audio dynamically increases the overall base wave height smoothly
+    float dynamicSpikeHeight = u_spikeHeight + (u_audioLevel * u_audioMultiplier * 0.5);
     
-    // Audio also introduces sharper, higher-frequency spikes for a more reactive look
-    float audioNoise = snoise(normalize(p) * (u_noiseScale * 1.8) - u_time * (u_noiseSpeed * 2.5));
-    // Using abs() creates sharper ridges/spikes instead of smooth waves
-    float audioSpikes = abs(audioNoise) * u_audioLevel * u_audioMultiplier * 0.5;
-    
-    // Spiky pattern combining noise, mouse pull, and audio
+    // Smooth pattern combining noise, mouse pull, and audio (no sharp ridges)
     float displacement = (noiseVal * dynamicSpikeHeight) 
-                       + (mousePull * 0.5) // the smooth magnetic bulge
-                       + audioSpikes;
+                       + (mousePull * 0.5); // the smooth magnetic bulge
     
     // Base radius is determined by the sphere geometry (default radius is usually 1.0 but we scale it)
     return p + normalize(p) * displacement;

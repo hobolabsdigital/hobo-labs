@@ -62,13 +62,32 @@ export const FerrofluidCanvas = () => {
             }
         };
 
+        const handleTouchMove = (e: TouchEvent) => {
+            if (systemRef.current && e.touches.length > 0) {
+                if (config.enableMouseTracking) {
+                    const touch = e.touches[0];
+                    const x = (touch.clientX / window.innerWidth) * 2 - 1;
+                    const y = -(touch.clientY / window.innerHeight) * 2 + 1;
+                    systemRef.current.setMouse(x, y);
+                } else {
+                    systemRef.current.setMouse(9999.0, 9999.0);
+                }
+            }
+        };
+
         // If it was just toggled off, immediately clear the mouse pull effect
         if (!config.enableMouseTracking && systemRef.current) {
             systemRef.current.setMouse(9999.0, 9999.0);
         }
 
         window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
+        window.addEventListener('touchstart', handleTouchMove);
+        window.addEventListener('touchmove', handleTouchMove);
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('touchstart', handleTouchMove);
+            window.removeEventListener('touchmove', handleTouchMove);
+        };
     }, [config.enableMouseTracking]);
 
     useEffect(() => {
@@ -85,8 +104,10 @@ export const FerrofluidCanvas = () => {
 
     // Setup Audio
     useEffect(() => {
-        const audio = new Audio('/FerrofluidSystem.mp3');
-        audio.loop = true;
+        const playlist = ['/FerrofluidSystem.mp3', '/FerrofluidSystem2.mp3'];
+        let currentTrack = 0;
+
+        const audio = new Audio(playlist[currentTrack]);
         audio.crossOrigin = 'anonymous';
         audioRef.current = audio;
 
@@ -120,10 +141,56 @@ export const FerrofluidCanvas = () => {
             }
         };
 
-        setToggleAudioFn(() => toggleAudio);
+        const playNext = () => {
+            currentTrack = (currentTrack + 1) % playlist.length;
+            audio.src = playlist[currentTrack];
+            audio.play().then(() => setIsPlaying(true)).catch(console.error);
+        };
+
+        audio.addEventListener('ended', playNext);
+
+        const tryPlay = () => {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    setIsPlaying(true);
+                    if (audioContextRef.current?.state === 'suspended') {
+                        audioContextRef.current.resume();
+                    }
+                }).catch((err) => {
+                    console.log("Autoplay prevented. Waiting for user interaction...");
+                });
+            }
+        };
+
+        const isMobile = window.innerWidth <= 767;
+
+        // If autoplay is blocked, try again on the first user interaction
+        const onFirstInteraction = () => {
+            tryPlay();
+            window.removeEventListener('pointerdown', onFirstInteraction);
+            window.removeEventListener('keydown', onFirstInteraction);
+            window.removeEventListener('touchstart', onFirstInteraction);
+        };
+
+        if (!isMobile) {
+            // Attempt autoplay immediately
+            tryPlay();
+            
+            window.addEventListener('pointerdown', onFirstInteraction);
+            window.addEventListener('keydown', onFirstInteraction);
+            window.addEventListener('touchstart', onFirstInteraction);
+        }
+
+        setToggleAudioFn(toggleAudio);
 
         return () => {
+            if (!isMobile) {
+                window.removeEventListener('pointerdown', onFirstInteraction);
+                window.removeEventListener('keydown', onFirstInteraction);
+                window.removeEventListener('touchstart', onFirstInteraction);
+            }
             setToggleAudioFn(null);
+            audio.removeEventListener('ended', playNext);
             audio.pause();
             audio.src = '';
             ctx.close();

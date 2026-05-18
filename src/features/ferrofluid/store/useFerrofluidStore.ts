@@ -31,8 +31,8 @@ export const DEFAULT_FERROFLUID_CONFIG: FerrofluidConfig = {
   mouseInfluence: 0.7,
   mousePullStrength: 0.8,
   canvasOpacity: 0.3,
-  dofStrength: 0.8,
-  focusDistance: 3.5,
+  dofStrength: 2.0,
+  focusDistance: 6.0,
   blendMode: 'normal'
 };
 
