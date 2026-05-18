@@ -1,12 +1,10 @@
 import { createUIMessageStream, createUIMessageStreamResponse, streamText, tool, convertToModelMessages } from 'ai';
-import type { UIMessageStreamWriter } from 'ai';
 import { z } from 'zod';
 
 import { createModel, withReasoning, SAMPLING_CONFIG } from '@/lib/ai/config';
 import { retrievePersonaContext, loadProjectCatalog } from '@/lib/ai/rag';
 import { buildSystemPrompt } from '@/lib/ai/prompts';
 import { createHeroNode, suggestPrompts } from '@/lib/ai/tools';
-import { getProjectStaticData } from '@/lib/ai/project-editor';
 import { createMockStreamResponse } from '@/lib/ai/mock-stream';
 import { extractUserQuery } from '@/lib/ai/messages';
 
@@ -62,10 +60,10 @@ export async function POST(req: Request) {
     });
 
     return createUIMessageStreamResponse({ stream });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Chat API error:', error);
     return new Response(
-      JSON.stringify({ error: error.message || 'An unknown error occurred.' }),
+      JSON.stringify({ error: error instanceof Error ? error.message : 'An unknown error occurred.' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
   }

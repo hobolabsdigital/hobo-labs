@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 function e(e, t) {
 	let n = e;
 	ke(), t = {
@@ -43,7 +44,9 @@ function e(e, t) {
 	}
 	let i = [], a = [], o = [];
 	i.push(new r());
-	let { gl: s, ext: c } = l(n);
+	let l_res = l(n);
+	if (!l_res) return { config: t, destroy: () => {} };
+	let { gl: s, ext: c } = l_res;
 	te() && (t.DYE_RESOLUTION = 512), c.supportLinearFiltering || (t.DYE_RESOLUTION = 512, t.SHADING = !1, t.BLOOM = !1, t.SUNRAYS = !1);
 	function l(e) {
 		let t = {
@@ -54,6 +57,7 @@ function e(e, t) {
 			preserveDrawingBuffer: !1
 		}, n = e.getContext("webgl2", t), r = !!n;
 		r || (n = e.getContext("webgl", t) || e.getContext("experimental-webgl", t));
+		if (!n) return null;
 		let i, a;
 		r ? (n.getExtension("EXT_color_buffer_float"), a = n.getExtension("OES_texture_float_linear")) : (i = n.getExtension("OES_texture_half_float"), a = n.getExtension("OES_texture_half_float_linear")), n.clearColor(0, 0, 0, 1);
 		let o = r ? n.HALF_FLOAT : i.HALF_FLOAT_OES, s, c, l;

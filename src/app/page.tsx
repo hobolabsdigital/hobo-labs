@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { Preloader } from '@/core/ui/Preloader';
 import { ReactFlowProvider } from '@xyflow/react';
@@ -13,6 +13,7 @@ import { DebugPanel } from '@/features/canvas/components/DebugPanel';
 import { TimelineScrubber } from '@/features/timeline/components/TimelineScrubber';
 import { FluidBackground } from '@/features/fluid-bg/components/FluidBackground';
 import { InteractiveGrid } from '@/core/ui/InteractiveGrid';
+import { MobileHeader } from '@/core/ui/MobileHeader';
 
 import { CrtEffect } from '@/features/crt/components/CrtEffect';
 import { ProjectModalOverlay } from '@/features/project-modal/components/ProjectModalOverlay';
@@ -23,13 +24,22 @@ const EditorialCanvas = dynamic(() => import("@/features/canvas/components/Edito
 });
 
 import { IntroNode } from '@/features/canvas/components/nodes/IntroNode';
+import { useMediaQuery } from '@/core/hooks/useMediaQuery';
+import { MobileStreamView } from '@/features/canvas/components/MobileStreamView';
 
 export default function Home() {
   const crtMode = useCrtStore((s) => s.crtMode);
   const { resolvedTheme } = useTheme();
+  const isMobile = useMediaQuery('(max-width: 767px)');
+  const [isMounted, setIsMounted] = useState(false);
   const isExperimental = crtMode === "experimental";
   const isBrutalist = resolvedTheme === 'brutalist';
   const captureRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsMounted(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (!isExperimental) return;
@@ -51,10 +61,20 @@ export default function Home() {
    * In experimental mode, this is placed inside <canvas layoutsubtree>
    * so drawElementImage can capture it.
    */
-  const pageContent = (
+  const pageContent = isMobile ? (
     <main
       id="crt-main"
-      className="w-full h-screen overflow-hidden bg-transparent relative"
+      className="w-full h-[100dvh] overflow-hidden bg-transparent relative"
+      style={mainStyle}
+    >
+      <IntroNode />
+      <MobileStreamView />
+      <ChatInput />
+    </main>
+  ) : (
+    <main
+      id="crt-main"
+      className="w-full h-[100dvh] overflow-hidden bg-transparent relative"
       style={mainStyle}
     >
       <IntroNode />
@@ -93,9 +113,10 @@ export default function Home() {
             pageContent
           )}
           <ProjectModalOverlay />
-          <DebugPanel />
-          <TimelineScrubber />
-          <FluidBackground />
+          {isMounted && <div className="md:hidden"><MobileHeader /></div>}
+          {isMounted && <div className="hidden md:block"><DebugPanel /></div>}
+          {isMounted && <div className="hidden md:block"><TimelineScrubber /></div>}
+          {isMounted && <div className="hidden md:block"><FluidBackground /></div>}
 
         </ReactFlowProvider>
       )}

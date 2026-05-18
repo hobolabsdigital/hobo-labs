@@ -12,28 +12,65 @@ export function ThemeToggle() {
 
   // useEffect only runs on the client, so now we can safely show the UI
   React.useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
+
+  const [isOpen, setIsOpen] = React.useState(false);
+  const toggleRef = React.useRef<HTMLDivElement>(null);
+
+  // Close dropdown on click outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (toggleRef.current && !toggleRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   if (!mounted) {
     return null;
   }
 
-  const toggleTheme = () => {
-    const themes = ["light", "dark", "blueprint", "cyberpunk", "brutalist", "retro"] as const;
-    const currentIndex = themes.indexOf((theme as typeof themes[number]) || "light");
-    const nextIndex = (currentIndex + 1) % themes.length;
-    setTheme(themes[nextIndex]);
-  };
+  const themes = ["light", "dark", "blueprint", "cyberpunk", "brutalist", "retro"] as const;
 
   return (
-    <button
-      onClick={toggleTheme}
-      className={`fixed bottom-4 left-4 z-50 bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-ui uppercase hover:opacity-80 transition-opacity ${INTRO_REVEAL_CLASSES} ${
+    <div
+      ref={toggleRef}
+      className={`md:hidden fixed top-6 right-8 z-[100] transition-opacity duration-700 ${INTRO_REVEAL_CLASSES} ${
         isIntroAnimationFinished ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
       }`}
     >
-      {theme === 'blueprint' ? '[ BLUEPRINT // REAL ]' : theme === 'cyberpunk' ? '[ CYBER // PUNK ]' : theme === 'brutalist' ? '[ BRUT // AL ]' : theme === 'retro' ? '[ RETRO // 70s ]' : theme === 'dark' ? '[ DARK ]' : '[ LIGHT ]'}
-    </button>
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-10 h-10 rounded-full border border-[var(--foreground)] flex items-center justify-center text-[var(--foreground)] transition-colors backdrop-blur-md ${isOpen ? 'bg-[var(--foreground)] text-[var(--background)]' : 'bg-[var(--background)]/80 hover:bg-[var(--foreground)] hover:text-[var(--background)]'}`}
+        aria-label="Toggle Theme"
+      >
+        <div className="w-4 h-4 rounded-full border-[1.5px] border-current shadow-[inset_3px_0_0_current]"></div>
+      </button>
+
+      {isOpen && (
+        <div className="absolute right-0 top-full mt-3 w-40 bg-[var(--background)]/90 backdrop-blur-md border-2 border-[var(--foreground)] shadow-xl flex flex-col font-ui text-sm uppercase">
+          {themes.map(t => (
+            <button 
+              key={t}
+              onClick={() => {
+                setTheme(t);
+                setIsOpen(false);
+              }}
+              className={`text-left px-4 py-3 hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-colors border-b-2 border-[var(--foreground)] last:border-0 ${theme === t ? 'font-bold before:content-[">_"] before:mr-2' : ''}`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

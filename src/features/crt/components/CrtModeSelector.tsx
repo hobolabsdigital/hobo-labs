@@ -20,14 +20,20 @@ export function CrtModeSelector() {
 
   useEffect(() => {
     const supported = detectDrawElementImage();
-    console.log("[CRT ModeSelector] Detection result:", supported, "Current mode:", crtMode);
-    setExperimentalSupported(supported);
-    setDetected(supported);
+    
+    const timer = setTimeout(() => {
+      console.log("[CRT ModeSelector] Detection result:", supported, "Current mode:", crtMode);
+      setExperimentalSupported(supported);
+      setDetected(supported);
 
-    // If not supported, auto-select standard (no popup)
-    if (!supported) {
-      setCrtMode("standard");
-    }
+      // If not supported, auto-select standard (no popup)
+      if (!supported) {
+        setCrtMode("standard");
+      }
+    }, 0);
+    
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Run once on mount
 
   // Still detecting

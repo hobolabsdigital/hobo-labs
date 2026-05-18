@@ -10,9 +10,9 @@ interface ToolDispatchDeps {
 /**
  * Parse tool call input from the various formats the SDK may provide.
  */
-function parseToolInput(toolCall: any): Record<string, unknown> {
+function parseToolInput(toolCall: Record<string, unknown>): Record<string, unknown> {
   try {
-    return toolCall.args || toolCall.input || JSON.parse(toolCall.argsText || '{}');
+    return (toolCall.args as Record<string, unknown>) || (toolCall.input as Record<string, unknown>) || JSON.parse((toolCall.argsText as string) || '{}');
   } catch {
     console.error('Failed to parse tool args');
     return {};
@@ -40,11 +40,11 @@ export async function dispatchToolCall(
       break;
 
     case 'suggestPrompts':
-      deps.setActiveSuggestions((input as any).suggestions);
+      deps.setActiveSuggestions((input as { suggestions: string[] }).suggestions);
       break;
 
     case 'showProject': {
-      const slug = (input as any).slug;
+      const slug = (input as { slug: string }).slug;
       if (!slug) return;
 
       try {
@@ -57,9 +57,10 @@ export async function dispatchToolCall(
           if (process.env.NODE_ENV !== 'production') console.warn('[showProject] error:', data.error);
           deps.addToolOutput({ tool: toolCall.toolName, toolCallId: toolCall.toolCallId, output: { error: data.error } });
         }
-      } catch (err: any) {
+      } catch (err) {
         if (process.env.NODE_ENV !== 'production') console.error('[showProject] fetch error:', err);
-        deps.addToolOutput({ tool: toolCall.toolName, toolCallId: toolCall.toolCallId, output: { error: err.message } });
+        const errMsg = err instanceof Error ? err.message : String(err);
+        deps.addToolOutput({ tool: toolCall.toolName, toolCallId: toolCall.toolCallId, output: { error: errMsg } });
       }
       return; // showProject handles its own addToolOutput
     }

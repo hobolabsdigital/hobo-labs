@@ -28,7 +28,7 @@ export function TimelineScrubber() {
   // Measure container height robustly using window.innerHeight to match h-[80vh]
   useEffect(() => {
     const measure = () => {
-      setContainerHeight(window.innerHeight * 0.8);
+      setContainerHeight(window.innerHeight - 112);
     };
     
     // Initial measure
@@ -143,7 +143,7 @@ export function TimelineScrubber() {
 
   return (
     <div 
-      className={`fixed top-[10vh] h-[80vh] w-16 z-[60] ${INTRO_REVEAL_CLASSES} ${
+      className={`fixed top-20 h-[calc(100dvh-7rem)] w-16 z-[60] ${INTRO_REVEAL_CLASSES} ${
         !isIntroAnimationFinished ? 'translate-x-[150%] opacity-0 pointer-events-none' : 'translate-x-0 opacity-100 pointer-events-auto'
       } ${
         isDebugDrawerOpen ? 'right-[340px]' : 'right-8'

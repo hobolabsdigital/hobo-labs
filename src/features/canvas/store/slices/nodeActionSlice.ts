@@ -15,11 +15,11 @@ export interface NodeActionSlice {
   createGhost: (text?: string) => void;
   updateGhostText: (text: string) => void;
   finishGhost: (text: string) => void;
-  addHero: (data: any, id: string) => void;
-  addProject: (data: any, id: string) => void;
+  addHero: (data: Record<string, unknown>, id: string) => void;
+  addProject: (data: Record<string, unknown>, id: string) => void;
   addText: (text: string, isFinished?: boolean) => void;
   truncateHistory: (cursorIndex: number) => void;
-  updateNodeData: (id: string, partialData: Record<string, any>) => void;
+  updateNodeData: (id: string, partialData: Record<string, unknown>) => void;
 }
 
 /**
@@ -33,9 +33,9 @@ export interface NodeActionSlice {
 function addNodeToCanvas(
   set: (fn: (state: CanvasState) => Partial<CanvasState>) => void,
   get: () => CanvasState,
-  factory: (id: string, data: any, source?: Node) => Node,
+  factory: (id: string, data: Record<string, unknown>, source?: Node) => Node,
   id: string,
-  data: any
+  data: Record<string, unknown>
 ) {
   set(state => {
     const sourceNode = state.nodes.find(n => n.id === state.activeGhostId)
@@ -145,11 +145,11 @@ export const createNodeActionSlice: StateCreator<CanvasState, [], [], NodeAction
   },
 
   /** Shared helper — finds source, stamps creationIndex, creates edge, tracks camera */
-  addHero: (data: any, id: string) => {
+  addHero: (data: Record<string, unknown>, id: string) => {
     addNodeToCanvas(set, get, createHeroNode, id, data);
   },
 
-  addProject: (data: any, id: string) => {
+  addProject: (data: Record<string, unknown>, id: string) => {
     addNodeToCanvas(set, get, createProjectNode, id, data);
   },
 
@@ -212,7 +212,7 @@ export const createNodeActionSlice: StateCreator<CanvasState, [], [], NodeAction
     });
   },
 
-  updateNodeData: (id: string, partialData: Record<string, any>) => {
+  updateNodeData: (id: string, partialData: Record<string, unknown>) => {
     set(state => ({
       nodes: state.nodes.map(n =>
         n.id === id ? { ...n, data: { ...n.data, ...partialData } } : n

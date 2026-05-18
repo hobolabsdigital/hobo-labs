@@ -11,7 +11,7 @@ export function ChatInput() {
   const isHistoryMode = timeCursor !== null;
 
   const activeSuggestions = useCanvasStore((state) => state.activeSuggestions);
-  const clearSuggestions = useCanvasStore((state) => state.clearSuggestions);
+
 
   const { input, setInput, handleSend, submitPrompt, status } = useEditorialChat();
   const isLoading = status === 'submitted' || status === 'streaming';
@@ -32,50 +32,54 @@ export function ChatInput() {
   const isIntroAnimationFinished = useCanvasStore((state) => state.isIntroAnimationFinished);
 
   return (
-    <div className={`bg-transparent absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-4xl px-4 z-[100] pointer-events-auto ${INTRO_REVEAL_CLASSES} flex flex-col gap-3 items-center ${isIntroAnimationFinished ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0'
+    <div className={`fixed md:absolute bottom-0 md:bottom-10 left-0 md:left-1/2 md:-translate-x-1/2 w-full md:max-w-4xl z-[200] pointer-events-auto transition-all duration-700 ${INTRO_REVEAL_CLASSES} bg-background/90 md:bg-transparent backdrop-blur-xl md:backdrop-blur-none border-t md:border-t-0 border-foreground/10 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] md:shadow-none pt-4 pb-6 md:p-0 flex flex-col gap-3 items-center ${isIntroAnimationFinished ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0'
       }`}>
 
       {activeSuggestions.length > 0 && (
-        <div className="flex gap-2 justify-center overflow-x-auto scrollbar-none animate-in fade-in slide-in-from-bottom-4 duration-500 px-1">
-          {activeSuggestions.map((suggestion, idx) => (
-            <button
-              key={idx}
-              onClick={() => handleSuggestionClick(suggestion)}
-              disabled={isLoading}
-              className={[
-                'whitespace-nowrap transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
-                // Default (light/dark)
-                'px-4 py-2 text-sm rounded-full border border-foreground/15 bg-foreground/5 text-foreground/80 hover:bg-foreground hover:text-background backdrop-blur-sm',
-                // Blueprint: monospace technical pills
-                'blueprint:rounded-none blueprint:px-3 blueprint:py-1.5 blueprint:text-[11px] blueprint:font-ui blueprint:uppercase blueprint:tracking-widest blueprint:border-foreground/40 blueprint:bg-transparent blueprint:hover:bg-foreground blueprint:hover:text-background',
-                // Cyberpunk: hot fuchsia accent pills
-                'cyberpunk:rounded-none cyberpunk:border-2 cyberpunk:border-primary/60 cyberpunk:bg-primary/10 cyberpunk:text-primary cyberpunk:hover:bg-primary cyberpunk:hover:text-background',
-                // Brutalist: thick black border pills
-                'brutalist:rounded-none brutalist:border-3 brutalist:border-foreground brutalist:bg-transparent brutalist:text-foreground brutalist:text-base brutalist:font-bold brutalist:hover:bg-[var(--brutalist-cyan)] brutalist:hover:text-background brutalist:hover:border-[var(--brutalist-cyan)]',
-                // Retro: soft rounded pills
-                'retro:rounded-full retro:border-primary/40 retro:bg-primary/10 retro:text-foreground retro:hover:bg-primary retro:hover:text-background',
-              ].join(' ')}
-            >
-              {suggestion}
-            </button>
-          ))}
+        <div 
+          className="relative w-full [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_15%,black_85%,transparent_100%)] [mask-image:linear-gradient(to_right,transparent_0%,black_15%,black_85%,transparent_100%)] md:[-webkit-mask-image:none] md:[mask-image:none]"
+        >
+          <div className="flex gap-2 justify-start md:justify-center w-full overflow-x-auto scrollbar-none animate-in fade-in slide-in-from-bottom-4 duration-500 px-8 md:px-2 pb-2 snap-x">
+            {activeSuggestions.map((suggestion, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleSuggestionClick(suggestion)}
+                disabled={isLoading}
+                className={[
+                  'whitespace-nowrap transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
+                  // Default (light/dark)
+                  'px-4 py-2 text-sm rounded-full border border-foreground/15 bg-foreground/5 text-foreground/80 hover:bg-foreground hover:text-background',
+                  // Blueprint: monospace technical pills
+                  'blueprint:rounded-none blueprint:px-3 blueprint:py-1.5 blueprint:text-[11px] blueprint:font-ui blueprint:uppercase blueprint:tracking-widest blueprint:border-foreground/40 blueprint:bg-transparent blueprint:hover:bg-foreground blueprint:hover:text-background',
+                  // Cyberpunk: hot fuchsia accent pills
+                  'cyberpunk:rounded-none cyberpunk:border-2 cyberpunk:border-primary/60 cyberpunk:bg-primary/10 cyberpunk:text-primary cyberpunk:hover:bg-primary cyberpunk:hover:text-background',
+                  // Brutalist: thick black border pills
+                  'brutalist:rounded-none brutalist:border-3 brutalist:border-foreground brutalist:bg-transparent brutalist:text-foreground brutalist:text-base brutalist:font-bold brutalist:hover:bg-[var(--brutalist-cyan)] brutalist:hover:text-background brutalist:hover:border-[var(--brutalist-cyan)]',
+                  // Retro: soft rounded pills
+                  'retro:rounded-full retro:border-primary/40 retro:bg-primary/10 retro:text-foreground retro:hover:bg-primary retro:hover:text-background',
+                ].join(' ')}
+              >
+                {suggestion}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
       <form
         onSubmit={onSubmit}
         className={[
-          'w-full max-w-2xl flex items-center gap-2 p-2 border transition-[background-color,border-color,opacity] duration-500 ease-out',
+          'mx-4 md:mx-0 w-[calc(100%-2rem)] md:w-full max-w-2xl flex items-center gap-2 p-2 border transition-[background-color,border-color,opacity] duration-500 ease-out',
           // Default
-          `rounded-[2rem] backdrop-blur-2xl ${isHistoryMode ? 'bg-background/40 border-foreground/10 opacity-80' : 'bg-background/95 border-foreground/20'}`,
+          `rounded-[2rem] ${isHistoryMode ? 'bg-background/20 md:bg-background/40 border-foreground/10 opacity-80' : 'bg-background/20 md:bg-background/95 border-foreground/20'}`,
           // Blueprint
-          'blueprint:rounded-none blueprint:bg-background/90 blueprint:border-foreground/30 blueprint:backdrop-blur-md',
+          'blueprint:rounded-none blueprint:bg-background/90 blueprint:border-foreground/30',
           // Cyberpunk
-          'cyberpunk:rounded-none cyberpunk:border-2 cyberpunk:border-primary/40 cyberpunk:bg-background/90 cyberpunk:backdrop-blur-md',
+          'cyberpunk:rounded-none cyberpunk:border-2 cyberpunk:border-primary/40 cyberpunk:bg-background/90',
           // Brutalist
           'brutalist:rounded-none brutalist:border-3 brutalist:border-foreground brutalist:bg-background/95',
           // Retro
-          'retro:rounded-[2rem] retro:border-primary/30 retro:bg-background/90 retro:backdrop-blur-sm',
+          'retro:rounded-[2rem] retro:border-primary/30 retro:bg-background/90',
         ].join(' ')}
       >
         <label htmlFor="chat-input" className="sr-only">Chat message</label>
@@ -85,7 +89,7 @@ export function ChatInput() {
           onChange={handleInputChange}
           placeholder={isHistoryMode ? "Type to branch off from this point in time..." : "Ask me about my work, process, or vision..."}
           disabled={false}
-          className="flex-1 border-0 bg-transparent text-foreground outline-none focus:outline-none focus-visible:ring-0 rounded-none px-4 text-base sm:text-lg brutalist:text-lg brutalist:font-bold transition-opacity placeholder:text-foreground/40 font-body"
+          className="flex-1 border-0 bg-transparent text-foreground outline-none focus:outline-none focus-visible:ring-0 rounded-none px-4 text-base md:text-lg brutalist:text-lg brutalist:font-bold transition-opacity placeholder:text-foreground/40 font-body"
         />
         <Button
           type="submit"

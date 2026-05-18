@@ -1,6 +1,7 @@
 import { StateCreator } from 'zustand';
-import type { Simulation, SimulationNodeDatum } from 'd3-force';
+import type { Simulation, SimulationLinkDatum } from 'd3-force';
 import type { CanvasState } from '../useCanvasStore';
+import type { AABBNode } from '../../hooks/forceAABB';
 
 export interface PhysicsSlice {
   physicsConfig: {
@@ -11,8 +12,8 @@ export interface PhysicsSlice {
     linkIterations: number;
   };
   setPhysicsConfig: (config: Partial<PhysicsSlice['physicsConfig']>) => void;
-  simulationRef: Simulation<SimulationNodeDatum, undefined> | null;
-  setSimulationRef: (ref: Simulation<SimulationNodeDatum, undefined> | null) => void;
+  simulationRef: Simulation<AABBNode, SimulationLinkDatum<AABBNode>> | null;
+  setSimulationRef: (ref: Simulation<AABBNode, SimulationLinkDatum<AABBNode>> | null) => void;
 }
 
 export const createPhysicsSlice: StateCreator<CanvasState, [], [], PhysicsSlice> = (set) => ({

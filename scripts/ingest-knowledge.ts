@@ -14,7 +14,7 @@ async function run() {
   // =========================================================================
   // PERSONA DB: identity + skills + project catalog (lightweight, for main agent)
   // =========================================================================
-  const personaChunks: Array<{ content: string; metadata: any }> = [];
+  const personaChunks: Array<{ content: string; metadata: Record<string, unknown> }> = [];
 
   // Read persona markdown files
   const personaFiles = fs.readdirSync(personaDir).filter(f => f.endsWith('.md'));
@@ -54,7 +54,7 @@ async function run() {
   // =========================================================================
   // PROJECTS DB: full case study detail (for sub-agent creative editing)
   // =========================================================================
-  const projectChunks: Array<{ content: string; metadata: any }> = [];
+  const projectChunks: Array<{ content: string; metadata: Record<string, unknown> }> = [];
   const projectFiles = fs.readdirSync(projectsDir).filter(f => f.endsWith('.md'));
 
   for (const file of projectFiles) {

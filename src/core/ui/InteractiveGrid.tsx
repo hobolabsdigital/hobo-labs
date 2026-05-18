@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useViewport } from '@xyflow/react';
 import { useTheme } from '@/core/theme/theme-provider';
-import { getCanvasConfig, type CanvasConfig } from '@/core/theme/theme-canvas';
+import { getCanvasConfig } from '@/core/theme/theme-canvas';
 
 interface InteractiveGridProps {
   gap?: number;
@@ -48,9 +48,8 @@ export function InteractiveGrid({
     let animationFrameId: number;
     let width = 0;
     let height = 0;
-    
     // Get config from centralized theme-canvas — no theme name checks
-    const cfg = getCanvasConfig(resolvedTheme ?? 'light');
+    const cfg = getCanvasConfig(resolvedTheme || 'default');
     const gridColor = color ?? cfg.dotColor;
     const effectiveRepelRadius = repelRadiusProp ?? cfg.repelRadius;
     const effectiveRepelStrength = repelStrengthProp ?? cfg.repelStrength;

@@ -36,7 +36,7 @@ ${projectData._rawContent}
     });
 
     return result.toTextStreamResponse();
-  } catch (error: any) {
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+  } catch (error: unknown) {
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }), { status: 500 });
   }
 }

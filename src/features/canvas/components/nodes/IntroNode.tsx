@@ -9,13 +9,13 @@ export function IntroNode() {
   const setIntroAnimationFinished = useCanvasStore(state => state.setIntroAnimationFinished);
 
   return (
-    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center pointer-events-none">
+    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center pointer-events-none overflow-hidden">
       {!showEnterLab && (
         <HeroText onSequenceComplete={() => setShowEnterLab(true)} />
       )}
 
       {showEnterLab && !isIntroAnimationFinished && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-full flex justify-center">
+        <div className="absolute inset-0 z-10 flex justify-center items-center">
           <EnterLab onAnimationComplete={() => setIntroAnimationFinished(true)} />
         </div>
       )}

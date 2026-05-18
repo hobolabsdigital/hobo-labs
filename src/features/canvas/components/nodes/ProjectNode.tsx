@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from "framer-motion";
 import { experimental_useObject as useObject } from '@ai-sdk/react';
 import { z } from 'zod';
@@ -25,8 +26,7 @@ function Shimmer({ className }: { className?: string }) {
 function ProjectSkeleton() {
   return (
     <div
-      className="relative bg-background origin-center flex flex-col shadow-2xl border border-foreground/10"
-      style={{ width: '800px' }}
+      className="relative bg-background origin-center flex flex-col shadow-2xl border border-foreground/10 w-full max-w-full md:max-w-none md:w-[800px]"
     >
       <NodeHandles />
       <div className="w-full aspect-video bg-foreground/5 flex items-center justify-center overflow-hidden relative">
@@ -54,11 +54,11 @@ function ProjectSkeleton() {
 export const ProjectNode = React.memo(function ProjectNode({ data, id: reactFlowId }: { data: Record<string, string | boolean | null | undefined>; id: string }) {
   const updateNodeData = useCanvasStore(state => state.updateNodeData);
 
-  const { object, submit, error, isLoading } = useObject({
+  const { object, submit } = useObject({
     api: '/api/project-context',
     schema: z.object({ problem: z.string(), solution: z.string(), quote: z.string() }),
-    onFinish: (result: any) => {
-      updateNodeData(reactFlowId, { ...result.object, isContextStreaming: false });
+    onFinish: (result: { object: unknown }) => {
+      updateNodeData(reactFlowId, { ...(result.object as object), isContextStreaming: false });
     },
     onError: (err) => {
       if (process.env.NODE_ENV !== 'production') console.error('[ProjectNode] useObject error:', err);
@@ -66,6 +66,7 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id: reactFlow
   });
 
   const hasSubmitted = React.useRef(false);
+  const heroImgRef = React.useRef<HTMLImageElement>(null);
 
   React.useEffect(() => {
     if (data.isContextStreaming && !data.problem && !hasSubmitted.current) {
@@ -76,7 +77,7 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id: reactFlow
 
   React.useEffect(() => {
     if (object) {
-      updateNodeData(reactFlowId, object);
+      updateNodeData(reactFlowId, (object || {}) as Record<string, unknown>);
     }
   }, [object, reactFlowId, updateNodeData]);
 
@@ -85,7 +86,6 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id: reactFlow
   if (data.isLoading) return <ProjectSkeleton />;
 
   const title = (data.title as string) || "UNTITLED PROJECT";
-  const id = (data.id as string) || title;
   const role = (data.role as string) || '';
   const year = (data.year as string) || String(new Date().getFullYear());
   const image = (data.image as string) || null;
@@ -93,11 +93,10 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id: reactFlow
   const isStreaming = data.isContextStreaming as boolean;
   const heroSrc = (image && (image.startsWith('http') || image.startsWith('/'))) ? image : '/portfolio/placeholder.png';
 
-  const heroImgRef = React.useRef<HTMLImageElement>(null);
-
   const handleHeroClick = () => {
+    const isMobile = window.innerWidth < 768;
     const rect = heroImgRef.current?.getBoundingClientRect();
-    const sourceRect = rect ? { x: rect.x, y: rect.y, width: rect.width, height: rect.height } : undefined;
+    const sourceRect = rect && !isMobile ? { x: rect.x, y: rect.y, width: rect.width, height: rect.height } : undefined;
     useProjectModalStore.getState().open(reactFlowId, heroSrc, sourceRect);
   };
 
@@ -109,8 +108,7 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id: reactFlow
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -30 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="project-node-card relative bg-background origin-center flex flex-col shadow-2xl border border-foreground/10 group cursor-pointer hover:border-foreground/30 transition-all duration-300"
-        style={{ width: '800px' }}
+        className="project-node-card relative bg-background origin-center flex flex-col shadow-2xl border border-foreground/10 group cursor-pointer hover:border-foreground/30 transition-all duration-300 w-full max-w-full md:max-w-none md:w-[800px]"
         onClick={handleHeroClick}
         role="button"
         tabIndex={0}
@@ -121,12 +119,14 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id: reactFlow
 
         {/* Hero image */}
         <div className="w-full aspect-video overflow-hidden bg-transparent relative">
-          <img
+          <Image
             ref={heroImgRef}
             src={heroSrc}
             alt={title}
-            className="w-full h-full object-cover"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            fill
+            sizes="(max-width: 768px) 100vw, 800px"
+            className="object-cover"
+            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
           />
           {/* Hover overlay */}
           <div className="absolute inset-0 z-10 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center pointer-events-none">

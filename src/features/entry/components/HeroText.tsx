@@ -84,10 +84,10 @@ export function HeroText({
 
     // --- PLAY OUT (direction-driven, not theme-name-driven) ---
     const exitProps: Record<string, gsap.TweenVars> = {
-      left:  { x: '-100vw', opacity: 0, duration: m.hero.exitDuration, ease: m.hero.exitEase },
-      right: { x: '100vw',  opacity: 0, duration: m.hero.exitDuration, ease: m.hero.exitEase },
-      up:    { y: '-50vh',  opacity: 0, duration: m.hero.exitDuration, ease: m.hero.exitEase },
-      down:  { y: '100vh',  opacity: 0, duration: m.hero.exitDuration, ease: m.hero.exitEase },
+      left: { x: '-100vw', opacity: 0, duration: m.hero.exitDuration, ease: m.hero.exitEase },
+      right: { x: '100vw', opacity: 0, duration: m.hero.exitDuration, ease: m.hero.exitEase },
+      up: { y: '-50vh', opacity: 0, duration: m.hero.exitDuration, ease: m.hero.exitEase },
+      down: { y: '100vh', opacity: 0, duration: m.hero.exitDuration, ease: m.hero.exitEase },
     };
 
     const exit = exitProps[m.hero.exitDirection] ?? exitProps.left;
@@ -112,14 +112,11 @@ export function HeroText({
         position: 'absolute',
         inset: 0,
         zIndex: 0,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        padding: '0 0.5vw',
         pointerEvents: 'none',
         overflow: 'hidden',
         userSelect: 'none',
       }}
+      className="flex flex-col justify-center px-4 md:px-[0.5vw]"
     >
       {/* Line 1 — "WELCOME TO" */}
       <span
@@ -127,8 +124,8 @@ export function HeroText({
         className="welcome-to-text text-[var(--foreground)] opacity-90 font-heading"
         style={{
           display: 'block',
-          fontSize: 'clamp(48px, 14vw, 280px)',
-          fontWeight: 'var(--hero-weight-line1, 800)' as any,
+          fontSize: 'clamp(48px, 8vw, 160px)',
+          fontWeight: 'var(--hero-weight-line1, 800)' as React.CSSProperties['fontWeight'],
           lineHeight: 0.9,
           letterSpacing: '-0.05em',
           whiteSpace: 'nowrap',
@@ -137,20 +134,16 @@ export function HeroText({
         {text1}
       </span>
 
-      {/* Line 2 — "HOBOLABS" sleek gradient */}
+      {/* Line 2 — "HOBOLABS" */}
       <span
         ref={line2Ref}
-        className="font-heading"
+        className="font-heading text-[var(--foreground)]"
         style={{
           display: 'block',
-          fontSize: 'clamp(60px, 17vw, 360px)',
-          fontWeight: 'var(--hero-weight-line2, 900)' as any,
+          fontSize: 'clamp(60px, 10vw, 200px)',
+          fontWeight: 'var(--hero-weight-line2, 900)' as React.CSSProperties['fontWeight'],
           lineHeight: 0.9,
           letterSpacing: '-0.06em',
-          color: 'var(--foreground)',
-          background: 'var(--hero-gradient, linear-gradient(90deg, #ff5c34, #ff007b))',
-          WebkitBackgroundClip: 'var(--hero-clip, text)',
-          WebkitTextFillColor: 'var(--hero-fill, transparent)',
           whiteSpace: 'nowrap',
         }}
       >

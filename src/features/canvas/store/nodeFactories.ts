@@ -1,5 +1,5 @@
 import { Node, Edge } from '@xyflow/react';
-import type { HeroNodeData, DossierNodeData } from '@/lib/ai/types';
+import type { HeroNodeData } from '@/lib/ai/types';
 import {
   H_SPACING,
   PROJECT_OFFSET,

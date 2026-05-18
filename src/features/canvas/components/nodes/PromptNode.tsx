@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from "framer-motion";
 import { NodeHandles } from './NodeHandles';
 
-export const PromptNode = React.memo(function PromptNode({ data }: { data: any }) {
+export const PromptNode = React.memo(function PromptNode({ data }: { data: Record<string, string | undefined> }) {
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.5 }}

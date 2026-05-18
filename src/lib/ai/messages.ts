@@ -13,8 +13,10 @@ export function extractUserQuery(coreMessages: Awaited<ReturnType<typeof convert
 
   if (Array.isArray(lastUserMessage.content)) {
     return lastUserMessage.content
-      .filter((p: any) => p.type === 'text')
-      .map((p: any) => p.text)
+      .filter((p): p is { type: 'text'; text: string } => 
+        typeof p === 'object' && p !== null && 'type' in p && (p as unknown as Record<string, unknown>).type === 'text'
+      )
+      .map((p) => p.text)
       .join(' ');
   }
 

@@ -8,7 +8,7 @@ import {
   NODE_DIMS_DEFAULT,
   LINK_MAX_DISTANCE,
 } from '@/features/canvas/constants';
-import { forceAABB } from './forceAABB';
+import { forceAABB, type AABBNode } from './forceAABB';
 
 export function useEditorialPhysics() {
   const nodesLength = useCanvasStore(state => state.nodes.length);
@@ -18,26 +18,29 @@ export function useEditorialPhysics() {
   const setSimulationRef = useCanvasStore(state => state.setSimulationRef);
   
   // Store the persistent D3 simulation and current internal nodes array
-  const simulationRef = useRef<d3.Simulation<any, any> | null>(null);
-  const internalNodesRef = useRef<any[]>([]);
+  const simulationRef = useRef<d3.Simulation<AABBNode, d3.SimulationLinkDatum<AABBNode>> | null>(null);
+  const internalNodesRef = useRef<AABBNode[]>([]);
+  const lastCameraPosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
   // 1. Initialize the simulation ONCE
   useEffect(() => {
     if (simulationRef.current) return; // Already initialized
 
-    const simulation = d3.forceSimulation()
+    const simulation = d3.forceSimulation<AABBNode>()
       // Initial physics configuration
       .velocityDecay(physicsConfig.velocityDecay)
       .force('charge', d3.forceManyBody().strength(physicsConfig.chargeStrength))
       // AABB rectangular collision replaces forceCollide
       .force('aabb', forceAABB(4))
-      .force('link', d3.forceLink()
-        .id((d: any) => d.id)
+      .force('link', d3.forceLink<AABBNode, d3.SimulationLinkDatum<AABBNode>>()
+        .id((d) => d.id)
         // Ideal distance = edge-to-edge gap; hard cap at LINK_MAX_DISTANCE
         // so nodes can't drift off-screen when x-flow pushes them apart.
-        .distance((link: any) => {
-          const srcDims = NODE_DIMS[link.source?.type] ?? NODE_DIMS_DEFAULT;
-          const tgtDims = NODE_DIMS[link.target?.type] ?? NODE_DIMS_DEFAULT;
+        .distance((link) => {
+          const source = link.source as AABBNode;
+          const target = link.target as AABBNode;
+          const srcDims = NODE_DIMS[source.type ?? ''] ?? NODE_DIMS_DEFAULT;
+          const tgtDims = NODE_DIMS[target.type ?? ''] ?? NODE_DIMS_DEFAULT;
           const ideal = srcDims.w / 2 + tgtDims.w / 2 + 60;
           return Math.min(ideal, LINK_MAX_DISTANCE);
         })
@@ -47,11 +50,11 @@ export function useEditorialPhysics() {
         .strength(0.3)
         .iterations(physicsConfig.linkIterations)
       )
-      .force('x-flow', d3.forceX().x((d: any) => {
+      .force('x-flow', d3.forceX<AABBNode>().x((d) => {
         // Hero and intro nodes are pinned — don't apply x force
-        if (d.type === 'hero' || d.type === 'intro') return d.x;
+        if (d.type === 'hero' || d.type === 'intro') return d.x ?? 0;
         // Push each subsequent node further right based on creation order
-        const index = d.data?.creationIndex ?? 0;
+        const index = (d.data?.creationIndex as number) ?? 0;
         return index * FORCE_X_STRIDE;
       }).strength(0.04))
       // Gentle vertical centering — keeps nodes from drifting too far up/down
@@ -72,18 +75,22 @@ export function useEditorialPhysics() {
             // Frame-by-frame camera tracking for the active node
             if (node.id === currentTrackedId && currentRfInstance) {
               // Only reposition camera if node moved significantly (prevents jitter)
-              const lastCameraPos = (simulationRef.current as any).__lastCameraPos || { x: 0, y: 0 };
-              const dx = Math.abs(simNode.x - lastCameraPos.x);
-              const dy = Math.abs(simNode.y - lastCameraPos.y);
+              const lastCameraPos = lastCameraPosRef.current;
+              const simX = simNode.x ?? 0;
+              const simY = simNode.y ?? 0;
+              const dx = Math.abs(simX - lastCameraPos.x);
+              const dy = Math.abs(simY - lastCameraPos.y);
               if (dx > 20 || dy > 20) {
-                currentRfInstance.setCenter(simNode.x, simNode.y, { zoom: 0.9, duration: 0 });
-                (simulationRef.current as any).__lastCameraPos = { x: simNode.x, y: simNode.y };
+                currentRfInstance.setCenter(simX, simY, { zoom: 0.9, duration: 0 });
+                lastCameraPosRef.current = { x: simX, y: simY };
               }
             }
 
             // Only update if movement is significant to avoid micro-stutters
-            if (Math.abs(node.position.x - simNode.x) > 1 || Math.abs(node.position.y - simNode.y) > 1) {
-              return { ...node, position: { x: simNode.x, y: simNode.y } };
+            const sX = simNode.x ?? 0;
+            const sY = simNode.y ?? 0;
+            if (Math.abs(node.position.x - sX) > 1 || Math.abs(node.position.y - sY) > 1) {
+              return { ...node, position: { x: sX, y: sY } };
             }
           }
           return node;
@@ -96,6 +103,7 @@ export function useEditorialPhysics() {
       simulationRef.current = null;
       setSimulationRef(null);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Run only once on mount
 
   // 2. React to Topology Changes (Nodes/Edges Added or Removed)
@@ -135,7 +143,7 @@ export function useEditorialPhysics() {
 
     // 2c. Update simulation data without blowing it up
     simulation.nodes(newInternalNodes);
-    const linkForce = simulation.force('link') as d3.ForceLink<any, any>;
+    const linkForce = simulation.force('link') as d3.ForceLink<AABBNode, d3.SimulationLinkDatum<AABBNode>>;
     if (linkForce) {
       linkForce.links(simLinks);
     }
@@ -154,10 +162,10 @@ export function useEditorialPhysics() {
 
     simulation.velocityDecay(physicsConfig.velocityDecay);
     
-    const chargeForce = simulation.force('charge') as d3.ForceManyBody<any>;
+    const chargeForce = simulation.force('charge') as d3.ForceManyBody<AABBNode>;
     if (chargeForce) chargeForce.strength(physicsConfig.chargeStrength);
 
-    const linkForce = simulation.force('link') as d3.ForceLink<any, any>;
+    const linkForce = simulation.force('link') as d3.ForceLink<AABBNode, d3.SimulationLinkDatum<AABBNode>>;
     if (linkForce) {
       linkForce.strength(physicsConfig.linkStrength).iterations(physicsConfig.linkIterations);
     }

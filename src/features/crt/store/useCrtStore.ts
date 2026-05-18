@@ -70,7 +70,7 @@ export function detectDrawElementImage(): boolean {
     const tc = document.createElement("canvas");
     tc.setAttribute("layoutsubtree", "");
     const ctx = tc.getContext("2d");
-    return ctx !== null && typeof (ctx as any).drawElementImage === "function";
+    return ctx !== null && typeof (ctx as unknown as { drawElementImage?: unknown }).drawElementImage === "function";
   } catch {
     return false;
   }

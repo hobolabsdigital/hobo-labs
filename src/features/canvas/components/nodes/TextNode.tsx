@@ -16,7 +16,7 @@ function ParagraphBlock({ text }: { text: string }) {
   );
 }
 
-export const TextNode = React.memo(function TextNode({ data, id }: { data: any, id: string }) {
+export const TextNode = React.memo(function TextNode({ data, id }: { data: Record<string, string | undefined>, id: string }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const streamedText = useCanvasStore(state => state.activeStreamingTextId === id ? state.activeStreamingText : null);
@@ -42,8 +42,8 @@ export const TextNode = React.memo(function TextNode({ data, id }: { data: any, 
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ y: '100vh', opacity: 0, rotate: -15, transition: { duration: 0.6, ease: 'easeIn' } }}
-        className="relative bg-transparent origin-bottom-right"
-        style={{ width: paragraphs.length === 1 ? '360px' : `${Math.min(paragraphs.length, VISIBLE_COLS) * 280 + (Math.min(paragraphs.length, VISIBLE_COLS) - 1) * 16 + 48}px` }}
+        className="relative bg-transparent origin-bottom-right w-full md:w-[var(--desktop-width)]"
+        style={{ '--desktop-width': paragraphs.length === 1 ? '360px' : `${Math.min(paragraphs.length, VISIBLE_COLS) * 280 + (Math.min(paragraphs.length, VISIBLE_COLS) - 1) * 16 + 48}px` } as React.CSSProperties}
       >
         <NodeHandles />
 
@@ -59,8 +59,11 @@ export const TextNode = React.memo(function TextNode({ data, id }: { data: any, 
 
         {/* Paragraphs grid */}
         <div
-          className="grid gap-4"
-          style={{ gridTemplateColumns: `repeat(${Math.min(paragraphs.length, VISIBLE_COLS)}, 1fr)` }}
+          className={`grid gap-4 grid-cols-1 ${
+            Math.min(paragraphs.length, VISIBLE_COLS) === 1 ? 'md:grid-cols-1' :
+            Math.min(paragraphs.length, VISIBLE_COLS) === 2 ? 'md:grid-cols-2' :
+            'md:grid-cols-3'
+          }`}
         >
           {visibleParagraphs.map((p: string, i: number) => (
             <motion.div

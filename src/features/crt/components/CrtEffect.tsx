@@ -5,6 +5,7 @@ import { BarrelFilter } from "./BarrelFilter";
 import { ExperimentalBarrel } from "./ExperimentalBarrel";
 import { GrainCanvas } from "./GrainCanvas";
 import { CrtModeSelector } from "./CrtModeSelector";
+import { useMediaQuery } from "@/core/hooks/useMediaQuery";
 
 /**
  * CRT post-processing effect suite.
@@ -24,6 +25,12 @@ import { CrtModeSelector } from "./CrtModeSelector";
  */
 export function CrtEffect() {
   const crtMode = useCrtStore((s) => s.crtMode);
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
+  // Disable CRT effects entirely on mobile devices for readability and performance
+  if (isMobile) {
+    return null;
+  }
 
   return (
     <>

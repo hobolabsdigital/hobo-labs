@@ -5,7 +5,7 @@ import { NodeHandles } from './NodeHandles';
 import { motion, AnimatePresence } from "framer-motion";
 import Image from 'next/image';
 
-export const HeroNode = React.memo(function HeroNode({ data, id }: { data: any, id: string }) {
+export const HeroNode = React.memo(function HeroNode({ data }: { data: Record<string, string | undefined> }) {
   const rawHeadline = data.headline || data.title || "THE\nCREATIVE\nENGINE";
   const headlineLines = rawHeadline.replace(/\\n/g, '\n').split('\n');
 
@@ -25,8 +25,7 @@ export const HeroNode = React.memo(function HeroNode({ data, id }: { data: any, 
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ y: '100vh', opacity: 0, rotate: 15, transition: { duration: 0.6, ease: 'easeIn' } }}
-        className="relative flex flex-col items-start bg-transparent origin-bottom-left"
-        style={{ maxWidth: '900px' }}
+        className="relative flex flex-col items-start bg-transparent origin-bottom-left w-full max-w-full md:max-w-[900px]"
       >
         <motion.div className="mb-4" variants={typewriterContainer} initial="hidden" animate="visible">
           {headlineLines.map((line: string, i: number) => (

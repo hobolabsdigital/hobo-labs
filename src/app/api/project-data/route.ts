@@ -16,7 +16,6 @@ export async function GET(req: Request) {
   }
 
   // Omit raw content from the client payload
-  const { _rawContent, ...clientData } = data;
   
-  return NextResponse.json({ ...clientData, slug, isContextStreaming: true });
+  return NextResponse.json({ ...data, slug, isContextStreaming: true });
 }

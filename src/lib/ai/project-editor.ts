@@ -10,14 +10,13 @@ function findProjectBySlug(slug: string): RAGChunk | null {
 
   // Exact slug match
   let chunk = projectsDb.find(
-    (c: RAGChunk) => (c.metadata?.slug || '').toLowerCase() === normalized,
+    (c: RAGChunk) => String(c.metadata?.slug || '').toLowerCase() === normalized,
   );
 
   // Fuzzy title match
   if (!chunk) {
     chunk = projectsDb.find((c: RAGChunk) => {
-      const titleSlug = (c.metadata?.title || '')
-        .toLowerCase()
+      const titleSlug = String(c.metadata?.title || '').toLowerCase()
         .replace(/[^a-z0-9-]/g, '-')
         .replace(/-+/g, '-')
         .replace(/^-|-$/g, '');

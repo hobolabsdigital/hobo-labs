@@ -1,4 +1,11 @@
 import { NODE_DIMS, NODE_DIMS_DEFAULT, AABB_GAP } from '@/features/canvas/constants';
+import type { SimulationNodeDatum } from 'd3-force';
+
+export interface AABBNode extends SimulationNodeDatum {
+  id: string;
+  type?: string;
+  data?: Record<string, unknown>;
+}
 
 /**
  * Custom D3 force that resolves axis-aligned bounding box (AABB) overlaps.
@@ -16,31 +23,31 @@ import { NODE_DIMS, NODE_DIMS_DEFAULT, AABB_GAP } from '@/features/canvas/consta
  * Visual centers are computed internally as (x + w/2, y + h/2).
  */
 export function forceAABB(iterations = 3) {
-  let nodes: any[] = [];
+  let nodes: AABBNode[] = [];
   let _strength = 0.7;
 
-  function force(_alpha: number) {
+  function force() {
     for (let iter = 0; iter < iterations; iter++) {
       for (let i = 0; i < nodes.length; i++) {
         const a = nodes[i];
 
-        const dimsA = NODE_DIMS[a.type] ?? NODE_DIMS_DEFAULT;
+        const dimsA = (a.type ? NODE_DIMS[a.type as keyof typeof NODE_DIMS] : undefined) ?? NODE_DIMS_DEFAULT;
         const halfWA = dimsA.w / 2 + AABB_GAP / 2;
         const halfHA = dimsA.h / 2 + AABB_GAP / 2;
 
         // Predicted center position (same as d3.forceCollide using x+vx)
-        const cxA = (a.x + (a.vx || 0)) + dimsA.w / 2;
-        const cyA = (a.y + (a.vy || 0)) + dimsA.h / 2;
+        const cxA = ((a.x || 0) + (a.vx || 0)) + dimsA.w / 2;
+        const cyA = ((a.y || 0) + (a.vy || 0)) + dimsA.h / 2;
 
         for (let j = i + 1; j < nodes.length; j++) {
           const b = nodes[j];
 
-          const dimsB = NODE_DIMS[b.type] ?? NODE_DIMS_DEFAULT;
+          const dimsB = (b.type ? NODE_DIMS[b.type as keyof typeof NODE_DIMS] : undefined) ?? NODE_DIMS_DEFAULT;
           const halfWB = dimsB.w / 2 + AABB_GAP / 2;
           const halfHB = dimsB.h / 2 + AABB_GAP / 2;
 
-          const cxB = (b.x + (b.vx || 0)) + dimsB.w / 2;
-          const cyB = (b.y + (b.vy || 0)) + dimsB.h / 2;
+          const cxB = ((b.x || 0) + (b.vx || 0)) + dimsB.w / 2;
+          const cyB = ((b.y || 0) + (b.vy || 0)) + dimsB.h / 2;
 
           // Distance between predicted visual centers
           const dx = cxB - cxA;
@@ -57,12 +64,12 @@ export function forceAABB(iterations = 3) {
               const bPinX = b.fx != null;
 
               if (!aPinX && !bPinX) {
-                a.vx -= signX * push;
-                b.vx += signX * push;
+                a.vx = (a.vx || 0) - signX * push;
+                b.vx = (b.vx || 0) + signX * push;
               } else if (!aPinX) {
-                a.vx -= signX * push * 2;
+                a.vx = (a.vx || 0) - signX * push * 2;
               } else if (!bPinX) {
-                b.vx += signX * push * 2;
+                b.vx = (b.vx || 0) + signX * push * 2;
               }
             } else {
               const push = overlapY * _strength * 0.5;
@@ -71,12 +78,12 @@ export function forceAABB(iterations = 3) {
               const bPinY = b.fy != null;
 
               if (!aPinY && !bPinY) {
-                a.vy -= signY * push;
-                b.vy += signY * push;
+                a.vy = (a.vy || 0) - signY * push;
+                b.vy = (b.vy || 0) + signY * push;
               } else if (!aPinY) {
-                a.vy -= signY * push * 2;
+                a.vy = (a.vy || 0) - signY * push * 2;
               } else if (!bPinY) {
-                b.vy += signY * push * 2;
+                b.vy = (b.vy || 0) + signY * push * 2;
               }
             }
           }
@@ -85,7 +92,7 @@ export function forceAABB(iterations = 3) {
     }
   }
 
-  force.initialize = function(newNodes: any[]) {
+  force.initialize = function(newNodes: AABBNode[]) {
     nodes = newNodes;
   };
 

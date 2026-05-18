@@ -1,4 +1,3 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface UseTypewriterOptions {
   /** Milliseconds per character (default: 30) */
@@ -18,6 +17,8 @@ interface UseTypewriterReturn {
   cursorVisible: boolean;
 }
 
+import { useState, useEffect, useRef } from 'react';
+
 /**
  * MS-DOS style typewriter effect.
  * Reveals text character-by-character at a configurable speed.
@@ -30,12 +31,16 @@ export function useTypewriter(
   const [charIndex, setCharIndex] = useState(0);
   const [cursorVisible, setCursorVisible] = useState(true);
   const onCompleteRef = useRef(onComplete);
-  onCompleteRef.current = onComplete;
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   // Reset when text changes
   useEffect(() => {
     if (enabled) {
-      setCharIndex(0);
+      const timer = setTimeout(() => setCharIndex(0), 0);
+      return () => clearTimeout(timer);
     }
   }, [text, enabled]);
 

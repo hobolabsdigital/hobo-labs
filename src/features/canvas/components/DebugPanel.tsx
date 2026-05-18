@@ -77,7 +77,7 @@ export function DebugPanel() {
   const experimentalSupported = useCrtStore((s) => s.experimentalSupported);
 
   return (
-    <div className={`fixed top-4 right-0 z-50 ${INTRO_REVEAL_CLASSES} ${
+    <div className={`fixed top-8 right-0 z-50 ${INTRO_REVEAL_CLASSES} ${
       !isIntroAnimationFinished ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
     } ${isDebugDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
       <button 

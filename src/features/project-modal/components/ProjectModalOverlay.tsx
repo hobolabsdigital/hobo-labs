@@ -6,7 +6,6 @@ import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { useProjectModalStore } from '../store/useProjectModalStore';
 import Image from 'next/image';
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
-import { X } from 'lucide-react';
 import { useTheme } from '@/core/theme/theme-provider';
 import { getMotion } from '@/core/theme/theme-motion';
 
@@ -46,12 +45,12 @@ function OverlayContent() {
 
   useEffect(() => {
     if (isOpen) {
-      const timer = setTimeout(() => setIsSettled(true), 800);
+      const delay = sourceRect ? 800 : 0;
+      const timer = setTimeout(() => setIsSettled(true), delay);
       return () => clearTimeout(timer);
     }
-  }, [isOpen]);
+  }, [isOpen, sourceRect]);
 
-  // Measure hero slot position after mount so flying hero lands in the right spot
   useEffect(() => {
     if (isOpen && heroSlotRef.current && !targetRect) {
       // Use rAF to ensure layout has been computed
@@ -62,8 +61,9 @@ function OverlayContent() {
         }
       });
     }
-    if (!isOpen) {
-      setTargetRect(null);
+    if (!isOpen && targetRect) {
+      const timer = setTimeout(() => setTargetRect(null), 0);
+      return () => clearTimeout(timer);
     }
   }, [isOpen, targetRect]);
 
@@ -87,7 +87,7 @@ function OverlayContent() {
 
   if (!isOpen || !projectData) return null;
 
-  const { id, title, year, role, problem, solution } = projectData;
+  const { title, year, role, problem, solution } = projectData;
   const quote = (projectData?.quote as string) || (projectData?.summary as string) || '';
   const techStack: string[] = Array.isArray(projectData?.techStack) ? projectData.techStack as string[] : [];
 
@@ -100,7 +100,7 @@ function OverlayContent() {
   const getWords = (s: string) => s.split('/').pop()?.replace(/[^a-z0-9]/g, ' ').split(' ').filter(w => w.length > 2) || [];
   const heroWords = getWords(normalizedHeroSrc);
   
-  const gallery = Array.from(new Set(galleryRaw.filter(Boolean))).filter((src, idx) => {
+  const gallery = Array.from(new Set(galleryRaw.filter(Boolean))).filter((src) => {
     const normSrc = src.toLowerCase().trim();
     if (normSrc === normalizedHeroSrc) return false;
     
@@ -188,11 +188,13 @@ function OverlayContent() {
                 ref={heroSlotRef}
                 className="w-full shrink-0 aspect-video bg-transparent overflow-visible mb-12 relative"
               >
-                <img
+                <Image
                   src={finalHeroSrc}
                   alt={title as string}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 1024px"
                   data-modal-image
-                  className="w-full h-full object-cover shadow-2xl block relative z-0"
+                  className="object-cover shadow-2xl z-0"
                   style={{ opacity: 0 }}
                 />
 

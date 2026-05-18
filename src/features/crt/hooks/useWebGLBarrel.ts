@@ -18,7 +18,7 @@ export function useWebGLBarrel(glRef: RefObject<HTMLCanvasElement | null>) {
       }
 
       const ctx2d = captureCanvas.getContext("2d");
-      if (!ctx2d || typeof (ctx2d as any).drawElementImage !== "function") {
+      if (!ctx2d || typeof (ctx2d as unknown as { drawElementImage?: unknown }).drawElementImage !== "function") {
         useCrtStore.getState().setCrtMode("standard");
         return;
       }
@@ -119,8 +119,8 @@ export function useWebGLBarrel(glRef: RefObject<HTMLCanvasElement | null>) {
 
         try {
           ctx.clearRect(0, 0, w, h);
-          (ctx as any).drawElementImage(main, 0, 0, w, h);
-        } catch (e) {
+          (ctx as unknown as { drawElementImage: (el: HTMLElement, x: number, y: number, w: number, h: number) => void }).drawElementImage(main, 0, 0, w, h);
+        } catch {
           if (frameCount < 5) console.warn("[CRT Exp] waiting for paint record...");
           rafId = requestAnimationFrame(render);
           return;

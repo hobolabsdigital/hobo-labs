@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ReactFlow,
   Controls,
   Node,
-  useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { INTRO_CAMERA_Y } from '@/features/canvas/constants';
@@ -172,12 +171,13 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
   useEditorialPhysics();
   useEdgeAnimations();
 
+
   const onNodeDragStart = useCallback((event: React.MouseEvent, node: Node) => {
     const simulation = useCanvasStore.getState().simulationRef;
     if (!simulation) return;
 
     // Find the internal node
-    const simNode = simulation.nodes().find((n: any) => n.id === node.id);
+    const simNode = simulation.nodes().find(n => n.id === node.id);
     if (simNode) {
       simNode.fx = node.position.x;
       simNode.fy = node.position.y;
@@ -191,7 +191,7 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
     const simulation = useCanvasStore.getState().simulationRef;
     if (!simulation) return;
 
-    const simNode = simulation.nodes().find((n: any) => n.id === node.id);
+    const simNode = simulation.nodes().find(n => n.id === node.id);
     if (simNode) {
       simNode.fx = node.position.x;
       simNode.fy = node.position.y;
@@ -202,7 +202,7 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
     const simulation = useCanvasStore.getState().simulationRef;
     if (!simulation) return;
 
-    const simNode = simulation.nodes().find((n: any) => n.id === node.id);
+    const simNode = simulation.nodes().find(n => n.id === node.id);
     if (simNode) {
       if (node.id !== 'hero-1') {
         simNode.fx = null;

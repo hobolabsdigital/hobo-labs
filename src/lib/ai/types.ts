@@ -4,7 +4,7 @@ export const NodeInteractionSchema = z.object({
   id: z.string(),
   type: z.enum(['project', 'hero', 'ghost', 'text']),
   position: z.object({ x: z.number(), y: z.number() }),
-  data: z.record(z.string(), z.any()),
+  data: z.record(z.string(), z.unknown()),
 });
 
 export const ProjectNodeDataSchema = z.object({
@@ -71,5 +71,5 @@ export interface RAGChunk {
   id?: string;
   content: string;
   embedding: number[];
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }

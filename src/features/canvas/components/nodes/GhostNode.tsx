@@ -51,9 +51,9 @@ const GhostText = React.memo(function GhostText({ id, fallbackText, isFinished, 
   );
 });
 
-export const GhostNode = React.memo(function GhostNode({ id, data }: { id: string, data: any }) {
+export const GhostNode = React.memo(function GhostNode({ id, data }: { id: string, data: Record<string, string | boolean | undefined> }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const isFinished = data.isFinished;
+  const isFinished = Boolean(data.isFinished);
 
   return (
     <motion.div 
@@ -74,7 +74,7 @@ export const GhostNode = React.memo(function GhostNode({ id, data }: { id: strin
           {isFinished ? (isExpanded ? '[ - REASONING ]' : '[ + REASONING ]') : '[ THINKING... ]'}
         </motion.div>
         
-        <GhostText id={id} fallbackText={data.text} isFinished={isFinished} isExpanded={isExpanded} />
+        <GhostText id={id} fallbackText={String(data.text || '')} isFinished={isFinished} isExpanded={isExpanded} />
       </div>
     </motion.div>
   );

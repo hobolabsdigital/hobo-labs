@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls } from 'ai';
+import { DefaultChatTransport } from 'ai';
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 import { dispatchToolCall } from './dispatchToolCall';
 
@@ -8,8 +8,8 @@ interface MessagePart {
   type: string;
   text?: string;
   state?: string;
-  input?: any;
-  args?: any;
+  input?: unknown;
+  args?: unknown;
   argsText?: string;
   toolName?: string;
   toolCallId?: string;
@@ -37,10 +37,10 @@ export function useEditorialChat() {
     transport: new DefaultChatTransport({
       api: isMockApiEnabled ? '/api/chat?mock=true' : '/api/chat',
     }),
-    onFinish: (event) => {
+    onFinish: () => {
       return;
     },
-    onData: (dataPart: any) => {
+    onData: () => {
       // data-dossier parsing removed
     },
     async onToolCall({ toolCall }) {
@@ -107,7 +107,6 @@ export function useEditorialChat() {
   // Text node streaming sync
   // ---------------------------------------------------------------------------
   const lastProcessedTextMsgId = useRef<string | null>(null);
-  const processedShowProjectCalls = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
