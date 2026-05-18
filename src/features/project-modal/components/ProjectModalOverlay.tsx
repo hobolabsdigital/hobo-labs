@@ -193,7 +193,7 @@ function OverlayContent() {
                   alt={title as string}
                   data-modal-image
                   className="w-full h-full object-cover shadow-2xl block relative z-0"
-                  style={{ opacity: isSettled && currentIndex === 0 ? 1 : 0 }}
+                  style={{ opacity: 0 }}
                 />
 
                 {/* 2. The completely isolated, native dragging slider (Visible once settled) */}
