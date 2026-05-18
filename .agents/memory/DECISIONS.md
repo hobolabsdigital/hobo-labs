@@ -92,3 +92,21 @@ src/
 - Uses Ollama for local LLM inference — latency matters
 - Monorepo with apps/portfolio as the main workspace
 - Uses both this IDE (Antigravity) and Gemini CLI
+
+### D009 — AABB Velocity-Based Collision over d3.forceCollide (2026-05-18)
+**Context**: Nodes were overlapping after spawn; forceCollide wasn't resolving collisions between wide rectangular cards.
+**Decision**: Custom `forceAABB` force modifying `vx/vy` (velocity), not `x/y` (position). Per-type bounding boxes from `NODE_DIMS` in `constants.ts`.
+**Rationale**: D3 integrates velocity into position each tick — writing directly to `x/y` gets overwritten on the next integration step, causing snap-back. Velocity modifications persist through integration. Collision detection uses `x + vx` (predicted position) matching D3 internals.
+**File**: `src/features/canvas/hooks/forceAABB.ts`
+
+### D010 — Link Distance Cap to Prevent Off-Screen Drift (2026-05-18)
+**Context**: Nodes were being pushed hundreds of px off-screen by the x-flow force because link strength (0.05) was too weak to oppose it.
+**Decision**: `LINK_MAX_DISTANCE = 800` constant. Link force acts as a spring that becomes attractive once separation exceeds 800px. Strength bumped from 0.05 → 0.3.
+**Rationale**: The link force must be strong enough to resist `x-flow` at max drift. The cap prevents runaway separation without clamping positions directly (which fights D3 integration).
+**Files**: `src/features/canvas/constants.ts`, `src/features/canvas/hooks/useEditorialPhysics.ts`
+
+### D011 — Hero Slot Image is a Measurement Anchor, Never Visible (2026-05-18)
+**Context**: The hero slot `<img>` in `ProjectModalOverlay` was bleeding through behind the gallery slider when the slider translated off it.
+**Decision**: `opacity: 0` always on the hero slot `<img>`. It exists only so `heroSlotRef.getBoundingClientRect()` gives the flying hero a landing coordinate.
+**Rationale**: The flying hero (`motion.img`) provides the visual pre-settle. The slider provides it post-settle. The hero slot img is a structurally necessary but visually invisible element. Any opacity toggle tied to `currentIndex` races with the slider spring animation.
+**File**: `src/features/project-modal/components/ProjectModalOverlay.tsx`
