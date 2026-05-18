@@ -228,6 +228,7 @@ function OverlayContent() {
                         src={finalHeroSrc}
                         alt={title as string}
                         fill
+                        sizes="100vw"
                         data-modal-image
                         className="object-cover shadow-2xl"
                       />
@@ -250,6 +251,7 @@ function OverlayContent() {
                             src={src}
                             alt={`${title} gallery ${index}`}
                             fill
+                            sizes="100vw"
                             data-modal-image
                             className="object-cover shadow-2xl"
                           />
