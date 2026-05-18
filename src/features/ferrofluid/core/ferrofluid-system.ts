@@ -21,8 +21,13 @@ export class FerrofluidSystem {
     private targetMouse: { x: number, y: number } = { x: 0, y: 0 };
     private cameraPosition: vec3 = [0, 0, 5];
 
-    // Debug and Audio Params
-    private audioLevel: number = 0;
+    // Audio band state (smoothed on the JS side before arriving here)
+    private audioBass: number = 0;
+    private audioMids: number = 0;
+    private audioHighs: number = 0;
+    private audioEnergy: number = 0;
+    private audioTransient: number = 0;
+
     private mouseVelocity: number = 0;
     private params: any = {
         noiseSpeed: 0.001,
@@ -80,9 +85,20 @@ export class FerrofluidSystem {
         this.targetMouse = { x, y };
     }
 
+    /** @deprecated Use setAudioBands instead */
     setAudioLevel(level: number) {
-        // Smooth out the audio level slightly to prevent jerky movements
-        this.audioLevel += (level - this.audioLevel) * 0.2;
+        // Backward compat: map single level to bass-only
+        this.audioBass += (level - this.audioBass) * 0.2;
+    }
+
+    setAudioBands(bass: number, mids: number, highs: number, energy: number, transient: number) {
+        // Smooth on arrival to prevent GPU-side jitter
+        const smoothRate = 0.25;
+        this.audioBass += (bass - this.audioBass) * smoothRate;
+        this.audioMids += (mids - this.audioMids) * smoothRate;
+        this.audioHighs += (highs - this.audioHighs) * smoothRate;
+        this.audioEnergy += (energy - this.audioEnergy) * 0.15; // slower for envelope
+        this.audioTransient += (transient - this.audioTransient) * 0.4; // faster for attacks
     }
 
     setParams(params: any) {
@@ -204,13 +220,26 @@ export class FerrofluidSystem {
                 u_mouse: [this.mouse.x, this.mouse.y],
                 u_color1: color1,
                 u_color2: color2,
-                u_audioLevel: this.audioLevel,
+                // Emotional audio bands
+                u_audioBass: this.audioBass,
+                u_audioMids: this.audioMids,
+                u_audioHighs: this.audioHighs,
+                u_audioEnergy: this.audioEnergy,
+                u_audioTransient: this.audioTransient,
+                // Config params
                 u_noiseSpeed: this.params.noiseSpeed,
                 u_noiseScale: this.params.noiseScale,
                 u_spikeHeight: this.params.spikeHeight,
                 u_audioMultiplier: this.params.audioMultiplier,
                 u_mouseInfluence: this.params.mouseInfluence,
-                u_mousePullStrength: this.params.mousePullStrength
+                u_mousePullStrength: this.params.mousePullStrength,
+                // Audio sensitivity (from debug sliders)
+                u_energyFloor: this.params.energyFloor ?? 0.15,
+                u_bassPunch: this.params.bassPunch ?? 0.12,
+                u_midsDetail: this.params.midsDetail ?? 0.3,
+                u_highsShimmer: this.params.highsShimmer ?? 0.02,
+                u_transientCrack: this.params.transientCrack ?? 0.02,
+                u_fresnelBoost: this.params.fresnelBoost ?? 0.8,
             });
 
             twgl.drawBufferInfo(gl, this.bufferInfo);
@@ -226,22 +255,24 @@ export class FerrofluidSystem {
             gl.useProgram(this.dofProgramInfo.program);
             twgl.setBuffersAndAttributes(gl, this.dofProgramInfo, this.quadBufferInfo);
             
-            // Hack: Dynamically scale DoF strength based on mouse distance from center
-            // This ensures it's razor sharp at the center and blurry at the edges
+            // Dynamically scale DoF strength based on mouse distance from center
             let dynamicDofStrength = 0;
             if (this.mouse.x < 1000.0) {
-                // mouseMag goes from 0 at center to ~1.414 at corners. 
-                // We square it so the center stays sharper for a bit longer before blurring.
                 const mag = Math.min(1.0, mouseMag);
                 dynamicDofStrength = this.params.dofStrength * (mag * mag);
             }
+
+            // Transient-driven chromatic aberration boost
+            const caBoost = Math.max(0, this.audioTransient) * 0.05;
 
             twgl.setUniforms(this.dofProgramInfo, {
                 u_colorTexture: this.fboInfo.attachments[0],
                 u_depthTexture: this.fboInfo.attachments[1],
                 u_resolution: [gl.canvas.width, gl.canvas.height],
                 u_focusDistance: this.params.focusDistance,
-                u_dofStrength: dynamicDofStrength
+                u_dofStrength: dynamicDofStrength,
+                u_caBoost: caBoost,
+                u_audioEnergy: this.audioEnergy
             });
 
             twgl.drawBufferInfo(gl, this.quadBufferInfo);
@@ -259,4 +290,3 @@ export class FerrofluidSystem {
         // Additional WebGL cleanup could go here
     }
 }
-

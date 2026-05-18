@@ -9,6 +9,8 @@ uniform sampler2D u_depthTexture;
 uniform vec2 u_resolution;
 uniform float u_focusDistance;
 uniform float u_dofStrength;
+uniform float u_caBoost;      // transient-driven chromatic aberration
+uniform float u_audioEnergy;  // energy envelope for atmosphere
 
 const float GOLDEN_ANGLE = 2.39996323;
 const int SAMPLES = 48;
@@ -28,9 +30,9 @@ void main() {
     }
 
     // Compute Circle of Confusion with a focal dead zone
-    // This allows the entire 3D object to be sharp when centered
+    // Energy modulates focal range: quiet = wider blur (dreamy), loud = tight (sharp presence)
     float distFromFocus = abs(linearDepth - u_focusDistance);
-    float focalRange = 2.5; // Dead zone to encompass the whole blob
+    float focalRange = 2.5 + (1.0 - u_audioEnergy) * 0.5; // quiet: 3.0 (slightly dreamy), loud: 2.5 (sharp)
     float blurAmount = max(0.0, distFromFocus - focalRange);
     
     float coc = blurAmount * u_dofStrength;
@@ -58,8 +60,8 @@ void main() {
         
         vec2 offset = vec2(cos(theta), sin(theta)) * r * coc * texel;
         
-        // Chromatic aberration at the edges of the blur
-        float ca = r * coc * 0.05 * texel.x; 
+        // Chromatic aberration at the edges of the blur + transient boost
+        float ca = r * coc * (0.05 + u_caBoost) * texel.x; 
         
         // Sample channels individually for CA
         float sr = texture(u_colorTexture, v_texcoord + offset + vec2(ca, 0.0)).r;

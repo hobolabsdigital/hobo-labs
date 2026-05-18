@@ -60,7 +60,7 @@ export function DebugPanel() {
   const setDebugDrawerOpen = useCanvasStore(state => state.setDebugDrawerOpen);
   const nodes = useCanvasStore(state => state.nodes);
   const edges = useCanvasStore(state => state.edges);
-  
+
   const physicsConfig = useCanvasStore(state => state.physicsConfig);
   const setPhysicsConfig = useCanvasStore(state => state.setPhysicsConfig);
   const fluidConfig = useCanvasStore(state => state.fluidConfig);
@@ -84,18 +84,17 @@ export function DebugPanel() {
   const toggleAudioFn = useFerrofluidStore(s => s.toggleAudioFn);
 
   return (
-    <div className={`fixed top-8 right-0 z-50 ${INTRO_REVEAL_CLASSES} ${
-      !isIntroAnimationFinished ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
-    } ${isDebugDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+    <div className={`fixed top-8 right-0 z-50 ${INTRO_REVEAL_CLASSES} ${!isIntroAnimationFinished ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
+      } ${isDebugDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
       <div className="absolute right-[100%] top-0 mr-4 flex gap-2">
-        <button 
+        <button
           onClick={() => toggleAudioFn?.()}
           className="bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-ui hover:bg-opacity-80 transition-all duration-300 whitespace-nowrap"
           title={isPlaying ? "Pause Audio" : "Play Audio"}
         >
           {isPlaying ? '[ 🔊 ]' : '[ 🔇 ]'}
         </button>
-        <button 
+        <button
           onClick={() => setDebugDrawerOpen(!isDebugDrawerOpen)}
           className="bg-[var(--foreground)] text-[var(--background)] px-3 py-1 text-xs font-ui hover:bg-opacity-80 transition-all duration-300 whitespace-nowrap"
         >
@@ -112,11 +111,10 @@ export function DebugPanel() {
               <button
                 key={opt.value}
                 onClick={() => setTheme(opt.value)}
-                className={`px-2 py-1.5 text-[10px] uppercase tracking-wider border transition-colors ${
-                  theme === opt.value
-                    ? 'bg-[var(--foreground)] text-[var(--background)] border-[var(--foreground)]'
-                    : 'bg-transparent text-[var(--foreground)] border-[var(--foreground)]/30 hover:border-[var(--foreground)]'
-                }`}
+                className={`px-2 py-1.5 text-[10px] uppercase tracking-wider border transition-colors ${theme === opt.value
+                  ? 'bg-[var(--foreground)] text-[var(--background)] border-[var(--foreground)]'
+                  : 'bg-transparent text-[var(--foreground)] border-[var(--foreground)]/30 hover:border-[var(--foreground)]'
+                  }`}
               >
                 {opt.label}
               </button>
@@ -158,7 +156,7 @@ export function DebugPanel() {
           {/* Curvature */}
           <Slider label="Curvature" value={crtConfig.barrelStrength} min={0} max={100} step={1}
             onChange={(v) => setCrtConfig({ barrelStrength: v })} format={(v) => v + "%"} />
-          
+
 
 
           {/* Vignette */}
@@ -218,7 +216,7 @@ export function DebugPanel() {
             onChange={(v) => setFluidConfig({ CURL: v })} format={(v) => String(v)} />
           <Slider label="Aberration" value={fluidConfig.ABERRATION_MULT} min={0.0} max={10.0} step={0.001}
             onChange={(v) => setFluidConfig({ ABERRATION_MULT: v })} format={(v) => v.toFixed(3)} />
-          
+
           <div className="flex items-center justify-between pt-1">
             <label htmlFor="color-cycle-mode" className="text-[10px] uppercase tracking-wider">Color Cycle</label>
             <input
@@ -237,7 +235,7 @@ export function DebugPanel() {
                 className="h-6 w-8 p-0 border-0 cursor-pointer" />
             </div>
           )}
-          
+
           {fluidConfig.COLOR_CYCLE && (
             <Slider label="Cycle Speed" value={fluidConfig.COLOR_CYCLE_SPEED} min={0.1} max={5.0} step={0.1}
               onChange={(v) => setFluidConfig({ COLOR_CYCLE_SPEED: v })} format={(v) => v.toFixed(1)} />
@@ -246,15 +244,15 @@ export function DebugPanel() {
 
         {/* Ferrofluid */}
         <Section title="Ferrofluid Physics">
-          <button 
-            onClick={() => toggleAudioFn?.()} 
+          <button
+            onClick={() => toggleAudioFn?.()}
             className="w-full py-1.5 border border-[var(--foreground)]/30 text-[var(--foreground)] text-[9px] font-bold uppercase hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-colors mb-2"
           >
             {isPlaying ? "Pause Audio" : "Play Audio"}
           </button>
-          
-          <Slider label="Noise Speed" value={ferrofluidConfig.noiseSpeed} min={0} max={0.1} step={0.001}
-            onChange={(v) => setFerrofluidConfig({ noiseSpeed: v })} format={(v) => v.toFixed(3)} />
+
+          <Slider label="Noise Speed" value={ferrofluidConfig.noiseSpeed} min={0} max={0.01} step={0.00001}
+            onChange={(v) => setFerrofluidConfig({ noiseSpeed: v })} format={(v) => v.toFixed(5)} />
           <Slider label="Noise Scale" value={ferrofluidConfig.noiseScale} min={0.1} max={5.0} step={0.1}
             onChange={(v) => setFerrofluidConfig({ noiseScale: v })} format={(v) => v.toFixed(1)} />
           <Slider label="Spike Height" value={ferrofluidConfig.spikeHeight} min={0.0} max={1.0} step={0.01}
@@ -269,7 +267,7 @@ export function DebugPanel() {
             onChange={(v) => setFerrofluidConfig({ parallaxAmount: v })} format={(v) => v.toFixed(1)} />
           <Slider label="Orbit Amount" value={ferrofluidConfig.orbitAmount} min={0.0} max={2.0} step={0.1}
             onChange={(v) => setFerrofluidConfig({ orbitAmount: v })} format={(v) => v.toFixed(1)} />
-            
+
           <div className="flex items-center justify-between pt-1">
             <label htmlFor="mouse-tracking-mode" className="text-[10px] uppercase tracking-wider">Mouse Tracking</label>
             <input
@@ -291,10 +289,29 @@ export function DebugPanel() {
             onChange={(v) => setFerrofluidConfig({ dofStrength: v })} format={(v) => v.toFixed(1)} />
           <Slider label="Focus Distance" value={ferrofluidConfig.focusDistance} min={1.0} max={10.0} step={0.1}
             onChange={(v) => setFerrofluidConfig({ focusDistance: v })} format={(v) => v.toFixed(1)} />
-          
+
+          {/* Audio Sensitivity */}
+          <div className="border-t border-[var(--foreground)]/20 pt-2 mt-1">
+            <span className="text-[9px] uppercase tracking-wider opacity-60 block mb-2">Audio Sensitivity</span>
+            <div className="flex flex-col gap-2">
+              <Slider label="Energy Floor" value={ferrofluidConfig.energyFloor} min={0.0} max={1.0} step={0.01}
+                onChange={(v) => setFerrofluidConfig({ energyFloor: v })} format={(v) => v.toFixed(2)} />
+              <Slider label="Bass Punch" value={ferrofluidConfig.bassPunch} min={0.0} max={0.5} step={0.01}
+                onChange={(v) => setFerrofluidConfig({ bassPunch: v })} format={(v) => v.toFixed(2)} />
+              <Slider label="Mids Detail" value={ferrofluidConfig.midsDetail} min={0.0} max={1.0} step={0.01}
+                onChange={(v) => setFerrofluidConfig({ midsDetail: v })} format={(v) => v.toFixed(2)} />
+              <Slider label="Highs Shimmer" value={ferrofluidConfig.highsShimmer} min={0.0} max={0.1} step={0.001}
+                onChange={(v) => setFerrofluidConfig({ highsShimmer: v })} format={(v) => v.toFixed(3)} />
+              <Slider label="Transient Crack" value={ferrofluidConfig.transientCrack} min={0.0} max={0.1} step={0.001}
+                onChange={(v) => setFerrofluidConfig({ transientCrack: v })} format={(v) => v.toFixed(3)} />
+              <Slider label="Fresnel Boost" value={ferrofluidConfig.fresnelBoost} min={0.0} max={3.0} step={0.1}
+                onChange={(v) => setFerrofluidConfig({ fresnelBoost: v })} format={(v) => v.toFixed(1)} />
+            </div>
+          </div>
+
           <div className="flex flex-col gap-1 text-[10px] uppercase pt-1">
             <label>Blend Mode</label>
-            <select 
+            <select
               value={ferrofluidConfig.blendMode}
               onChange={(e) => setFerrofluidConfig({ blendMode: e.target.value })}
               className="bg-[var(--background)] text-[var(--foreground)] border border-[var(--foreground)]/30 p-1 outline-none"

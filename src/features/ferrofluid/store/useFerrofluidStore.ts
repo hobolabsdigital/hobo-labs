@@ -16,10 +16,17 @@ export interface FerrofluidConfig {
   dofStrength: number;
   focusDistance: number;
   blendMode: string;
+  // Audio sensitivity
+  energyFloor: number;    // min spike scale when silent (0–1)
+  bassPunch: number;      // bass additive displacement multiplier
+  midsDetail: number;     // mids noise detail blend
+  highsShimmer: number;   // highs shimmer amplitude
+  transientCrack: number; // transient surface crack intensity
+  fresnelBoost: number;   // mids → fresnel rim glow
 }
 
 export const DEFAULT_FERROFLUID_CONFIG: FerrofluidConfig = {
-  noiseSpeed: 0.001,
+  noiseSpeed: 0.00024,
   noiseScale: 1.3,
   spikeHeight: 0.37,
   audioMultiplier: 1.2,
@@ -33,7 +40,14 @@ export const DEFAULT_FERROFLUID_CONFIG: FerrofluidConfig = {
   canvasOpacity: 0.3,
   dofStrength: 2.0,
   focusDistance: 6.0,
-  blendMode: 'normal'
+  blendMode: 'normal',
+  // Audio sensitivity defaults
+  energyFloor: 0.15,
+  bassPunch: 0.12,
+  midsDetail: 0.3,
+  highsShimmer: 0.02,
+  transientCrack: 0.02,
+  fresnelBoost: 0.8,
 };
 
 interface FerrofluidStore {

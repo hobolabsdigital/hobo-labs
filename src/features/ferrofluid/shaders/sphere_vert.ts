@@ -7,13 +7,27 @@ uniform mat4 u_viewMatrix;
 uniform mat4 u_projectionMatrix;
 uniform float u_time;
 uniform vec2 u_mouse;
-uniform float u_audioLevel;
 uniform float u_noiseSpeed;
 uniform float u_noiseScale;
 uniform float u_spikeHeight;
 uniform float u_audioMultiplier;
 uniform float u_mouseInfluence;
 uniform float u_mousePullStrength;
+
+// Emotional audio bands
+uniform float u_audioBass;      // sub-bass + bass: physical weight
+uniform float u_audioMids;      // vocals, strings, melody: emotional core
+uniform float u_audioHighs;     // cymbals, air: shimmer
+uniform float u_audioEnergy;    // smoothed overall envelope (0-1)
+uniform float u_audioTransient; // attack/decay derivative (-1 to 1)
+
+// Audio sensitivity (tweakable from debug panel)
+uniform float u_energyFloor;    // min spike scale when silent
+uniform float u_bassPunch;      // bass displacement multiplier
+uniform float u_midsDetail;     // mids detail blend
+uniform float u_highsShimmer;   // shimmer amplitude
+uniform float u_transientCrack; // crack intensity
+uniform float u_fresnelBoost;   // (used in frag, declared here for completeness)
 
 in vec3 position;
 in vec3 normal;
@@ -89,34 +103,50 @@ float snoise(vec3 v){
 }
 
 vec3 getDisplacedPosition(vec3 p) {
-    // Determine the mouse influence point on the sphere
-    // Mouse x, y are -1 to 1. 
-    // We map mouse to a directional vector
+    vec3 n = normalize(p);
+
+    // --- Mouse magnetic pull ---
     vec3 mouseDir = normalize(vec3(u_mouse.x, u_mouse.y, 1.0));
-    
-    // Distance from the vertex to the mouse direction
-    float distToMouse = distance(normalize(p), mouseDir);
-    
-    // Base smooth noise
-    float noiseVal = snoise(normalize(p) * u_noiseScale + u_time * u_noiseSpeed);
-    
-    // Add extra displacement near the mouse (magnetic pull)
+    float distToMouse = distance(n, mouseDir);
     float mousePull = (1.0 - smoothstep(0.0, u_mouseInfluence, distToMouse)) * u_mousePullStrength;
-    
-    // Disable mouse pull if we moved it far away (tracking disabled)
-    if (u_mouse.x > 1000.0) {
-        mousePull = 0.0;
-    }
-    
-    // Audio dynamically increases the overall base wave height smoothly
-    float dynamicSpikeHeight = u_spikeHeight + (u_audioLevel * u_audioMultiplier * 0.5);
-    
-    // Smooth pattern combining noise, mouse pull, and audio (no sharp ridges)
-    float displacement = (noiseVal * dynamicSpikeHeight) 
-                       + (mousePull * 0.5); // the smooth magnetic bulge
-    
-    // Base radius is determined by the sphere geometry (default radius is usually 1.0 but we scale it)
-    return p + normalize(p) * displacement;
+    if (u_mouse.x > 1000.0) mousePull = 0.0;
+
+    // --- Emotional displacement ---
+
+    // Base noise pattern — noiseSpeed drives evolution, no audio speed multiplier
+    float noiseVal = snoise(n * u_noiseScale + u_time * u_noiseSpeed);
+
+    // 1. Energy IS the spike height driver
+    //    Quiet = energyFloor of configured height, swell = 100%
+    float energyScale = u_energyFloor + (1.0 - u_energyFloor) * u_audioEnergy;
+    float dynamicHeight = u_spikeHeight * energyScale;
+
+    // 2. Bass adds punch on top of the energy-driven height
+    dynamicHeight += u_audioBass * u_audioMultiplier * u_bassPunch;
+
+    // 3. Mids reveal finer noise detail — emotional passages grow complexity
+    float midsDetail = snoise(n * u_noiseScale * 2.5 + u_time * u_noiseSpeed)
+                     * u_audioMids * dynamicHeight * u_midsDetail;
+
+    // 4. Highs add fine-grained shimmer
+    float shimmer = snoise(n * u_noiseScale * 5.0 + u_time * u_noiseSpeed * 1.5)
+                  * u_audioHighs * u_highsShimmer;
+
+    // 5. Energy drives breathing (±2% radius)
+    float breathe = 1.0 + (u_audioEnergy - 0.5) * 0.04;
+
+    // 6. Transients crack the surface momentarily
+    float crack = max(0.0, u_audioTransient) * u_transientCrack
+                * snoise(n * 8.0 + u_time * 0.01);
+
+    // --- Combine ---
+    float displacement = (noiseVal * dynamicHeight)
+                       + midsDetail
+                       + (mousePull * 0.5)
+                       + shimmer
+                       + crack;
+
+    return p * breathe + n * displacement;
 }
 
 void main() {

@@ -3,8 +3,6 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from "framer-motion";
-import { experimental_useObject as useObject } from '@ai-sdk/react';
-import { z } from 'zod';
 import { NodeHandles } from './NodeHandles';
 import { useProjectModalStore } from '@/features/project-modal/store/useProjectModalStore';
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
@@ -54,32 +52,32 @@ function ProjectSkeleton() {
 export const ProjectNode = React.memo(function ProjectNode({ data, id: reactFlowId }: { data: Record<string, string | boolean | null | undefined>; id: string }) {
   const updateNodeData = useCanvasStore(state => state.updateNodeData);
 
-  const { object, submit } = useObject({
-    api: '/api/project-context',
-    schema: z.object({ problem: z.string(), solution: z.string(), quote: z.string() }),
-    onFinish: (result: { object: unknown }) => {
-      updateNodeData(reactFlowId, { ...(result.object as object), isContextStreaming: false });
-    },
-    onError: (err) => {
-      if (process.env.NODE_ENV !== 'production') console.error('[ProjectNode] useObject error:', err);
-    }
-  });
-
   const hasSubmitted = React.useRef(false);
   const heroImgRef = React.useRef<HTMLImageElement>(null);
 
+  // Fetch project context via plain JSON endpoint (no streaming protocol)
   React.useEffect(() => {
     if (data.isContextStreaming && !data.problem && !hasSubmitted.current) {
       hasSubmitted.current = true;
-      submit({ slug: data.slug, messages: [] });
-    }
-  }, [data.isContextStreaming, data.slug, data.problem, submit]);
 
-  React.useEffect(() => {
-    if (object) {
-      updateNodeData(reactFlowId, (object || {}) as Record<string, unknown>);
+      fetch('/api/project-context', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug: data.slug, messages: [] }),
+      })
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then((result: Record<string, unknown>) => {
+          updateNodeData(reactFlowId, { ...result, isContextStreaming: false });
+        })
+        .catch(err => {
+          if (process.env.NODE_ENV !== 'production') console.error('[ProjectNode] fetch error:', err);
+          updateNodeData(reactFlowId, { isContextStreaming: false });
+        });
     }
-  }, [object, reactFlowId, updateNodeData]);
+  }, [data.isContextStreaming, data.slug, data.problem, reactFlowId, updateNodeData]);
 
 
 

@@ -104,7 +104,7 @@ export const FerrofluidCanvas = () => {
 
     // Setup Audio
     useEffect(() => {
-        const playlist = ['/FerrofluidSystem.mp3', '/FerrofluidSystem2.mp3'];
+        const playlist = ['/FerrofluidSystem2.mp3', '/FerrofluidSystem.mp3'];
         let currentTrack = 0;
 
         const audio = new Audio(playlist[currentTrack]);
@@ -117,8 +117,8 @@ export const FerrofluidCanvas = () => {
         audioContextRef.current = ctx;
 
         const analyser = ctx.createAnalyser();
-        analyser.fftSize = 256;
-        analyser.smoothingTimeConstant = 0.8;
+        analyser.fftSize = 512; // 256 bins, ~86Hz resolution for better band separation
+        analyser.smoothingTimeConstant = 0.75;
         analyserRef.current = analyser;
 
         const source = ctx.createMediaElementSource(audio);
@@ -175,7 +175,7 @@ export const FerrofluidCanvas = () => {
         if (!isMobile) {
             // Attempt autoplay immediately
             tryPlay();
-            
+
             window.addEventListener('pointerdown', onFirstInteraction);
             window.addEventListener('keydown', onFirstInteraction);
             window.addEventListener('touchstart', onFirstInteraction);
@@ -197,30 +197,83 @@ export const FerrofluidCanvas = () => {
         };
     }, [setToggleAudioFn, setIsPlaying]);
 
-    // Audio animation loop
+    // Multi-band audio analysis loop
     useEffect(() => {
         let raf: number;
+
+        // Adaptive gain: running peak trackers per band (~3s decay at 60fps)
+        const PEAK_DECAY = 0.997;
+        let peakBass = 0.01;
+        let peakMids = 0.01;
+        let peakHighs = 0.01;
+        let peakEnergy = 0.01;
+
+        // Envelope state
+        let smoothEnergy = 0;
+        let prevEnergy = 0;
+        let smoothTransient = 0;
+
         const loop = () => {
-            if (analyserRef.current && dataArrayRef.current && systemRef.current && !audioRef.current?.paused) {
-                analyserRef.current.getByteFrequencyData(dataArrayRef.current as any);
+            if (analyserRef.current && dataArrayRef.current && systemRef.current) {
+                const isPlaying = !audioRef.current?.paused;
 
-                // Focus on lower frequencies for a bass-heavy beat reaction
-                let sum = 0;
-                const bassBins = Math.floor(dataArrayRef.current.length * 0.3); // first 30% of bins
+                if (isPlaying) {
+                    analyserRef.current.getByteFrequencyData(dataArrayRef.current as any);
+                    const bins = dataArrayRef.current;
+                    const numBins = bins.length; // 256 with fftSize=512
 
-                for (let i = 0; i < bassBins; i++) {
-                    sum += dataArrayRef.current[i];
+                    // Band boundaries (fftSize=512, sampleRate=44100, ~86Hz/bin)
+                    // Bass (sub-bass+bass): 0-550 Hz → bins 0-6
+                    const bassEnd = 7;
+                    // Mids: 550-3400 Hz → bins 7-39
+                    const midsEnd = 40;
+                    // Highs: 3400+ Hz → bins 40-255
+
+                    let bassSum = 0, midsSum = 0, highsSum = 0;
+                    for (let i = 0; i < bassEnd; i++) bassSum += bins[i];
+                    for (let i = bassEnd; i < midsEnd; i++) midsSum += bins[i];
+                    for (let i = midsEnd; i < numBins; i++) highsSum += bins[i];
+
+                    const rawBass = bassSum / bassEnd / 255;
+                    const rawMids = midsSum / (midsEnd - bassEnd) / 255;
+                    const rawHighs = highsSum / (numBins - midsEnd) / 255;
+
+                    // Adaptive gain: normalize against running peak
+                    peakBass = Math.max(peakBass * PEAK_DECAY, rawBass);
+                    peakMids = Math.max(peakMids * PEAK_DECAY, rawMids);
+                    peakHighs = Math.max(peakHighs * PEAK_DECAY, rawHighs);
+
+                    const normBass = peakBass > 0.001 ? rawBass / peakBass : 0;
+                    const normMids = peakMids > 0.001 ? rawMids / peakMids : 0;
+                    const normHighs = peakHighs > 0.001 ? rawHighs / peakHighs : 0;
+
+                    // Energy envelope with asymmetric attack/decay
+                    const rawEnergy = (rawBass * 0.4 + rawMids * 0.4 + rawHighs * 0.2);
+                    const attackRate = 0.3;   // fast attack (~50ms)
+                    const releaseRate = 0.008; // slow release (~800ms)
+                    const rate = rawEnergy > smoothEnergy ? attackRate : releaseRate;
+                    smoothEnergy += (rawEnergy - smoothEnergy) * rate;
+
+                    peakEnergy = Math.max(peakEnergy * PEAK_DECAY, smoothEnergy);
+                    const normEnergy = peakEnergy > 0.001 ? smoothEnergy / peakEnergy : 0;
+
+                    // Transient detection (energy derivative)
+                    const rawTransient = smoothEnergy - prevEnergy;
+                    prevEnergy = smoothEnergy;
+                    const transientAttack = rawTransient > smoothTransient ? 0.5 : 0.05;
+                    smoothTransient += (rawTransient - smoothTransient) * transientAttack;
+                    const normTransient = Math.max(-1, Math.min(1, smoothTransient * 50));
+
+                    // Non-linear curves for punchiness
+                    const bass = Math.pow(normBass, 1.5);
+                    const mids = Math.pow(normMids, 1.2);
+                    const highs = normHighs; // already sparse, don't compress
+
+                    systemRef.current.setAudioBands(bass, mids, highs, normEnergy, normTransient);
+                } else {
+                    // Decay all bands smoothly when paused
+                    systemRef.current.setAudioBands(0, 0, 0, 0, 0);
                 }
-                const average = sum / bassBins;
-
-                // Map 0-255 to 0-1 and apply a non-linear curve to make it punchy
-                let audioLevel = average / 255.0;
-                audioLevel = Math.pow(audioLevel, 2.0); // Curve the input so peaks are more dramatic
-
-                systemRef.current.setAudioLevel(audioLevel);
-            } else if (systemRef.current && audioRef.current?.paused) {
-                // Decay back to 0 if paused
-                systemRef.current.setAudioLevel(0);
             }
 
             raf = requestAnimationFrame(loop);
