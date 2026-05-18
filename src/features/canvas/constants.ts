@@ -38,16 +38,25 @@ export const INTRO_CAMERA_Y = -2000;
 // ---------------------------------------------------------------------------
 
 /** Horizontal stride per creationIndex in the forceX layout */
-export const FORCE_X_STRIDE = 350;
+export const FORCE_X_STRIDE = 550;
 
-/** Collide radii by node type */
-export const COLLIDE_RADII: Record<string, number> = {
-  hero: 300,
-  project: 350,
-  text: 160,
-  ghost: 100,
-  dossier: 100,
+/**
+ * Approximate rendered dimensions per node type (px).
+ * Used by the AABB collision force and center-correction logic.
+ * These don't need to be pixel-perfect — they define the collision footprint.
+ */
+export const NODE_DIMS: Record<string, { w: number; h: number }> = {
+  hero:    { w: 750, h: 440 },
+  project: { w: 800, h: 620 },
+  text:    { w: 900, h: 200 },
+  ghost:   { w: 400, h: 160 },
+  prompt:  { w: 220, h: 90 },
+  dossier: { w: 300, h: 200 },
+  intro:   { w: 200, h: 200 },
 };
 
-/** Default collide radius for unrecognized node types */
-export const COLLIDE_RADIUS_DEFAULT = 120;
+/** Fallback for unknown node types */
+export const NODE_DIMS_DEFAULT = { w: 300, h: 200 };
+
+/** Minimum gap (px) between AABB edges after collision resolution */
+export const AABB_GAP = 30;

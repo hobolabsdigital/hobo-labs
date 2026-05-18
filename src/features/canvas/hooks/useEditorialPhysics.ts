@@ -4,9 +4,16 @@ import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 import {
   DEFAULT_Y,
   FORCE_X_STRIDE,
-  COLLIDE_RADII,
-  COLLIDE_RADIUS_DEFAULT,
+  NODE_DIMS,
+  NODE_DIMS_DEFAULT,
 } from '@/features/canvas/constants';
+import { forceAABB } from './forceAABB';
+
+/** Get half-dimensions for a node type (used for center-correction). */
+function halfDims(type: string) {
+  const d = NODE_DIMS[type] ?? NODE_DIMS_DEFAULT;
+  return { hw: d.w / 2, hh: d.h / 2 };
+}
 
 export function useEditorialPhysics() {
   const nodesLength = useCanvasStore(state => state.nodes.length);
@@ -27,10 +34,19 @@ export function useEditorialPhysics() {
       // Initial physics configuration
       .velocityDecay(physicsConfig.velocityDecay)
       .force('charge', d3.forceManyBody().strength(physicsConfig.chargeStrength))
-      .force('collide', d3.forceCollide().radius((d: any) => {
-        return COLLIDE_RADII[d.type] ?? COLLIDE_RADIUS_DEFAULT;
-      }).iterations(3))
-      .force('link', d3.forceLink().id((d: any) => d.id).distance(physicsConfig.linkDistance).strength(physicsConfig.linkStrength).iterations(physicsConfig.linkIterations))
+      // AABB rectangular collision replaces forceCollide
+      .force('aabb', forceAABB(4))
+      .force('link', d3.forceLink()
+        .id((d: any) => d.id)
+        // Dynamic distance: sum of half-widths + padding
+        .distance((link: any) => {
+          const srcDims = NODE_DIMS[link.source?.type] ?? NODE_DIMS_DEFAULT;
+          const tgtDims = NODE_DIMS[link.target?.type] ?? NODE_DIMS_DEFAULT;
+          return srcDims.w / 2 + tgtDims.w / 2 + 60;
+        })
+        .strength(physicsConfig.linkStrength)
+        .iterations(physicsConfig.linkIterations)
+      )
       .force('x-flow', d3.forceX().x((d: any) => {
         // Hero and intro nodes are pinned — don't apply x force
         if (d.type === 'hero' || d.type === 'intro') return d.x;
@@ -39,6 +55,7 @@ export function useEditorialPhysics() {
         return index * FORCE_X_STRIDE;
       }).strength(0.04))
       // Gentle vertical centering — keeps nodes from drifting too far up/down
+      // Uses center-corrected Y: DEFAULT_Y is where center should land
       .force('y-center', d3.forceY().y(DEFAULT_Y).strength(0.01));
 
     simulationRef.current = simulation;
@@ -53,6 +70,11 @@ export function useEditorialPhysics() {
         currentNodes.map(node => {
           const simNode = internalNodes.find(n => n.id === node.id);
           if (simNode) {
+            // Convert center-corrected sim coords back to top-left for ReactFlow
+            const { hw, hh } = halfDims(node.type ?? 'text');
+            const rfX = simNode.x - hw;
+            const rfY = simNode.y - hh;
+
             // Frame-by-frame camera tracking for the active node
             if (node.id === currentTrackedId && currentRfInstance) {
               // Only reposition camera if node moved significantly (prevents jitter)
@@ -66,8 +88,8 @@ export function useEditorialPhysics() {
             }
 
             // Only update if movement is significant to avoid micro-stutters
-            if (Math.abs(node.position.x - simNode.x) > 1 || Math.abs(node.position.y - simNode.y) > 1) {
-              return { ...node, position: { x: simNode.x, y: simNode.y } };
+            if (Math.abs(node.position.x - rfX) > 1 || Math.abs(node.position.y - rfY) > 1) {
+              return { ...node, position: { x: rfX, y: rfY } };
             }
           }
           return node;
@@ -96,16 +118,19 @@ export function useEditorialPhysics() {
       if (existing) {
         return existing; // Keep existing velocity/momentum!
       } else {
-        // It's a new node! Add it to the physics engine
+        // It's a new node! Convert top-left position to center for D3
+        const { hw, hh } = halfDims(n.type ?? 'text');
         const isInitial = n.type === 'hero' && n.id === 'hero-1';
         const isIntro = n.type === 'intro';
+        const cx = n.position.x + hw;
+        const cy = n.position.y + hh;
         return {
           ...n,
-          x: n.position.x,
-          y: n.position.y,
+          x: cx,
+          y: cy,
           // Lock the initial hero node so it never moves
-          fx: isInitial || isIntro ? n.position.x : undefined,
-          fy: isInitial || isIntro ? n.position.y : undefined
+          fx: isInitial || isIntro ? cx : undefined,
+          fy: isInitial || isIntro ? cy : undefined
         };
       }
     });
@@ -151,7 +176,7 @@ export function useEditorialPhysics() {
 
     const linkForce = simulation.force('link') as d3.ForceLink<any, any>;
     if (linkForce) {
-      linkForce.distance(physicsConfig.linkDistance).strength(physicsConfig.linkStrength).iterations(physicsConfig.linkIterations);
+      linkForce.strength(physicsConfig.linkStrength).iterations(physicsConfig.linkIterations);
     }
     
     // Nudge the simulation so live slider tweaks take immediate effect
