@@ -5,24 +5,32 @@ import { NODE_DIMS, NODE_DIMS_DEFAULT, AABB_GAP } from '@/features/canvas/consta
  *
  * Unlike `d3.forceCollide()` which models every node as a circle, this force
  * uses rectangular bounding boxes per node type and resolves collisions along
- * the axis of minimum overlap. This produces tight, natural separation for
- * wide/tall nodes without the massive vertical gaps a circular model creates.
+ * the axis of minimum overlap.
  *
- * Each simulation node must carry a `type` field to look up its dimensions.
- * Coordinates are expected to be center-corrected (i.e. `x,y` = visual center).
+ * Following D3's forceCollide convention:
+ * - Uses predicted positions (x + vx, y + vy) for collision detection
+ * - Modifies vx/vy (not x/y directly) so changes survive D3's velocity integration
+ * - Does NOT scale with alpha (constant-strength collision)
+ *
+ * D3 node `x,y` are in ReactFlow's top-left coordinate space.
+ * Visual centers are computed internally as (x + w/2, y + h/2).
  */
 export function forceAABB(iterations = 3) {
   let nodes: any[] = [];
+  let _strength = 0.7;
 
-  function force(alpha: number) {
+  function force(_alpha: number) {
     for (let iter = 0; iter < iterations; iter++) {
       for (let i = 0; i < nodes.length; i++) {
         const a = nodes[i];
-        if (a.fx !== undefined && a.fy !== undefined) continue; // pinned
 
         const dimsA = NODE_DIMS[a.type] ?? NODE_DIMS_DEFAULT;
         const halfWA = dimsA.w / 2 + AABB_GAP / 2;
         const halfHA = dimsA.h / 2 + AABB_GAP / 2;
+
+        // Predicted center position (same as d3.forceCollide using x+vx)
+        const cxA = (a.x + (a.vx || 0)) + dimsA.w / 2;
+        const cyA = (a.y + (a.vy || 0)) + dimsA.h / 2;
 
         for (let j = i + 1; j < nodes.length; j++) {
           const b = nodes[j];
@@ -31,44 +39,44 @@ export function forceAABB(iterations = 3) {
           const halfWB = dimsB.w / 2 + AABB_GAP / 2;
           const halfHB = dimsB.h / 2 + AABB_GAP / 2;
 
-          const dx = b.x - a.x;
-          const dy = b.y - a.y;
+          const cxB = (b.x + (b.vx || 0)) + dimsB.w / 2;
+          const cyB = (b.y + (b.vy || 0)) + dimsB.h / 2;
+
+          // Distance between predicted visual centers
+          const dx = cxB - cxA;
+          const dy = cyB - cyA;
           const overlapX = (halfWA + halfWB) - Math.abs(dx);
           const overlapY = (halfHA + halfHB) - Math.abs(dy);
 
           if (overlapX > 0 && overlapY > 0) {
-            // Resolve along the axis with minimum overlap (feels more natural)
-            const strength = alpha * 0.8;
-
+            // Resolve along minimum overlap axis
             if (overlapX < overlapY) {
-              // Push horizontally
-              const push = overlapX * strength * 0.5;
+              const push = overlapX * _strength * 0.5;
               const signX = dx > 0 ? 1 : -1;
-              const aPinned = a.fx !== undefined;
-              const bPinned = b.fx !== undefined;
+              const aPinX = a.fx != null;
+              const bPinX = b.fx != null;
 
-              if (!aPinned && !bPinned) {
-                a.x -= signX * push;
-                b.x += signX * push;
-              } else if (!aPinned) {
-                a.x -= signX * push * 2;
-              } else if (!bPinned) {
-                b.x += signX * push * 2;
+              if (!aPinX && !bPinX) {
+                a.vx -= signX * push;
+                b.vx += signX * push;
+              } else if (!aPinX) {
+                a.vx -= signX * push * 2;
+              } else if (!bPinX) {
+                b.vx += signX * push * 2;
               }
             } else {
-              // Push vertically
-              const push = overlapY * strength * 0.5;
+              const push = overlapY * _strength * 0.5;
               const signY = dy > 0 ? 1 : -1;
-              const aPinned = a.fy !== undefined;
-              const bPinned = b.fy !== undefined;
+              const aPinY = a.fy != null;
+              const bPinY = b.fy != null;
 
-              if (!aPinned && !bPinned) {
-                a.y -= signY * push;
-                b.y += signY * push;
-              } else if (!aPinned) {
-                a.y -= signY * push * 2;
-              } else if (!bPinned) {
-                b.y += signY * push * 2;
+              if (!aPinY && !bPinY) {
+                a.vy -= signY * push;
+                b.vy += signY * push;
+              } else if (!aPinY) {
+                a.vy -= signY * push * 2;
+              } else if (!bPinY) {
+                b.vy += signY * push * 2;
               }
             }
           }
@@ -77,8 +85,12 @@ export function forceAABB(iterations = 3) {
     }
   }
 
-  force.initialize = (newNodes: any[]) => {
+  force.initialize = function(newNodes: any[]) {
     nodes = newNodes;
+  };
+
+  force.strength = function(s?: number) {
+    return s !== undefined ? (_strength = s, force) : _strength;
   };
 
   return force;
