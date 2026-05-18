@@ -7,6 +7,9 @@ import {
   DEFAULT_Y,
   JITTER_RANGE,
   JITTER_RANGE_SMALL,
+  NODE_DIMS,
+  NODE_DIMS_DEFAULT,
+  AABB_GAP,
 } from '@/features/canvas/constants';
 
 /**
@@ -23,6 +26,8 @@ export const calculateNodePosition = (
   offset: number = H_SPACING,
   jitter: number = JITTER_RANGE,
   defaultX: number = DEFAULT_X,
+  /** Type of the node being created — used to compute width-aware minimum offset */
+  nodeType?: string,
 ) => {
   if (data?.layoutIntent) {
     switch (data.layoutIntent) {
@@ -36,8 +41,15 @@ export const calculateNodePosition = (
   }
 
   if (sourceNode) {
+    // Ensure the spawn offset is at least wide enough to avoid instant overlap.
+    // minOffset = half-width of source + half-width of new node + gap
+    const srcDims = NODE_DIMS[sourceNode.type ?? ''] ?? NODE_DIMS_DEFAULT;
+    const newDims = NODE_DIMS[nodeType ?? ''] ?? NODE_DIMS_DEFAULT;
+    const minOffset = srcDims.w / 2 + newDims.w / 2 + AABB_GAP;
+    const safeOffset = Math.max(offset, minOffset);
+
     return {
-      x: sourceNode.position.x + offset,
+      x: sourceNode.position.x + safeOffset,
       y: sourceNode.position.y + (Math.random() * jitter - jitter / 2),
     };
   }
@@ -50,17 +62,17 @@ export const calculateNodePosition = (
 // ---------------------------------------------------------------------------
 
 export const createPromptNode = (id: string, text: string, sourceNode?: Node): Node => {
-  const position = calculateNodePosition(undefined, sourceNode, H_SPACING, JITTER_RANGE, 400);
+  const position = calculateNodePosition(undefined, sourceNode, H_SPACING, JITTER_RANGE, 400, 'prompt');
   return { id, type: 'prompt', position, data: { text } };
 };
 
 export const createGhostNode = (id: string, sourceNode?: Node): Node => {
-  const position = calculateNodePosition(undefined, sourceNode);
+  const position = calculateNodePosition(undefined, sourceNode, H_SPACING, JITTER_RANGE, DEFAULT_X, 'ghost');
   return { id, type: 'ghost', position, data: { text: "Organizing thoughts...", isFinished: false } };
 };
 
 export const createHeroNode = (id: string, data: HeroNodeData, sourceNode?: Node): Node => {
-  const position = calculateNodePosition(data, sourceNode, H_SPACING);
+  const position = calculateNodePosition(data, sourceNode, H_SPACING, JITTER_RANGE, DEFAULT_X, 'hero');
   return {
     id,
     type: 'hero',
@@ -76,12 +88,12 @@ export const createHeroNode = (id: string, data: HeroNodeData, sourceNode?: Node
 };
 
 export const createTextNode = (id: string, text: string, sourceNode?: Node): Node => {
-  const position = calculateNodePosition(undefined, sourceNode);
+  const position = calculateNodePosition(undefined, sourceNode, H_SPACING, JITTER_RANGE, DEFAULT_X, 'text');
   return { id, type: 'text', position, data: { text, label: 'INSIGHT', animationEffect: 'annotation' } };
 };
 
 export const createProjectNode = (id: string, data: Record<string, unknown>, sourceNode?: Node): Node => {
-  const position = calculateNodePosition(data, sourceNode, PROJECT_OFFSET);
+  const position = calculateNodePosition(data, sourceNode, PROJECT_OFFSET, JITTER_RANGE, DEFAULT_X, 'project');
   return {
     id,
     type: 'project',
@@ -105,12 +117,12 @@ export const createProjectNode = (id: string, data: Record<string, unknown>, sou
 };
 
 export const createDossierNode = (id: string, slug: string, sourceNode?: Node): Node => {
-  const position = calculateNodePosition(undefined, sourceNode, H_SPACING, JITTER_RANGE_SMALL);
+  const position = calculateNodePosition(undefined, sourceNode, H_SPACING, JITTER_RANGE_SMALL, DEFAULT_X, 'dossier');
   return { id, type: 'dossier', position, data: { slug, status: 'accessing' } };
 };
 
 export const createSkeletonProjectNode = (id: string, slug: string, sourceNode?: Node): Node => {
-  const position = calculateNodePosition(undefined, sourceNode, PROJECT_OFFSET, JITTER_RANGE_SMALL, 800);
+  const position = calculateNodePosition(undefined, sourceNode, PROJECT_OFFSET, JITTER_RANGE_SMALL, 800, 'project');
   return { id, type: 'project', position, data: { isLoading: true, slug } };
 };
 
