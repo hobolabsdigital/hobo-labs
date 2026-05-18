@@ -337,9 +337,10 @@ function OverlayContent() {
           <motion.button
             key="close-btn"
             className={[
-              'fixed top-5 right-6 z-[10002] font-ui uppercase tracking-widest transition-colors',
-              'text-foreground/40 hover:text-foreground text-[10px]',
-              'brutalist:bg-foreground brutalist:text-background brutalist:px-3 brutalist:py-1 brutalist:text-xs brutalist:hover:opacity-80',
+              'fixed top-5 right-6 z-[10002] font-ui uppercase tracking-widest text-[10px] transition-all',
+              'px-3 py-1 border border-foreground/30 text-foreground/70 hover:text-foreground hover:border-foreground',
+              'bg-background/70 backdrop-blur-sm',
+              'brutalist:bg-foreground brutalist:text-background brutalist:border-foreground brutalist:hover:opacity-80 brutalist:backdrop-blur-none',
             ].join(' ')}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { delay: 0.4 } }}
