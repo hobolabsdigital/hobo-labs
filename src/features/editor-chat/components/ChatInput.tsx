@@ -37,7 +37,7 @@ export function ChatInput() {
 
       {activeSuggestions.length > 0 && (
         <div 
-          className="relative w-full [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_15%,black_85%,transparent_100%)] [mask-image:linear-gradient(to_right,transparent_0%,black_15%,black_85%,transparent_100%)] md:[-webkit-mask-image:none] md:[mask-image:none]"
+          className="relative w-full max-md:[-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_15%,black_85%,transparent_100%)] max-md:[mask-image:linear-gradient(to_right,transparent_0%,black_15%,black_85%,transparent_100%)]"
         >
           <div className="flex gap-2 justify-start md:justify-center w-full overflow-x-auto scrollbar-none animate-in fade-in slide-in-from-bottom-4 duration-500 px-8 md:px-2 pb-2 snap-x">
             {activeSuggestions.map((suggestion, idx) => (
