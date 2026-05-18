@@ -60,3 +60,6 @@ export const NODE_DIMS_DEFAULT = { w: 300, h: 200 };
 
 /** Minimum gap (px) between AABB edges after collision resolution */
 export const AABB_GAP = 30;
+
+/** Maximum length (px) a link spring will allow between two connected nodes */
+export const LINK_MAX_DISTANCE = 800;

@@ -6,6 +6,7 @@ import {
   FORCE_X_STRIDE,
   NODE_DIMS,
   NODE_DIMS_DEFAULT,
+  LINK_MAX_DISTANCE,
 } from '@/features/canvas/constants';
 import { forceAABB } from './forceAABB';
 
@@ -32,13 +33,18 @@ export function useEditorialPhysics() {
       .force('aabb', forceAABB(4))
       .force('link', d3.forceLink()
         .id((d: any) => d.id)
-        // Dynamic distance: sum of half-widths + padding
+        // Ideal distance = edge-to-edge gap; hard cap at LINK_MAX_DISTANCE
+        // so nodes can't drift off-screen when x-flow pushes them apart.
         .distance((link: any) => {
           const srcDims = NODE_DIMS[link.source?.type] ?? NODE_DIMS_DEFAULT;
           const tgtDims = NODE_DIMS[link.target?.type] ?? NODE_DIMS_DEFAULT;
-          return srcDims.w / 2 + tgtDims.w / 2 + 60;
+          const ideal = srcDims.w / 2 + tgtDims.w / 2 + 60;
+          return Math.min(ideal, LINK_MAX_DISTANCE);
         })
-        .strength(physicsConfig.linkStrength)
+        // Higher strength (0.3) so the spring actually resists x-flow pulling
+        // nodes beyond the max distance. physicsConfig.linkStrength (0.05) was
+        // too weak to keep wide nodes on-screen.
+        .strength(0.3)
         .iterations(physicsConfig.linkIterations)
       )
       .force('x-flow', d3.forceX().x((d: any) => {
