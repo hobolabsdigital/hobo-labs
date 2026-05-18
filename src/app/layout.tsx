@@ -52,7 +52,7 @@ export default function RootLayout({
     <html lang="en" className={`${spaceMono.variable} ${inter.variable} ${sairaCondensed.variable} ${anton.variable} ${fraunces.variable} ${darkerGrotesque.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
       </head>
-      <body className="h-[100dvh] overflow-hidden flex flex-col font-body bg-background text-foreground">
+      <body className="h-[100dvh] overflow-hidden flex flex-col font-body bg-transparent text-foreground">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange themes={['light', 'dark', 'blueprint', 'cyberpunk', 'brutalist', 'retro']}>
           <div className="fixed top-6 md:top-8 left-4 md:left-8 z-[100] pointer-events-none theme-logo-container">
             <Logo className="w-24 md:w-40 h-auto theme-logo" />

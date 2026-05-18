@@ -11,9 +11,10 @@ import { useTheme } from '@/core/theme/theme-provider';
 import { ChatInput } from '@/features/editor-chat/components/ChatInput';
 import { DebugPanel } from '@/features/canvas/components/DebugPanel';
 import { TimelineScrubber } from '@/features/timeline/components/TimelineScrubber';
-import { FluidBackground } from '@/features/fluid-bg/components/FluidBackground';
+
 import { InteractiveGrid } from '@/core/ui/InteractiveGrid';
 import { MobileHeader } from '@/core/ui/MobileHeader';
+import { FerrofluidCanvas } from '@/features/ferrofluid/components/FerrofluidCanvas';
 
 import { CrtEffect } from '@/features/crt/components/CrtEffect';
 import { ProjectModalOverlay } from '@/features/project-modal/components/ProjectModalOverlay';
@@ -116,7 +117,7 @@ export default function Home() {
           {isMounted && <div className="md:hidden"><MobileHeader /></div>}
           {isMounted && <div className="hidden md:block"><DebugPanel /></div>}
           {isMounted && <div className="hidden md:block"><TimelineScrubber /></div>}
-          {isMounted && <div className="hidden md:block"><FluidBackground /></div>}
+          {isMounted && <div className="hidden md:block"><FerrofluidCanvas /></div>}
 
         </ReactFlowProvider>
       )}
