@@ -44,7 +44,7 @@ const GhostText = React.memo(function GhostText({ id, fallbackText, isFinished, 
         WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 20%, black 100%)',
         maskImage: 'linear-gradient(to bottom, transparent 0%, black 20%, black 100%)',
       }}
-      className="text-lg font-ui text-foreground/70 leading-snug whitespace-pre-wrap break-words"
+      className="text-lg font-ui text-foreground/90 leading-snug whitespace-pre-wrap break-words"
     >
       {textToDisplay || "..."}
     </div>
@@ -60,7 +60,7 @@ export const GhostNode = React.memo(function GhostNode({ id, data }: { id: strin
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className={`max-w-md p-6 relative ${isFinished ? 'bg-[var(--background)] opacity-60' : 'bg-foreground/10 animate-pulse opacity-100'}`}
+      className={`max-w-md p-6 relative ${isFinished ? 'bg-[var(--background)] opacity-60' : 'bg-foreground/20 animate-pulse opacity-100'}`}
     >
       <NodeHandles />
       

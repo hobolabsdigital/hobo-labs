@@ -11,7 +11,7 @@ export const createHeroNode = tool({
     headline: z.string().optional()
       .describe('Headline for hero nodes. CRITICAL: You MUST use \\\\n to break this text into 2-3 stacked lines (ALL CAPS).'),
     subline: z.string().optional()
-      .describe('Subline for hero nodes. CRITICAL: You should write a full, punchy paragraph (3-4 sentences) elaborating on the headline.'),
+      .describe('Subline for hero nodes. CRITICAL: You should write a full, punchy paragraph (3-5 sentences) elaborating on the headline. Do not artificially truncate this.'),
     text: z.string().optional()
       .describe('Content for text nodes'),
     label: z.string().optional()
