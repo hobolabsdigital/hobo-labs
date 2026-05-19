@@ -1,8 +1,8 @@
 import { StateCreator } from 'zustand';
 import type { CanvasState } from '../useCanvasStore';
-import { createPromptNode, createGhostNode, createHeroNode, createTextNode, createProjectNode, createEdge } from '../nodeFactories';
+import { createPromptNode, createGhostNode, createHeroNode, createTextNode, createProjectNode, createContactNode, createEdge } from '../nodeFactories';
 import { Node } from '@xyflow/react';
-import type { HeroNodeData } from '@/lib/ai/types';
+import type { HeroNodeData, ContactNodeData } from '@/lib/ai/types';
 
 export interface NodeActionSlice {
   activeGhostId: string | null;
@@ -18,6 +18,7 @@ export interface NodeActionSlice {
   finishGhost: (text: string) => void;
   addHero: (data: Record<string, unknown>, id: string) => void;
   addProject: (data: Record<string, unknown>, id: string) => void;
+  addContact: (data: Record<string, unknown>, id: string) => void;
   addText: (text: string, isFinished?: boolean) => void;
   truncateHistory: (cursorIndex: number) => void;
   updateNodeData: (id: string, partialData: Record<string, unknown>) => void;
@@ -137,6 +138,28 @@ export const createNodeActionSlice: StateCreator<CanvasState, [], [], NodeAction
       const sourceNode = state.nodes.find(n => n.id === state.activeGhostId)
         || state.nodes.find(n => n.id === state.lastPlacedNodeId);
       const newNode = createProjectNode(id, data, sourceNode, state.nodes);
+      const ci = state.nodeCreationCounter;
+      newNode.data = { ...newNode.data, creationIndex: ci };
+
+      const newEdges = sourceNode
+        ? [...state.edges, createEdge(sourceNode.id, id)]
+        : state.edges;
+
+      return {
+        nodes: [...state.nodes, newNode],
+        edges: newEdges,
+        lastPlacedNodeId: id,
+        trackedNodeId: id,
+        nodeCreationCounter: ci + 1,
+      };
+    });
+  },
+
+  addContact: (data: Record<string, unknown>, id: string) => {
+    set(state => {
+      const sourceNode = state.nodes.find(n => n.id === state.activeGhostId)
+        || state.nodes.find(n => n.id === state.lastPlacedNodeId);
+      const newNode = createContactNode(id, data as unknown as ContactNodeData, sourceNode, state.nodes);
       const ci = state.nodeCreationCounter;
       newNode.data = { ...newNode.data, creationIndex: ci };
 

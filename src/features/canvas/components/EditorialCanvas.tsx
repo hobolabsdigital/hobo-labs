@@ -15,6 +15,7 @@ import { PromptNode } from '@/features/canvas/components/nodes/PromptNode';
 import { GhostNode } from '@/features/canvas/components/nodes/GhostNode';
 import { ProjectNode } from '@/features/canvas/components/nodes/ProjectNode';
 import { IntroNode } from '@/features/canvas/components/nodes/IntroNode';
+import { ContactNode } from '@/features/canvas/components/nodes/ContactNode';
 import { useTheme } from '@/core/theme/theme-provider';
 
 // Hooks and Store
@@ -22,7 +23,7 @@ import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 
 import { useEdgeAnimations } from '@/features/canvas/hooks/useEdgeAnimations';
 
-const nodeTypes = { hero: HeroNode, text: TextNode, prompt: PromptNode, ghost: GhostNode, project: ProjectNode, intro: IntroNode };
+const nodeTypes = { hero: HeroNode, text: TextNode, prompt: PromptNode, ghost: GhostNode, project: ProjectNode, intro: IntroNode, contact: ContactNode };
 
 // We keep the node definitions here for easy reference, but initial state 
 // injection happens entirely in useCanvasStore.ts now.

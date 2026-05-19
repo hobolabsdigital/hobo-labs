@@ -25,6 +25,7 @@ export function useEditorialChat() {
   const finishGhost = useCanvasStore(state => state.finishGhost);
   const addHero = useCanvasStore(state => state.addHero);
   const addProject = useCanvasStore(state => state.addProject);
+  const addContact = useCanvasStore(state => state.addContact);
   const addText = useCanvasStore(state => state.addText);
   const timeCursor = useCanvasStore(state => state.timeCursor);
   const truncateHistory = useCanvasStore(state => state.truncateHistory);
@@ -47,6 +48,7 @@ export function useEditorialChat() {
       await dispatchToolCall(toolCall, {
         addHero,
         addProject,
+        addContact,
         setActiveSuggestions,
         addToolOutput,
       });

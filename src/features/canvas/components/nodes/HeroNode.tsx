@@ -50,7 +50,7 @@ export const HeroNode = React.memo(function HeroNode({ data }: { data: Record<st
         )}
 
         {data.subline && (
-          <div className="mt-8 max-w-sm">
+          <div className="mt-8 max-w-xl">
             <p className="font-ui text-sm text-foreground/70 uppercase tracking-widest mb-2">[OVERVIEW]</p>
             <motion.p variants={typewriterContainer} initial="hidden" animate="visible" className="font-body text-xl leading-relaxed text-foreground">
               {data.subline.split('').map((char: string, charIdx: number) => (

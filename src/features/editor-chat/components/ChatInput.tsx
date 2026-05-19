@@ -13,8 +13,18 @@ export function ChatInput() {
   const activeSuggestions = useCanvasStore((state) => state.activeSuggestions);
 
 
-  const { input, setInput, handleSend, submitPrompt, status } = useEditorialChat();
+  const { input, setInput, handleSend, submitPrompt, status, messages } = useEditorialChat();
   const isLoading = status === 'submitted' || status === 'streaming';
+  
+  // Visual representation of context bloat
+  const contextLoad = messages.length;
+  const maxContext = 20; // Soft visual limit
+  const loadPercentage = Math.min((contextLoad / maxContext) * 100, 100);
+  const getLoadColor = () => {
+    if (loadPercentage < 50) return 'bg-[var(--brutalist-cyan)]';
+    if (loadPercentage < 80) return 'bg-yellow-400';
+    return 'bg-red-500';
+  };
 
   const handleSuggestionClick = (suggestion: string) => {
     submitPrompt(suggestion);
@@ -117,6 +127,22 @@ export function ChatInput() {
           )}
         </Button>
       </form>
+
+      {/* Context Bloat Indicator */}
+      <div className="w-[calc(100%-2rem)] md:w-full max-w-2xl px-4 flex items-center justify-between gap-4 opacity-50 transition-opacity hover:opacity-100">
+        <div className="font-ui text-[10px] uppercase tracking-widest text-foreground/70 whitespace-nowrap">
+          Context Load
+        </div>
+        <div className="flex-1 h-0.5 bg-foreground/10 overflow-hidden">
+          <div 
+            className={`h-full transition-all duration-1000 ${getLoadColor()}`}
+            style={{ width: `${loadPercentage}%` }}
+          />
+        </div>
+        <div className="font-ui text-[10px] uppercase tracking-widest text-foreground/70 whitespace-nowrap">
+          {contextLoad} MSG
+        </div>
+      </div>
     </div>
   );
 }

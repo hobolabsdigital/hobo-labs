@@ -1,5 +1,5 @@
 import { Node, Edge } from '@xyflow/react';
-import type { HeroNodeData } from '@/lib/ai/types';
+import type { HeroNodeData, ContactNodeData } from '@/lib/ai/types';
 import {
   H_SPACING,
   PROJECT_OFFSET,
@@ -87,6 +87,20 @@ export const createHeroNode = (id: string, data: HeroNodeData, sourceNode?: Node
       text: data.text,
       label: data.label,
       animationEffect: data.animationEffect,
+    },
+  };
+};
+
+export const createContactNode = (id: string, data: ContactNodeData, sourceNode?: Node, allNodes: Node[] = []): Node => {
+  const position = calculateNodePosition(undefined, sourceNode, allNodes, H_SPACING, JITTER_RANGE, DEFAULT_X, 'contact');
+  return {
+    id,
+    type: 'contact',
+    position,
+    data: {
+      email: data.email,
+      phone: data.phone,
+      tagline: data.tagline,
     },
   };
 };

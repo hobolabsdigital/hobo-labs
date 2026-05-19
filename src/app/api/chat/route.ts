@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { createModel, withReasoning, SAMPLING_CONFIG } from '@/lib/ai/config';
 import { retrievePersonaContext, loadProjectCatalog } from '@/lib/ai/rag';
 import { buildSystemPrompt } from '@/lib/ai/prompts';
-import { createHeroNode, suggestPrompts } from '@/lib/ai/tools';
+import { createHeroNode, showContact, suggestPrompts } from '@/lib/ai/tools';
 import { createMockStreamResponse } from '@/lib/ai/mock-stream';
 import { extractUserQuery } from '@/lib/ai/messages';
 
@@ -49,6 +49,7 @@ export async function POST(req: Request) {
                 slug: z.string().describe('The project slug (e.g. "monstory", "moxis", "hermes", "find-my-mazda")'),
               }),
             }),
+            showContact,
             suggestPrompts,
           },
         });

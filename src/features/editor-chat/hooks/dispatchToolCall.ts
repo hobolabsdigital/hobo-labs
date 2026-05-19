@@ -3,6 +3,7 @@ import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 interface ToolDispatchDeps {
   addHero: ReturnType<typeof useCanvasStore.getState>['addHero'];
   addProject: ReturnType<typeof useCanvasStore.getState>['addProject'];
+  addContact: ReturnType<typeof useCanvasStore.getState>['addContact'];
   setActiveSuggestions: ReturnType<typeof useCanvasStore.getState>['setActiveSuggestions'];
   addToolOutput: (opts: { tool: string; toolCallId: string; output: unknown }) => void;
 }
@@ -37,6 +38,10 @@ export async function dispatchToolCall(
 
     case 'createProjectNode':
       deps.addProject(input, toolCall.toolCallId);
+      break;
+
+    case 'showContact':
+      deps.addContact(input, toolCall.toolCallId);
       break;
 
     case 'suggestPrompts':

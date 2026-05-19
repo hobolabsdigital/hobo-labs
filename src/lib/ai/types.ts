@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const NodeInteractionSchema = z.object({
   id: z.string(),
-  type: z.enum(['project', 'hero', 'ghost', 'text']),
+  type: z.enum(['project', 'hero', 'ghost', 'text', 'contact']),
   position: z.object({ x: z.number(), y: z.number() }),
   data: z.record(z.string(), z.unknown()),
 });
@@ -55,6 +55,13 @@ export interface GhostNodeData {
 
 export interface PromptNodeData {
   text: string;
+  creationIndex?: number;
+}
+
+export interface ContactNodeData {
+  email: string;
+  phone: string;
+  tagline: string;
   creationIndex?: number;
 }
 

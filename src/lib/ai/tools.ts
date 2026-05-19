@@ -11,7 +11,7 @@ export const createHeroNode = tool({
     headline: z.string().optional()
       .describe('Headline for hero nodes. CRITICAL: You MUST use \\\\n to break this text into 2-3 stacked lines (ALL CAPS).'),
     subline: z.string().optional()
-      .describe('Subline for hero nodes'),
+      .describe('Subline for hero nodes. CRITICAL: You should write a full, punchy paragraph (3-4 sentences) elaborating on the headline.'),
     text: z.string().optional()
       .describe('Content for text nodes'),
     label: z.string().optional()
@@ -20,6 +20,18 @@ export const createHeroNode = tool({
       .describe('How to animate the text in'),
     layoutIntent: z.enum(['top_right', 'bottom_right', 'far_right']).optional()
       .describe('Where to spatially drop the node before physics takes over'),
+  }),
+});
+
+/**
+ * Client-executed tool: creates a contact node on the editorial canvas.
+ */
+export const showContact = tool({
+  description: 'Show the user contact information on the canvas',
+  inputSchema: z.object({
+    email: z.string().optional().describe('Email address to display'),
+    phone: z.string().optional().describe('Phone number to display'),
+    tagline: z.string().optional().describe('A punchy tagline to display along with the contact info'),
   }),
 });
 
