@@ -200,6 +200,20 @@ export class FerrofluidSystem {
                 color2 = [0.09, 0.87, 0.95]; // Cyan (#17DFF1)
             }
 
+            // Simulated baseline bounce for when audio is off, silent, or on mobile
+            // Adding this directly to the audio instead of Math.max to see how it feels!
+            const breathe = (Math.sin(this.time * 0.0015) + 1.0) * 0.5; // 0 to 1
+            const simBass = 0.05 + breathe * 0.45; // 0.05 to 0.5 bounce
+            const simEnergy = 0.1 + breathe * 0.3; // 0.1 to 0.4 energy
+            
+            // Noise scale simulation using cosine to be slightly out of phase
+            const breatheCos = (Math.cos(this.time * 0.0011) + 1.0) * 0.5; // 0 to 1
+            const simNoiseScale = 0.3 + breatheCos * 0.7; // 0.3 to 1.0
+
+            const effectiveAudioBass = this.audioBass + simBass;
+            const effectiveAudioEnergy = this.audioEnergy + simEnergy;
+            const effectiveNoiseScale = this.params.noiseScale * simNoiseScale;
+
             // Draw Scene
             gl.useProgram(this.programInfo.program);
             twgl.setBuffersAndAttributes(gl, this.programInfo, this.bufferInfo);
@@ -213,14 +227,14 @@ export class FerrofluidSystem {
                 u_color1: color1,
                 u_color2: color2,
                 // Emotional audio bands
-                u_audioBass: this.audioBass,
+                u_audioBass: effectiveAudioBass,
                 u_audioMids: this.audioMids,
                 u_audioHighs: this.audioHighs,
-                u_audioEnergy: this.audioEnergy,
+                u_audioEnergy: effectiveAudioEnergy,
                 u_audioTransient: this.audioTransient,
                 // Config params
                 u_noiseSpeed: this.params.noiseSpeed,
-                u_noiseScale: this.params.noiseScale,
+                u_noiseScale: effectiveNoiseScale,
                 u_spikeHeight: this.params.spikeHeight,
                 u_audioMultiplier: this.params.audioMultiplier,
                 u_mouseInfluence: this.params.mouseInfluence,
