@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 import { INTRO_REVEAL_CLASSES } from '@/features/canvas/constants';
 import { useTheme, type AppTheme } from '@/core/theme/theme-provider';
-import { useCrtStore, DEFAULT_CRT_CONFIG } from '@/features/crt/store/useCrtStore';
 import { useFerrofluidStore } from '@/features/ferrofluid/store/useFerrofluidStore';
 import { Section } from './debug/Section';
-import { Slider } from './debug/Slider';
+import { CrtDebugControls } from './debug/CrtDebugControls';
+import { FluidDebugControls } from './debug/FluidDebugControls';
+import { FerrofluidDebugControls } from './debug/FerrofluidDebugControls';
 
 const THEME_OPTIONS: { value: AppTheme; label: string }[] = [
   { value: 'light', label: 'Light' },
@@ -25,24 +26,10 @@ export function DebugPanel() {
   const nodes = useCanvasStore(state => state.nodes);
   const edges = useCanvasStore(state => state.edges);
 
-
-  const fluidConfig = useCanvasStore(state => state.fluidConfig);
-  const setFluidConfig = useCanvasStore(state => state.setFluidConfig);
-
   const isIntroAnimationFinished = useCanvasStore(state => state.isIntroAnimationFinished);
 
   const { theme, setTheme } = useTheme();
 
-  // CRT store
-  const crtConfig = useCrtStore((s) => s.crtConfig);
-  const setCrtConfig = useCrtStore((s) => s.setCrtConfig);
-  const crtMode = useCrtStore((s) => s.crtMode);
-  const setCrtMode = useCrtStore((s) => s.setCrtMode);
-  const experimentalSupported = useCrtStore((s) => s.experimentalSupported);
-
-  // Ferrofluid store
-  const ferrofluidConfig = useFerrofluidStore(s => s.config);
-  const setFerrofluidConfig = useFerrofluidStore(s => s.setConfig);
   const isPlaying = useFerrofluidStore(s => s.isPlaying);
   const toggleAudioFn = useFerrofluidStore(s => s.toggleAudioFn);
 
@@ -85,193 +72,9 @@ export function DebugPanel() {
           </div>
         </Section>
 
-        {/* CRT Effect */}
-        <Section title="CRT Effect">
-          {/* Master toggle */}
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase">Enabled</span>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <span className="text-[10px] uppercase opacity-60">{crtConfig.enabled ? "ON" : "OFF"}</span>
-              <input
-                type="checkbox"
-                checked={crtConfig.enabled}
-                onChange={(e) => setCrtConfig({ enabled: e.target.checked })}
-                className="w-3 h-3 accent-[var(--foreground)]"
-              />
-            </label>
-          </div>
-
-          {/* Mode */}
-          <div className="flex items-center justify-between">
-            <span className="text-[9px] uppercase opacity-60">
-              {crtMode === "experimental" ? "Experimental (GPU)" : "Standard (CSS)"}
-            </span>
-            {experimentalSupported && (
-              <button
-                onClick={() => setCrtMode(crtMode === "experimental" ? "standard" : "experimental")}
-                className="text-[9px] uppercase border border-[var(--foreground)]/30 px-2 py-0.5 hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-colors"
-              >
-                Switch
-              </button>
-            )}
-          </div>
-
-          {/* Curvature */}
-          <Slider label="Curvature" value={crtConfig.barrelStrength} min={0} max={100} step={1}
-            onChange={(v) => setCrtConfig({ barrelStrength: v })} format={(v) => v + "%"} />
-
-
-
-          {/* Vignette */}
-          <Slider label="Vignette Strength" value={crtConfig.vignetteStrength} min={0} max={1} step={0.01}
-            onChange={(v) => setCrtConfig({ vignetteStrength: v })} format={(v) => v.toFixed(2)} />
-          <Slider label="Vignette Radius" value={crtConfig.vignetteRadius} min={0.1} max={1.5} step={0.05}
-            onChange={(v) => setCrtConfig({ vignetteRadius: v })} format={(v) => v.toFixed(2)} />
-
-
-
-          {/* Experimental-only controls */}
-          {crtMode === "experimental" && (
-            <>
-              <Slider label="Corner Radius" value={crtConfig.cornerRadius} min={0} max={0.5} step={0.01}
-                onChange={(v) => setCrtConfig({ cornerRadius: v })} format={(v) => v.toFixed(2)} />
-              <Slider label="Edge Softness" value={crtConfig.edgeSoftness} min={0} max={0.3} step={0.01}
-                onChange={(v) => setCrtConfig({ edgeSoftness: v })} format={(v) => v.toFixed(2)} />
-              <Slider label="Top Darken" value={crtConfig.topDarken} min={0} max={1} step={0.01}
-                onChange={(v) => setCrtConfig({ topDarken: v })} format={(v) => v.toFixed(2)} />
-            </>
-          )}
-
-          {/* Reset */}
-          <button
-            onClick={() => setCrtConfig({ ...DEFAULT_CRT_CONFIG })}
-            className="w-full py-1.5 border border-[var(--foreground)]/30 text-[var(--foreground)] text-[9px] font-bold uppercase hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-colors"
-          >
-            Reset CRT Defaults
-          </button>
-        </Section>
-
-
-        {/* Fluid Physics */}
-        <Section title="Fluid Physics">
-          <Slider label="Splat Radius" value={fluidConfig.SPLAT_RADIUS} min={0.01} max={1.0} step={0.01}
-            onChange={(v) => setFluidConfig({ SPLAT_RADIUS: v })} format={(v) => v.toFixed(2)} />
-          <Slider label="Density Dissipation" value={fluidConfig.DENSITY_DISSIPATION} min={0.1} max={5.0} step={0.1}
-            onChange={(v) => setFluidConfig({ DENSITY_DISSIPATION: v })} format={(v) => v.toFixed(1)} />
-          <Slider label="Velocity Dissipation" value={fluidConfig.VELOCITY_DISSIPATION} min={0.1} max={5.0} step={0.1}
-            onChange={(v) => setFluidConfig({ VELOCITY_DISSIPATION: v })} format={(v) => v.toFixed(1)} />
-          <Slider label="Pressure" value={fluidConfig.PRESSURE} min={0.0} max={1.0} step={0.01}
-            onChange={(v) => setFluidConfig({ PRESSURE: v })} format={(v) => v.toFixed(2)} />
-          <Slider label="Curl" value={fluidConfig.CURL} min={0} max={100} step={1}
-            onChange={(v) => setFluidConfig({ CURL: v })} format={(v) => String(v)} />
-          <Slider label="Aberration" value={fluidConfig.ABERRATION_MULT} min={0.0} max={10.0} step={0.001}
-            onChange={(v) => setFluidConfig({ ABERRATION_MULT: v })} format={(v) => v.toFixed(3)} />
-
-          <div className="flex items-center justify-between pt-1">
-            <label htmlFor="color-cycle-mode" className="text-[10px] uppercase tracking-wider">Color Cycle</label>
-            <input
-              type="checkbox" id="color-cycle-mode"
-              checked={fluidConfig.COLOR_CYCLE}
-              onChange={(e) => setFluidConfig({ COLOR_CYCLE: e.target.checked })}
-              className="w-3 h-3 accent-[var(--foreground)]"
-            />
-          </div>
-
-          {!fluidConfig.COLOR_CYCLE && (
-            <div className="flex items-center justify-between text-[10px]">
-              <label>Splat Color</label>
-              <input type="color" value={fluidConfig.SPLAT_COLOR}
-                onChange={(e) => setFluidConfig({ SPLAT_COLOR: e.target.value })}
-                className="h-6 w-8 p-0 border-0 cursor-pointer" />
-            </div>
-          )}
-
-          {fluidConfig.COLOR_CYCLE && (
-            <Slider label="Cycle Speed" value={fluidConfig.COLOR_CYCLE_SPEED} min={0.1} max={5.0} step={0.1}
-              onChange={(v) => setFluidConfig({ COLOR_CYCLE_SPEED: v })} format={(v) => v.toFixed(1)} />
-          )}
-        </Section>
-
-        {/* Ferrofluid */}
-        <Section title="Ferrofluid Physics">
-          <button
-            onClick={() => toggleAudioFn?.()}
-            className="w-full py-1.5 border border-[var(--foreground)]/30 text-[var(--foreground)] text-[9px] font-bold uppercase hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-colors mb-2"
-          >
-            {isPlaying ? "Pause Audio" : "Play Audio"}
-          </button>
-
-          <Slider label="Noise Speed" value={ferrofluidConfig.noiseSpeed} min={0} max={0.01} step={0.00001}
-            onChange={(v) => setFerrofluidConfig({ noiseSpeed: v })} format={(v) => v.toFixed(5)} />
-          <Slider label="Noise Scale" value={ferrofluidConfig.noiseScale} min={0.1} max={5.0} step={0.1}
-            onChange={(v) => setFerrofluidConfig({ noiseScale: v })} format={(v) => v.toFixed(1)} />
-          <Slider label="Spike Height" value={ferrofluidConfig.spikeHeight} min={0.0} max={1.0} step={0.01}
-            onChange={(v) => setFerrofluidConfig({ spikeHeight: v })} format={(v) => v.toFixed(2)} />
-          <Slider label="Audio Multiplier" value={ferrofluidConfig.audioMultiplier} min={0.0} max={5.0} step={0.1}
-            onChange={(v) => setFerrofluidConfig({ audioMultiplier: v })} format={(v) => v.toFixed(1)} />
-          <Slider label="Camera Z" value={ferrofluidConfig.cameraZ} min={2.0} max={10.0} step={0.1}
-            onChange={(v) => setFerrofluidConfig({ cameraZ: v })} format={(v) => v.toFixed(1)} />
-          <Slider label="Zoom Amount" value={ferrofluidConfig.zoomAmount} min={0.0} max={5.0} step={0.1}
-            onChange={(v) => setFerrofluidConfig({ zoomAmount: v })} format={(v) => v.toFixed(1)} />
-          <Slider label="Parallax Amount" value={ferrofluidConfig.parallaxAmount} min={0.0} max={2.0} step={0.1}
-            onChange={(v) => setFerrofluidConfig({ parallaxAmount: v })} format={(v) => v.toFixed(1)} />
-          <Slider label="Orbit Amount" value={ferrofluidConfig.orbitAmount} min={0.0} max={2.0} step={0.1}
-            onChange={(v) => setFerrofluidConfig({ orbitAmount: v })} format={(v) => v.toFixed(1)} />
-
-          <div className="flex items-center justify-between pt-1">
-            <label htmlFor="mouse-tracking-mode" className="text-[10px] uppercase tracking-wider">Mouse Tracking</label>
-            <input
-              type="checkbox" id="mouse-tracking-mode"
-              checked={ferrofluidConfig.enableMouseTracking}
-              onChange={(e) => setFerrofluidConfig({ enableMouseTracking: e.target.checked })}
-              className="w-3 h-3 accent-[var(--foreground)]"
-            />
-          </div>
-
-          <Slider label="Mouse Influence" value={ferrofluidConfig.mouseInfluence} min={0.1} max={2.0} step={0.1}
-            onChange={(v) => setFerrofluidConfig({ mouseInfluence: v })} format={(v) => v.toFixed(1)} />
-          <Slider label="Mouse Pull Strength" value={ferrofluidConfig.mousePullStrength} min={0.0} max={2.0} step={0.05}
-            onChange={(v) => setFerrofluidConfig({ mousePullStrength: v })} format={(v) => v.toFixed(2)} />
-
-          <Slider label="Canvas Opacity" value={ferrofluidConfig.canvasOpacity} min={0.0} max={1.0} step={0.01}
-            onChange={(v) => setFerrofluidConfig({ canvasOpacity: v })} format={(v) => v.toFixed(2)} />
-          <Slider label="DoF Strength" value={ferrofluidConfig.dofStrength} min={0.0} max={2.0} step={0.1}
-            onChange={(v) => setFerrofluidConfig({ dofStrength: v })} format={(v) => v.toFixed(1)} />
-          <Slider label="Focus Distance" value={ferrofluidConfig.focusDistance} min={1.0} max={10.0} step={0.1}
-            onChange={(v) => setFerrofluidConfig({ focusDistance: v })} format={(v) => v.toFixed(1)} />
-
-          {/* Audio Sensitivity */}
-          <div className="border-t border-[var(--foreground)]/20 pt-2 mt-1">
-            <span className="text-[9px] uppercase tracking-wider opacity-60 block mb-2">Audio Sensitivity</span>
-            <div className="flex flex-col gap-2">
-              <Slider label="Energy Floor" value={ferrofluidConfig.energyFloor} min={0.0} max={1.0} step={0.01}
-                onChange={(v) => setFerrofluidConfig({ energyFloor: v })} format={(v) => v.toFixed(2)} />
-              <Slider label="Bass Punch" value={ferrofluidConfig.bassPunch} min={0.0} max={0.5} step={0.01}
-                onChange={(v) => setFerrofluidConfig({ bassPunch: v })} format={(v) => v.toFixed(2)} />
-              <Slider label="Mids Detail" value={ferrofluidConfig.midsDetail} min={0.0} max={1.0} step={0.01}
-                onChange={(v) => setFerrofluidConfig({ midsDetail: v })} format={(v) => v.toFixed(2)} />
-              <Slider label="Highs Shimmer" value={ferrofluidConfig.highsShimmer} min={0.0} max={0.1} step={0.001}
-                onChange={(v) => setFerrofluidConfig({ highsShimmer: v })} format={(v) => v.toFixed(3)} />
-              <Slider label="Transient Crack" value={ferrofluidConfig.transientCrack} min={0.0} max={0.1} step={0.001}
-                onChange={(v) => setFerrofluidConfig({ transientCrack: v })} format={(v) => v.toFixed(3)} />
-              <Slider label="Fresnel Boost" value={ferrofluidConfig.fresnelBoost} min={0.0} max={3.0} step={0.1}
-                onChange={(v) => setFerrofluidConfig({ fresnelBoost: v })} format={(v) => v.toFixed(1)} />
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-1 text-[10px] uppercase pt-1">
-            <label>Blend Mode</label>
-            <select
-              value={ferrofluidConfig.blendMode}
-              onChange={(e) => setFerrofluidConfig({ blendMode: e.target.value })}
-              className="bg-[var(--background)] text-[var(--foreground)] border border-[var(--foreground)]/30 p-1 outline-none"
-            >
-              {['normal', 'multiply', 'screen', 'overlay', 'color-dodge', 'color-burn', 'hard-light', 'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity'].map(m => (
-                <option key={m} value={m}>{m}</option>
-              ))}
-            </select>
-          </div>
-        </Section>
+        <CrtDebugControls />
+        <FluidDebugControls />
+        <FerrofluidDebugControls />
 
         {/* Stats */}
         <div className="flex flex-col gap-1 text-xs text-muted-foreground pt-1">
