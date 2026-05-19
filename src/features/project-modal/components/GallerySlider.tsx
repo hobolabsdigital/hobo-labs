@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import type { ThemeMotionConfig } from '@/core/theme/theme-motion';
 
 interface GallerySliderProps {
   isSettled: boolean;
   currentIndex: number;
   setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
   imagesCount: number;
-  m: any; // using any temporarily to avoid tight coupling to theme store in presentational component
+  m: ThemeMotionConfig;
   finalHeroSrc: string;
   title: string;
   gallery: string[];
