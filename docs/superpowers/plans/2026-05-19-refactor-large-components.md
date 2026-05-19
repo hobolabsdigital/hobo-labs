@@ -16,7 +16,7 @@
 - Create: `src/features/project-modal/utils/motion-variants.ts`
 - Modify: `src/features/project-modal/components/ProjectModalOverlay.tsx`
 
-- [ ] **Step 1: Extract motion variants into utility file**
+- [x] **Step 1: Extract motion variants into utility file**
 
 ```typescript
 // src/features/project-modal/utils/motion-variants.ts
@@ -46,10 +46,10 @@ export function buildItemVariants(theme: string): Variants {
 }
 ```
 
-- [ ] **Step 2: Update ProjectModalOverlay to import variants**
+- [x] **Step 2: Update ProjectModalOverlay to import variants**
 Remove the `stagger` and `buildItemVariants` definitions from `ProjectModalOverlay.tsx` and import them from the new utility file instead.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/features/project-modal/utils/motion-variants.ts src/features/project-modal/components/ProjectModalOverlay.tsx
@@ -62,13 +62,13 @@ git commit -m "refactor: extract motion variants for project modal"
 - Create: `src/features/project-modal/components/ProjectDetails.tsx`
 - Modify: `src/features/project-modal/components/ProjectModalOverlay.tsx`
 
-- [ ] **Step 1: Create ProjectDetails component**
+- [x] **Step 1: Create ProjectDetails component**
 Extract the rendering logic for the Problem, Solution, Pull Quote, and Tech Stack into this new file.
 
-- [ ] **Step 2: Update ProjectModalOverlay**
+- [x] **Step 2: Update ProjectModalOverlay**
 Replace the inline Problem, Solution, Quote, and Tech Stack logic with the `<ProjectDetails />` component.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/features/project-modal/components/ProjectDetails.tsx src/features/project-modal/components/ProjectModalOverlay.tsx
@@ -81,13 +81,13 @@ git commit -m "refactor: extract ProjectDetails from ProjectModalOverlay"
 - Create: `src/features/project-modal/components/GallerySlider.tsx`
 - Modify: `src/features/project-modal/components/ProjectModalOverlay.tsx`
 
-- [ ] **Step 1: Create GallerySlider component**
+- [x] **Step 1: Create GallerySlider component**
 Extract the `isSettled` dependent `<motion.div>` that maps over the gallery array and the dot navigation into this new file. Pass `currentIndex`, `setCurrentIndex`, `gallery`, `finalHeroSrc`, `imagesCount`, and the `m` (motion config) as props.
 
-- [ ] **Step 2: Update ProjectModalOverlay**
+- [x] **Step 2: Update ProjectModalOverlay**
 Replace the inline gallery slider code with the `<GallerySlider />` component.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/features/project-modal/components/GallerySlider.tsx src/features/project-modal/components/ProjectModalOverlay.tsx
@@ -101,13 +101,13 @@ git commit -m "refactor: extract GallerySlider from ProjectModalOverlay"
 - Create: `src/features/canvas/components/debug/Slider.tsx`
 - Modify: `src/features/canvas/components/DebugPanel.tsx`
 
-- [ ] **Step 1: Move Section and Slider to individual files**
+- [x] **Step 1: Move Section and Slider to individual files**
 Copy the `Section` and `Slider` components from the top of `DebugPanel.tsx` into their own files.
 
-- [ ] **Step 2: Import them into DebugPanel**
+- [x] **Step 2: Import them into DebugPanel**
 Remove the inline definitions and import them.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/features/canvas/components/debug/Section.tsx src/features/canvas/components/debug/Slider.tsx src/features/canvas/components/DebugPanel.tsx
@@ -122,19 +122,19 @@ git commit -m "refactor: extract Section and Slider components for DebugPanel"
 - Create: `src/features/canvas/components/debug/FerrofluidDebugControls.tsx`
 - Modify: `src/features/canvas/components/DebugPanel.tsx`
 
-- [ ] **Step 1: Create CrtDebugControls**
+- [x] **Step 1: Create CrtDebugControls**
 Extract the CRT section logic (and `useCrtStore` hooks) into `CrtDebugControls.tsx`.
 
-- [ ] **Step 2: Create FluidDebugControls**
+- [x] **Step 2: Create FluidDebugControls**
 Extract the Fluid section logic (and `fluidConfig` hooks) into `FluidDebugControls.tsx`.
 
-- [ ] **Step 3: Create FerrofluidDebugControls**
+- [x] **Step 3: Create FerrofluidDebugControls**
 Extract the Ferrofluid section logic (and `ferrofluidConfig` hooks) into `FerrofluidDebugControls.tsx`.
 
-- [ ] **Step 4: Clean up DebugPanel**
+- [x] **Step 4: Clean up DebugPanel**
 Replace all the inline code with the three new control components. Remove unused imports in `DebugPanel.tsx`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/features/canvas/components/debug/ src/features/canvas/components/DebugPanel.tsx

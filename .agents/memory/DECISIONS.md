@@ -110,3 +110,13 @@ src/
 **Decision**: `opacity: 0` always on the hero slot `<img>`. It exists only so `heroSlotRef.getBoundingClientRect()` gives the flying hero a landing coordinate.
 **Rationale**: The flying hero (`motion.img`) provides the visual pre-settle. The slider provides it post-settle. The hero slot img is a structurally necessary but visually invisible element. Any opacity toggle tied to `currentIndex` races with the slider spring animation.
 **File**: `src/features/project-modal/components/ProjectModalOverlay.tsx`
+
+### D012 — Component Modularization (2026-05-19)
+**Context**: `ProjectModalOverlay` and `DebugPanel` grew beyond 250 lines and mixed concerns.
+**Decision**: Extract presentational subcomponents into `features/{feature}/components/` subdirectories (`GallerySlider`, `ProjectDetails`, `CrtDebugControls`, etc.)
+**Rationale**: Adherence to SOLID principles and a strict 250-line file limit to maintain project maintainability and developer experience.
+
+### D013 — Contact Node Configuration (2026-05-19)
+**Context**: User requested a seamless way for the AI to share their contact credentials on the canvas.
+**Decision**: Update `prompts.ts` to hardcode contact credentials (email/phone) and instruct the AI to use the `showContact` tool with them.
+**Rationale**: The `ContactNode` component and `showContact` tool already existed but weren't fully utilized. Giving the AI explicit credentials ensures accurate, branded responses when the user's contact information is requested.
