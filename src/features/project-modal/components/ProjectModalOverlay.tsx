@@ -9,28 +9,7 @@ import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 import { useTheme } from '@/core/theme/theme-provider';
 import { getMotion } from '@/core/theme/theme-motion';
 
-const stagger: Variants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.4 } },
-  exit: { opacity: 0, transition: { staggerChildren: 0.05, staggerDirection: -1 } }
-};
-
-/** Build Framer Motion item variants from the centralized motion config */
-function buildItemVariants(theme: string): Variants {
-  const m = getMotion(theme).modal;
-  if (m.type === 'tween') {
-    return {
-      hidden: { opacity: 0 },
-      show: { opacity: 1, transition: { duration: m.enterDuration, ease: [0.16, 1, 0.3, 1] } },
-      exit: { opacity: 0, transition: { duration: m.exitDuration } },
-    };
-  }
-  return {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: m.stiffness, damping: m.damping } },
-    exit: { opacity: 0, y: m.exitY, transition: { duration: m.exitDuration } },
-  };
-}
+import { stagger, buildItemVariants } from '../utils/motion-variants';
 
 function OverlayContent() {
   const { isOpen, activeNodeId, heroSrc, sourceRect, close } = useProjectModalStore();
