@@ -23,34 +23,38 @@ import {
 export const calculateNodePosition = (
   data: { layoutIntent?: string } | undefined,
   sourceNode: Node | undefined,
+  allNodes: Node[],
   offset: number = H_SPACING,
   jitter: number = JITTER_RANGE,
   defaultX: number = DEFAULT_X,
-  /** Type of the node being created — used to compute width-aware minimum offset */
   nodeType?: string,
 ) => {
-  if (data?.layoutIntent) {
-    switch (data.layoutIntent) {
-      case 'top_left':     return { x: -400, y: -200 };
-      case 'top_right':    return { x: 1600, y: -200 };
-      case 'bottom_left':  return { x: -400, y: 1000 };
-      case 'bottom_right': return { x: 1600, y: 1000 };
-      case 'far_right':    return { x: 2400, y: DEFAULT_Y };
-      case 'center':       return { x: DEFAULT_X, y: DEFAULT_Y };
-    }
-  }
-
   if (sourceNode) {
-    // Ensure the spawn offset is at least wide enough to avoid instant overlap.
-    // minOffset = half-width of source + half-width of new node + gap
-    const srcDims = NODE_DIMS[sourceNode.type ?? ''] ?? NODE_DIMS_DEFAULT;
-    const newDims = NODE_DIMS[nodeType ?? ''] ?? NODE_DIMS_DEFAULT;
-    const minOffset = srcDims.w / 2 + newDims.w / 2 + AABB_GAP;
-    const safeOffset = Math.max(offset, minOffset);
+    const actualSourceWidth = sourceNode.measured?.width ?? NODE_DIMS[sourceNode.type ?? '']?.w ?? NODE_DIMS_DEFAULT.w;
+    
+    // Find the absolute right-most edge of any node currently on the canvas
+    // This prevents overlaps when multiple nodes are spawned from the same source node (branching)
+    const globalMaxRight = allNodes.reduce((max, n) => {
+      const w = n.measured?.width ?? NODE_DIMS[n.type ?? '']?.w ?? NODE_DIMS_DEFAULT.w;
+      return Math.max(max, n.position.x + w);
+    }, -Infinity);
+
+    // We must be to the right of the source node, AND to the right of everything else
+    const sourceRightEdge = sourceNode.position.x + actualSourceWidth;
+    const baseRightEdge = Math.max(sourceRightEdge, globalMaxRight);
+    
+    const minOffsetFromSource = baseRightEdge - sourceNode.position.x + AABB_GAP;
+    const safeOffset = Math.max(offset, minOffsetFromSource);
+
+    let yOffset = Math.random() * jitter - jitter / 2;
+    if (data?.layoutIntent) {
+      if (data.layoutIntent.includes('top')) yOffset -= 300;
+      if (data.layoutIntent.includes('bottom')) yOffset += 300;
+    }
 
     return {
       x: sourceNode.position.x + safeOffset,
-      y: sourceNode.position.y + (Math.random() * jitter - jitter / 2),
+      y: sourceNode.position.y + yOffset,
     };
   }
 
@@ -61,18 +65,18 @@ export const calculateNodePosition = (
 // Node factories
 // ---------------------------------------------------------------------------
 
-export const createPromptNode = (id: string, text: string, sourceNode?: Node): Node => {
-  const position = calculateNodePosition(undefined, sourceNode, H_SPACING, JITTER_RANGE, 400, 'prompt');
+export const createPromptNode = (id: string, text: string, sourceNode?: Node, allNodes: Node[] = []): Node => {
+  const position = calculateNodePosition(undefined, sourceNode, allNodes, H_SPACING, JITTER_RANGE, 400, 'prompt');
   return { id, type: 'prompt', position, data: { text } };
 };
 
-export const createGhostNode = (id: string, sourceNode?: Node): Node => {
-  const position = calculateNodePosition(undefined, sourceNode, H_SPACING, JITTER_RANGE, DEFAULT_X, 'ghost');
+export const createGhostNode = (id: string, sourceNode?: Node, allNodes: Node[] = []): Node => {
+  const position = calculateNodePosition(undefined, sourceNode, allNodes, H_SPACING, JITTER_RANGE, DEFAULT_X, 'ghost');
   return { id, type: 'ghost', position, data: { text: "Organizing thoughts...", isFinished: false } };
 };
 
-export const createHeroNode = (id: string, data: HeroNodeData, sourceNode?: Node): Node => {
-  const position = calculateNodePosition(data, sourceNode, H_SPACING, JITTER_RANGE, DEFAULT_X, 'hero');
+export const createHeroNode = (id: string, data: HeroNodeData, sourceNode?: Node, allNodes: Node[] = []): Node => {
+  const position = calculateNodePosition(data, sourceNode, allNodes, H_SPACING, JITTER_RANGE, DEFAULT_X, 'hero');
   return {
     id,
     type: 'hero',
@@ -87,13 +91,13 @@ export const createHeroNode = (id: string, data: HeroNodeData, sourceNode?: Node
   };
 };
 
-export const createTextNode = (id: string, text: string, sourceNode?: Node): Node => {
-  const position = calculateNodePosition(undefined, sourceNode, H_SPACING, JITTER_RANGE, DEFAULT_X, 'text');
+export const createTextNode = (id: string, text: string, sourceNode?: Node, allNodes: Node[] = []): Node => {
+  const position = calculateNodePosition(undefined, sourceNode, allNodes, H_SPACING, JITTER_RANGE, DEFAULT_X, 'text');
   return { id, type: 'text', position, data: { text, label: 'INSIGHT', animationEffect: 'annotation' } };
 };
 
-export const createProjectNode = (id: string, data: Record<string, unknown>, sourceNode?: Node): Node => {
-  const position = calculateNodePosition(data, sourceNode, PROJECT_OFFSET, JITTER_RANGE, DEFAULT_X, 'project');
+export const createProjectNode = (id: string, data: Record<string, unknown>, sourceNode?: Node, allNodes: Node[] = []): Node => {
+  const position = calculateNodePosition(data, sourceNode, allNodes, PROJECT_OFFSET, JITTER_RANGE, DEFAULT_X, 'project');
   return {
     id,
     type: 'project',
@@ -116,13 +120,13 @@ export const createProjectNode = (id: string, data: Record<string, unknown>, sou
   };
 };
 
-export const createDossierNode = (id: string, slug: string, sourceNode?: Node): Node => {
-  const position = calculateNodePosition(undefined, sourceNode, H_SPACING, JITTER_RANGE_SMALL, DEFAULT_X, 'dossier');
+export const createDossierNode = (id: string, slug: string, sourceNode?: Node, allNodes: Node[] = []): Node => {
+  const position = calculateNodePosition(undefined, sourceNode, allNodes, H_SPACING, JITTER_RANGE_SMALL, DEFAULT_X, 'dossier');
   return { id, type: 'dossier', position, data: { slug, status: 'accessing' } };
 };
 
-export const createSkeletonProjectNode = (id: string, slug: string, sourceNode?: Node): Node => {
-  const position = calculateNodePosition(undefined, sourceNode, PROJECT_OFFSET, JITTER_RANGE_SMALL, 800, 'project');
+export const createSkeletonProjectNode = (id: string, slug: string, sourceNode?: Node, allNodes: Node[] = []): Node => {
+  const position = calculateNodePosition(undefined, sourceNode, allNodes, PROJECT_OFFSET, JITTER_RANGE_SMALL, 800, 'project');
   return { id, type: 'project', position, data: { isLoading: true, slug } };
 };
 

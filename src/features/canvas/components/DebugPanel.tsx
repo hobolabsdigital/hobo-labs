@@ -61,8 +61,7 @@ export function DebugPanel() {
   const nodes = useCanvasStore(state => state.nodes);
   const edges = useCanvasStore(state => state.edges);
 
-  const physicsConfig = useCanvasStore(state => state.physicsConfig);
-  const setPhysicsConfig = useCanvasStore(state => state.setPhysicsConfig);
+
   const fluidConfig = useCanvasStore(state => state.fluidConfig);
   const setFluidConfig = useCanvasStore(state => state.setFluidConfig);
 
@@ -188,19 +187,6 @@ export function DebugPanel() {
           </button>
         </Section>
 
-        {/* Node Physics */}
-        <Section title="Node Physics">
-          <Slider label="Friction (Velocity Decay)" value={physicsConfig.velocityDecay} min={0} max={1} step={0.05}
-            onChange={(v) => setPhysicsConfig({ velocityDecay: v })} format={(v) => v.toFixed(2)} />
-          <Slider label="Gravity (Charge Strength)" value={physicsConfig.chargeStrength} min={-2000} max={100} step={50}
-            onChange={(v) => setPhysicsConfig({ chargeStrength: v })} format={(v) => String(v)} />
-          <Slider label="Link Distance" value={physicsConfig.linkDistance} min={10} max={500} step={10}
-            onChange={(v) => setPhysicsConfig({ linkDistance: v })} format={(v) => String(v)} />
-          <Slider label="Link Strength" value={physicsConfig.linkStrength} min={0} max={5} step={0.1}
-            onChange={(v) => setPhysicsConfig({ linkStrength: v })} format={(v) => v.toFixed(1)} />
-          <Slider label="Link Rigidity (Iterations)" value={physicsConfig.linkIterations} min={1} max={30} step={1}
-            onChange={(v) => setPhysicsConfig({ linkIterations: v })} format={(v) => String(v)} />
-        </Section>
 
         {/* Fluid Physics */}
         <Section title="Fluid Physics">

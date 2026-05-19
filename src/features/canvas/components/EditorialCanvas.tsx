@@ -20,7 +20,6 @@ import { useTheme } from '@/core/theme/theme-provider';
 // Hooks and Store
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 
-import { useEditorialPhysics } from '@/features/canvas/hooks/useEditorialPhysics';
 import { useEdgeAnimations } from '@/features/canvas/hooks/useEdgeAnimations';
 
 const nodeTypes = { hero: HeroNode, text: TextNode, prompt: PromptNode, ghost: GhostNode, project: ProjectNode, intro: IntroNode };
@@ -168,50 +167,10 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
   }, [timeCursor, rfInstance]);
 
   // Activate custom hooks
-  useEditorialPhysics();
+  // Physics is temporarily disabled per user request for deterministic static layout
+  // useEditorialPhysics();
   useEdgeAnimations();
 
-
-  const onNodeDragStart = useCallback((event: React.MouseEvent, node: Node) => {
-    const simulation = useCanvasStore.getState().simulationRef;
-    if (!simulation) return;
-
-    // Find the internal node
-    const simNode = simulation.nodes().find(n => n.id === node.id);
-    if (simNode) {
-      simNode.fx = node.position.x;
-      simNode.fy = node.position.y;
-
-      // Gentle heat to make the mesh elastic without blowing it up
-      simulation.alphaTarget(0.05).restart();
-    }
-  }, []);
-
-  const onNodeDrag = useCallback((event: React.MouseEvent, node: Node) => {
-    const simulation = useCanvasStore.getState().simulationRef;
-    if (!simulation) return;
-
-    const simNode = simulation.nodes().find(n => n.id === node.id);
-    if (simNode) {
-      simNode.fx = node.position.x;
-      simNode.fy = node.position.y;
-    }
-  }, []);
-
-  const onNodeDragStop = useCallback((event: React.MouseEvent, node: Node) => {
-    const simulation = useCanvasStore.getState().simulationRef;
-    if (!simulation) return;
-
-    const simNode = simulation.nodes().find(n => n.id === node.id);
-    if (simNode) {
-      if (node.id !== 'hero-1') {
-        simNode.fx = null;
-        simNode.fy = null;
-      }
-      // Let it cool down and snap back to equilibrium
-      simulation.alphaTarget(0);
-    }
-  }, []);
 
   return (
     <div className="w-full h-screen relative bg-transparent">
@@ -221,9 +180,6 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        onNodeDragStart={onNodeDragStart}
-        onNodeDrag={onNodeDrag}
-        onNodeDragStop={onNodeDragStop}
         nodeTypes={nodeTypes}
         onInit={setRfInstance}
         proOptions={{ hideAttribution: true }}

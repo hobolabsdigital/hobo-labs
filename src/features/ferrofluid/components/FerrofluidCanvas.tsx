@@ -104,7 +104,7 @@ export const FerrofluidCanvas = () => {
 
     // Setup Audio
     useEffect(() => {
-        const playlist = ['/FerrofluidSystem.mp3', '/FerrofluidSystem2.mp3'];
+        const playlist = ['/FerrofluidSystem2.mp3', '/FerrofluidSystem2.mp3'];
         let currentTrack = 0;
 
         const audio = new Audio(playlist[currentTrack]);

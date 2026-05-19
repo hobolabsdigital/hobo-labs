@@ -1,11 +1,10 @@
 import { create } from 'zustand';
 import { Node, Edge, OnNodesChange, OnEdgesChange, OnConnect, applyNodeChanges, applyEdgeChanges, addEdge, ReactFlowInstance } from '@xyflow/react';
 
-import { PhysicsSlice, createPhysicsSlice } from './slices/physicsSlice';
 import { FluidSlice, createFluidSlice } from './slices/fluidSlice';
 import { NodeActionSlice, createNodeActionSlice } from './slices/nodeActionSlice';
 
-export interface CanvasState extends PhysicsSlice, FluidSlice, NodeActionSlice {
+export interface CanvasState extends FluidSlice, NodeActionSlice {
   nodes: Node[];
   edges: Edge[];
   rfInstance: ReactFlowInstance | null;
@@ -77,7 +76,6 @@ export const useCanvasStore = create<CanvasState>((set, get, store) => ({
   setMockApiEnabled: (enabled) => set({ isMockApiEnabled: enabled }),
   setDebugDrawerOpen: (open) => set({ isDebugDrawerOpen: open }),
 
-  ...createPhysicsSlice(set, get, store),
   ...createFluidSlice(set, get, store),
   ...createNodeActionSlice(set, get, store),
 }));

@@ -38,7 +38,7 @@ export const INTRO_CAMERA_Y = -2000;
 // ---------------------------------------------------------------------------
 
 /** Horizontal stride per creationIndex in the forceX layout */
-export const FORCE_X_STRIDE = 550;
+export const FORCE_X_STRIDE = 900;
 
 /**
  * Approximate rendered dimensions per node type (px).
