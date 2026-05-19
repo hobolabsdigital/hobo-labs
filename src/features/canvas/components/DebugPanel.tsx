@@ -6,6 +6,8 @@ import { INTRO_REVEAL_CLASSES } from '@/features/canvas/constants';
 import { useTheme, type AppTheme } from '@/core/theme/theme-provider';
 import { useCrtStore, DEFAULT_CRT_CONFIG } from '@/features/crt/store/useCrtStore';
 import { useFerrofluidStore } from '@/features/ferrofluid/store/useFerrofluidStore';
+import { Section } from './debug/Section';
+import { Slider } from './debug/Slider';
 
 const THEME_OPTIONS: { value: AppTheme; label: string }[] = [
   { value: 'light', label: 'Light' },
@@ -16,44 +18,6 @@ const THEME_OPTIONS: { value: AppTheme; label: string }[] = [
   { value: 'retro', label: 'Retro // 70s' },
 ];
 
-/** Collapsible section wrapper */
-function Section({ title, defaultOpen = false, children }: { title: string; defaultOpen?: boolean; children: React.ReactNode }) {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-  return (
-    <div className="border-b border-[var(--foreground)]/30 pb-3">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full text-xs uppercase tracking-wider font-bold py-1 cursor-pointer hover:opacity-70 transition-opacity"
-      >
-        <span>{title}</span>
-        <span className="text-[10px] opacity-50">{isOpen ? '▼' : '▶'}</span>
-      </button>
-      {isOpen && <div className="flex flex-col gap-2 mt-2">{children}</div>}
-    </div>
-  );
-}
-
-/** Reusable slider */
-function Slider({
-  label, value, min, max, step, onChange, format,
-}: {
-  label: string; value: number; min: number; max: number; step: number;
-  onChange: (v: number) => void; format: (v: number) => string;
-}) {
-  return (
-    <div className="flex flex-col gap-1">
-      <div className="flex justify-between text-[10px]">
-        <label>{label}</label>
-        <span>{format(value)}</span>
-      </div>
-      <input
-        type="range" min={min} max={max} step={step} value={value}
-        onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="w-full accent-[var(--foreground)]"
-      />
-    </div>
-  );
-}
 
 export function DebugPanel() {
   const isDebugDrawerOpen = useCanvasStore(state => state.isDebugDrawerOpen);
