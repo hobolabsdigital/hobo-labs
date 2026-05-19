@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, startTransition, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useProjectModalStore } from '../store/useProjectModalStore';
 import Image from 'next/image';
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
