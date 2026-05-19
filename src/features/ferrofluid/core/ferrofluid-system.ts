@@ -5,6 +5,7 @@ import sphereVert from '../shaders/sphere_vert';
 import sphereFrag from '../shaders/sphere_frag';
 import quadVert from '../shaders/quad_vert';
 import dofFrag from '../shaders/dof_frag';
+import { FerrofluidConfig, DEFAULT_FERROFLUID_CONFIG } from '../store/useFerrofluidStore';
 
 export class FerrofluidSystem {
     private gl: WebGL2RenderingContext;
@@ -29,20 +30,7 @@ export class FerrofluidSystem {
     private audioTransient: number = 0;
 
     private mouseVelocity: number = 0;
-    private params: any = {
-        noiseSpeed: 0.001,
-        noiseScale: 1.3,
-        spikeHeight: 0.15,
-        audioMultiplier: 0.5,
-        cameraZ: 5.0,
-        mouseInfluence: 1.5,
-        mousePullStrength: 0.4,
-        dofStrength: 0.8,
-        focusDistance: 3.5,
-        zoomAmount: 1.2,
-        parallaxAmount: 0.5,
-        orbitAmount: 0.4,
-    };
+    private params: FerrofluidConfig = { ...DEFAULT_FERROFLUID_CONFIG };
 
     constructor(canvas: HTMLCanvasElement, onInit?: (instance: FerrofluidSystem) => void) {
         // Initialize WebGL2 with alpha for a transparent background
@@ -92,16 +80,20 @@ export class FerrofluidSystem {
     }
 
     setAudioBands(bass: number, mids: number, highs: number, energy: number, transient: number) {
-        // Smooth on arrival to prevent GPU-side jitter
-        const smoothRate = 0.25;
-        this.audioBass += (bass - this.audioBass) * smoothRate;
-        this.audioMids += (mids - this.audioMids) * smoothRate;
-        this.audioHighs += (highs - this.audioHighs) * smoothRate;
+        // Asymmetric smoothing for punchy attacks but smooth decays
+        const bassAttack = bass > this.audioBass ? 0.8 : 0.1;
+        const midsAttack = mids > this.audioMids ? 0.5 : 0.15;
+        const highsAttack = highs > this.audioHighs ? 0.6 : 0.2;
+        
+        this.audioBass += (bass - this.audioBass) * bassAttack;
+        this.audioMids += (mids - this.audioMids) * midsAttack;
+        this.audioHighs += (highs - this.audioHighs) * highsAttack;
+        
         this.audioEnergy += (energy - this.audioEnergy) * 0.15; // slower for envelope
         this.audioTransient += (transient - this.audioTransient) * 0.4; // faster for attacks
     }
 
-    setParams(params: any) {
+    setParams(params: Partial<FerrofluidConfig>) {
         this.params = { ...this.params, ...params };
         if (params.cameraZ !== undefined) {
             this.cameraPosition[2] = params.cameraZ;
@@ -235,11 +227,13 @@ export class FerrofluidSystem {
                 u_mousePullStrength: this.params.mousePullStrength,
                 // Audio sensitivity (from debug sliders)
                 u_energyFloor: this.params.energyFloor ?? 0.15,
-                u_bassPunch: this.params.bassPunch ?? 0.12,
-                u_midsDetail: this.params.midsDetail ?? 0.3,
-                u_highsShimmer: this.params.highsShimmer ?? 0.02,
-                u_transientCrack: this.params.transientCrack ?? 0.02,
+                u_bassPunch: this.params.bassPunch ?? 0.35,
+                u_midsDetail: this.params.midsDetail ?? 0.09,
+                u_highsShimmer: this.params.highsShimmer ?? 0.008,
+                u_transientCrack: this.params.transientCrack ?? 0.08,
                 u_fresnelBoost: this.params.fresnelBoost ?? 0.8,
+                u_noiseScaleCeiling: this.params.noiseScaleCeiling ?? 2.8,
+                u_scaleReactivity: this.params.scaleReactivity ?? 0.15,
             });
 
             twgl.drawBufferInfo(gl, this.bufferInfo);
@@ -254,7 +248,7 @@ export class FerrofluidSystem {
 
             gl.useProgram(this.dofProgramInfo.program);
             twgl.setBuffersAndAttributes(gl, this.dofProgramInfo, this.quadBufferInfo);
-            
+
             // Dynamically scale DoF strength based on mouse distance from center
             let dynamicDofStrength = 0;
             if (this.mouse.x < 1000.0) {

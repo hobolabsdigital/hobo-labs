@@ -28,6 +28,8 @@ uniform float u_midsDetail;     // mids detail blend
 uniform float u_highsShimmer;   // shimmer amplitude
 uniform float u_transientCrack; // crack intensity
 uniform float u_fresnelBoost;   // (used in frag, declared here for completeness)
+uniform float u_noiseScaleCeiling; // max noise scale at peak energy
+uniform float u_scaleReactivity;   // overall scale change from energy
 
 in vec3 position;
 in vec3 normal;
@@ -113,34 +115,47 @@ vec3 getDisplacedPosition(vec3 p) {
 
     // --- Emotional displacement ---
 
+    // Dynamic noise frequency: smooth when quiet, bumpy when loud
+    float dynamicNoiseScale = mix(u_noiseScale, u_noiseScaleCeiling, u_audioEnergy);
+
     // Base noise pattern — noiseSpeed drives evolution, no audio speed multiplier
-    float noiseVal = snoise(n * u_noiseScale + u_time * u_noiseSpeed);
+    float noiseVal = snoise(n * dynamicNoiseScale + u_time * u_noiseSpeed);
 
-    // 1. Energy IS the spike height driver
-    //    Quiet = energyFloor of configured height, swell = 100%
-    float energyScale = u_energyFloor + (1.0 - u_energyFloor) * u_audioEnergy;
-    float dynamicHeight = u_spikeHeight * energyScale;
+    // 1. Base height is strictly set by the slider
+    float dynamicHeight = u_spikeHeight;
+    
+    // 2. Add a massive, absolute bounce driven directly by the audio
+    // This physically pushes the spikes outwards independently of the slider's setting
+    float audioBounce = (u_audioBass * u_bassPunch * 3.0) + (u_audioEnergy * u_energyFloor);
+    dynamicHeight += audioBounce * u_audioMultiplier;
+    
+    // 3. Clamp the final bounce to [0, 0.5] per user request
+    dynamicHeight = clamp(dynamicHeight, 0.0, 0.5);
 
-    // 2. Bass adds punch on top of the energy-driven height
-    dynamicHeight += u_audioBass * u_audioMultiplier * u_bassPunch;
+    // 3. Sine-wave modulation — slow organic swell (0.3–1.0 range)
+    //dynamicHeight *= 0.3 + 0.7 * (0.5 + 0.5 * sin(u_time * 0.4));
 
     // 3. Mids reveal finer noise detail — emotional passages grow complexity
-    float midsDetail = snoise(n * u_noiseScale * 2.5 + u_time * u_noiseSpeed)
+    float midsDetail = snoise(n * dynamicNoiseScale * 2.5 + u_time * u_noiseSpeed)
                      * u_audioMids * dynamicHeight * u_midsDetail;
 
     // 4. Highs add fine-grained shimmer
-    float shimmer = snoise(n * u_noiseScale * 5.0 + u_time * u_noiseSpeed * 1.5)
+    float shimmer = snoise(n * dynamicNoiseScale * 5.0 + u_time * u_noiseSpeed * 1.5)
                   * u_audioHighs * u_highsShimmer;
 
     // 5. Energy drives breathing (±2% radius)
-    float breathe = 1.0 + (u_audioEnergy - 0.5) * 0.04;
+    float breathe = 1.0 + (u_audioEnergy - 0.5) * u_scaleReactivity;
 
     // 6. Transients crack the surface momentarily
     float crack = max(0.0, u_audioTransient) * u_transientCrack
                 * snoise(n * 8.0 + u_time * 0.01);
 
+    // To make it physically bounce outward, noise must be positive!
+    // Instead of raw noise (-1 to 1), we map it to 0 to 1 so spikes grow OUT
+    float mappedNoise = noiseVal * 0.5 + 0.5;
+
     // --- Combine ---
-    float displacement = (noiseVal * dynamicHeight)
+    float displacement = (mappedNoise * dynamicHeight)
                        + midsDetail
                        + (mousePull * 0.5)
                        + shimmer

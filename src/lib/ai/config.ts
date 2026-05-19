@@ -1,5 +1,12 @@
-import { ollama } from 'ai-sdk-ollama';
+import { createOllama } from 'ai-sdk-ollama';
 import { wrapLanguageModel, extractReasoningMiddleware } from 'ai';
+
+const ollama = createOllama({
+  baseURL: process.env.OLLAMA_BASE_URL,
+  headers: process.env.OLLAMA_API_KEY ? {
+    Authorization: `Bearer ${process.env.OLLAMA_API_KEY}`
+  } : undefined,
+});
 
 /** Sampling parameters shared across main and sub-agent */
 export const SAMPLING_CONFIG = {

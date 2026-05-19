@@ -45,7 +45,7 @@ export const FerrofluidCanvas = () => {
                 systemRef.current.destroy();
             }
         };
-    }, []); // Only run once on mount
+    }, [theme]); // Run when theme changes to setup the correct mode
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
@@ -104,7 +104,7 @@ export const FerrofluidCanvas = () => {
 
     // Setup Audio
     useEffect(() => {
-        const playlist = ['/FerrofluidSystem2.mp3', '/FerrofluidSystem.mp3'];
+        const playlist = ['/FerrofluidSystem.mp3', '/FerrofluidSystem2.mp3'];
         let currentTrack = 0;
 
         const audio = new Audio(playlist[currentTrack]);
@@ -112,7 +112,7 @@ export const FerrofluidCanvas = () => {
         audioRef.current = audio;
 
         // Create audio context but don't resume it until user interaction
-        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
         const ctx = new AudioContextClass();
         audioContextRef.current = ctx;
 
@@ -133,7 +133,7 @@ export const FerrofluidCanvas = () => {
                     audioContextRef.current.resume();
                 }
                 if (audioRef.current.paused) {
-                    audioRef.current.play().then(() => setIsPlaying(true)).catch(console.error);
+                    audioRef.current.play().then(() => setIsPlaying(true)).catch((err: Error) => console.error(err));
                 } else {
                     audioRef.current.pause();
                     setIsPlaying(false);
@@ -156,7 +156,7 @@ export const FerrofluidCanvas = () => {
                     if (audioContextRef.current?.state === 'suspended') {
                         audioContextRef.current.resume();
                     }
-                }).catch((err) => {
+                }).catch(() => {
                     console.log("Autoplay prevented. Waiting for user interaction...");
                 });
             }
@@ -218,6 +218,7 @@ export const FerrofluidCanvas = () => {
                 const isPlaying = !audioRef.current?.paused;
 
                 if (isPlaying) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     analyserRef.current.getByteFrequencyData(dataArrayRef.current as any);
                     const bins = dataArrayRef.current;
                     const numBins = bins.length; // 256 with fftSize=512
@@ -284,7 +285,7 @@ export const FerrofluidCanvas = () => {
 
     // Determine theme-specific opacity and blend mode to ensure visibility
     let opacityMultiplier = 1.0;
-    const activeBlendMode = config.blendMode as any;
+    const activeBlendMode = config.blendMode as import('react').CSSProperties['mixBlendMode'];
 
     if (theme === 'retro') {
         opacityMultiplier = 1.4; // Reduced from 2.8 to improve text legibility 

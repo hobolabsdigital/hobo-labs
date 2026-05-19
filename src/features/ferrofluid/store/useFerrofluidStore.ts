@@ -23,10 +23,12 @@ export interface FerrofluidConfig {
   highsShimmer: number;   // highs shimmer amplitude
   transientCrack: number; // transient surface crack intensity
   fresnelBoost: number;   // mids → fresnel rim glow
+  noiseScaleCeiling: number; // max noise scale at peak energy
+  scaleReactivity: number;   // overall scale change from energy
 }
 
 export const DEFAULT_FERROFLUID_CONFIG: FerrofluidConfig = {
-  noiseSpeed: 0.00024,
+  noiseSpeed: 0.00085,
   noiseScale: 1.3,
   spikeHeight: 0.37,
   audioMultiplier: 1.2,
@@ -43,11 +45,13 @@ export const DEFAULT_FERROFLUID_CONFIG: FerrofluidConfig = {
   blendMode: 'normal',
   // Audio sensitivity defaults
   energyFloor: 0.15,
-  bassPunch: 0.12,
-  midsDetail: 0.3,
-  highsShimmer: 0.02,
-  transientCrack: 0.02,
+  bassPunch: 0.35,
+  midsDetail: 0.09,
+  highsShimmer: 0.008,
+  transientCrack: 0.08,
   fresnelBoost: 0.8,
+  noiseScaleCeiling: 2.8,
+  scaleReactivity: 0.15,
 };
 
 interface FerrofluidStore {
