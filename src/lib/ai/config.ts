@@ -1,7 +1,12 @@
 import { createOllama } from 'ai-sdk-ollama';
 import { wrapLanguageModel, extractReasoningMiddleware } from 'ai';
 
-const ollama = createOllama({
+/**
+ * The single configured Ollama client (base URL + auth from env).
+ * Always use this instance — the library's default `ollama` export points at
+ * localhost with no key and will not work in production.
+ */
+export const ollamaClient = createOllama({
   baseURL: process.env.OLLAMA_BASE_URL,
   headers: process.env.OLLAMA_API_KEY ? {
     Authorization: `Bearer ${process.env.OLLAMA_API_KEY}`
@@ -20,7 +25,7 @@ export const SAMPLING_CONFIG = {
  * Reasoning is disabled for the initial greeting to reduce latency.
  */
 export function createModel(enableReasoning: boolean) {
-  return ollama('gemma4:31b-cloud', {
+  return ollamaClient('gemma4:31b-cloud', {
     think: enableReasoning,
     structuredOutputs: true,
     options: {

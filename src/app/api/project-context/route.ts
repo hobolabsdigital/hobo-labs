@@ -2,6 +2,13 @@ import { generateText } from 'ai';
 import { z } from 'zod';
 import { createModel } from '@/lib/ai/config';
 import { getProjectStaticData } from '@/lib/ai/project-editor';
+import { enforceRateLimit } from '@/lib/ai/rate-limit';
+
+/** Only accept the minimal typed fields the route genuinely needs.
+ *  Client-supplied `messages` are deliberately ignored — the prompt is built server-side. */
+const requestSchema = z.object({
+  slug: z.string().min(1).max(100),
+});
 
 const contextSchema = z.object({
   problem: z.string(),
@@ -35,16 +42,23 @@ function extractJSON(text: string): unknown | null {
 
 export async function POST(req: Request) {
   try {
+    const limited = enforceRateLimit(req);
+    if (limited) return limited;
+
     const body = await req.json();
-    const { slug, messages } = body;
+    const parsedRequest = requestSchema.safeParse(body);
+    if (!parsedRequest.success) {
+      return new Response(JSON.stringify({ error: 'Invalid request' }), { status: 400 });
+    }
+    const { slug } = parsedRequest.data;
     const projectData = getProjectStaticData(slug);
 
     if (!projectData) {
       return new Response(JSON.stringify({ error: 'Project not found' }), { status: 404 });
     }
 
-    const defaultMessages = [{ role: 'user', content: 'Generate context for this project.' }];
-    const messagesToUse = messages && messages.length > 0 ? messages : defaultMessages;
+    // Prompt content is fully server-controlled; client input is never forwarded to the model.
+    const messagesToUse = [{ role: 'user' as const, content: 'Generate context for this project.' }];
 
     // Use generateText (not streaming) — this is a small 3-field response,
     // latency is acceptable, and it avoids the Output.object protocol that
@@ -83,8 +97,9 @@ ${projectData._rawContent}
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error: unknown) {
+    // Log detail server-side only; never echo internals to the client.
     console.error('[project-context] Error:', error);
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }), { status: 500 });
+    return new Response(JSON.stringify({ error: 'Something went wrong. Please try again.' }), { status: 500 });
   }
 }
 

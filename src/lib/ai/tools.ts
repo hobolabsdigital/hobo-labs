@@ -25,14 +25,14 @@ export const createHeroNode = tool({
 
 /**
  * Client-executed tool: creates a contact node on the editorial canvas.
+ * Deliberately takes NO arguments: contact details are hard-coded in
+ * ContactNode's fallbacks, so the model cannot inject fraudulent info.
  */
+// TODO(lane-c): src/lib/ai/prompts.ts (rule 4) still instructs the model to pass
+// credentials to showContact — update that prompt line to just "call showContact".
 export const showContact = tool({
-  description: 'Show the user contact information on the canvas',
-  inputSchema: z.object({
-    email: z.string().optional().describe('Email address to display'),
-    phone: z.string().optional().describe('Phone number to display'),
-    tagline: z.string().optional().describe('A punchy tagline to display along with the contact info'),
-  }),
+  description: 'Show the contact information card on the canvas. Takes no parameters — the contact details are rendered from trusted static data.',
+  inputSchema: z.object({}),
 });
 
 /**

@@ -7,18 +7,49 @@ import { buildSystemPrompt } from '@/lib/ai/prompts';
 import { createHeroNode, showContact, suggestPrompts } from '@/lib/ai/tools';
 import { createMockStreamResponse } from '@/lib/ai/mock-stream';
 import { extractUserQuery } from '@/lib/ai/messages';
+import { enforceRateLimit } from '@/lib/ai/rate-limit';
+
+const MAX_BODY_BYTES = 32 * 1024; // 32KB
+const MAX_MESSAGES = 40;
+
+function jsonError(message: string, status: number): Response {
+  return new Response(JSON.stringify({ error: message }), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
 
 export async function POST(req: Request) {
   try {
-    // --- Mock mode (dev/testing) ---
+    // --- Rate limit ---
+    const limited = enforceRateLimit(req);
+    if (limited) return limited;
+
+    // --- Mock mode (dev/testing only) ---
     const url = new URL(req.url);
-    if (url.searchParams.get('mock') === 'true') {
+    if (process.env.NODE_ENV !== 'production' && url.searchParams.get('mock') === 'true') {
       return createMockStreamResponse();
     }
 
+    // --- Body size cap ---
+    const rawBody = await req.text();
+    if (new TextEncoder().encode(rawBody).byteLength > MAX_BODY_BYTES) {
+      return jsonError('Request body too large.', 413);
+    }
+
     // --- Parse & convert messages ---
-    const body = await req.json();
-    const messages = Array.isArray(body) ? body : body.messages || [];
+    let body: unknown;
+    try {
+      body = JSON.parse(rawBody);
+    } catch {
+      return jsonError('Invalid JSON body.', 400);
+    }
+    const messages = Array.isArray(body)
+      ? body
+      : (body as { messages?: unknown[] })?.messages || [];
+    if (!Array.isArray(messages) || messages.length > MAX_MESSAGES) {
+      return jsonError('Too many messages.', 400);
+    }
     const coreMessages = await convertToModelMessages(messages);
 
     // --- RAG context ---
@@ -62,10 +93,8 @@ export async function POST(req: Request) {
 
     return createUIMessageStreamResponse({ stream });
   } catch (error: unknown) {
+    // Log detail server-side only; never echo internals to the client.
     console.error('Chat API error:', error);
-    return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'An unknown error occurred.' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } },
-    );
+    return jsonError('Something went wrong. Please try again.', 500);
   }
 }

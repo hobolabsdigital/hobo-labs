@@ -1,5 +1,5 @@
-import { ollama } from 'ai-sdk-ollama';
 import { embed } from 'ai';
+import { ollamaClient } from './config';
 import { findSimilarChunks } from '@/lib/vectorStore';
 import { RAGChunk } from './types';
 import { personaDb, projectsDb } from './data';
@@ -31,9 +31,10 @@ export async function retrievePersonaContext(userQuery: string): Promise<string>
     const combinedDb: RAGChunk[] = [...personaDb, ...projectsDb];
     if (combinedDb.length === 0) return '';
 
-    // Vector similarity search
+    // Vector similarity search — uses the configured client (env base URL + key),
+    // not the library's default localhost instance, so this works in production.
     const { embedding } = await embed({
-      model: ollama.embedding('nomic-embed-text'),
+      model: ollamaClient.embedding('nomic-embed-text'),
       value: userQuery,
     });
     const topChunks = findSimilarChunks(embedding, combinedDb, 5);
