@@ -53,3 +53,12 @@ ruvector.db
 .claude-flow/daemon.pid
 .claude-flow/daemon-state.json
 .claude-flow/metrics/
+
+# lint dumps
+eslint-report.txt
+lint-output.txt
+
+# agent runtime artifacts
+.agents/**/*.log
+.agents/**/*.pid
+agentdb.rvf*

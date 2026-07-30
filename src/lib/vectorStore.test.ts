@@ -1,7 +1,8 @@
+import { expect, test, vi } from 'vitest';
 import { findSimilarChunks } from './vectorStore';
 
-jest.mock('ai', () => ({
-  cosineSimilarity: jest.fn((a, b) => (a[0] === b[0] ? 1 : 0))
+vi.mock('ai', () => ({
+  cosineSimilarity: vi.fn((a: number[], b: number[]) => (a[0] === b[0] ? 1 : 0))
 }));
 
 test('findSimilarChunks returns top K items based on cosine similarity', () => {
@@ -10,7 +11,7 @@ test('findSimilarChunks returns top K items based on cosine similarity', () => {
     { content: 'Designer', metadata: { type: 'persona' }, embedding: [0, 1, 0] },
     { content: 'Developer', metadata: { type: 'persona' }, embedding: [1, 0, 0] }
   ];
-  
+
   const results = findSimilarChunks(queryEmbedding, db, 1);
   expect(results.length).toBe(1);
   expect(results[0].content).toBe('Developer');

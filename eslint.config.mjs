@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Agent tooling directories (not app code):
+    ".claude/**",
+    ".claude-flow/**",
   ]),
 ]);
 
