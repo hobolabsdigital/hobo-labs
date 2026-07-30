@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Space_Mono, Inter, Saira_Condensed, Anton, Fraunces, Darker_Grotesque } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@wrksz/themes/next";
+import { MotionConfig } from "framer-motion";
 import { Logo } from '@/core/ui/Logo';
 
 const spaceMono = Space_Mono({
@@ -54,10 +55,12 @@ export default function RootLayout({
       </head>
       <body className="h-[100dvh] overflow-hidden flex flex-col font-body bg-transparent text-foreground">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange themes={['light', 'dark', 'blueprint', 'cyberpunk', 'brutalist', 'retro']}>
-          <div className="fixed top-6 md:top-8 left-4 md:left-8 z-[10000] pointer-events-none theme-logo-container">
-            <Logo className="w-24 md:w-40 h-auto theme-logo" />
-          </div>
-          {children}
+          <MotionConfig reducedMotion="user">
+            <div className="fixed top-6 md:top-8 left-4 md:left-8 z-[10000] pointer-events-none theme-logo-container">
+              <Logo className="w-24 md:w-40 h-auto theme-logo" />
+            </div>
+            {children}
+          </MotionConfig>
         </ThemeProvider>
       </body>
     </html>

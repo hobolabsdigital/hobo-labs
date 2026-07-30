@@ -23,7 +23,7 @@ export function ProjectDetails({
       {(problem || solution || isStreaming) && (
         <motion.div variants={activeItem} className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
           <div className="border-t border-foreground/15 pt-5">
-            <p className="font-ui text-[10px] uppercase tracking-widest text-foreground/40 mb-3 brutalist:text-foreground brutalist:text-xs">Problem</p>
+            <p className="font-ui text-[10px] uppercase tracking-widest text-foreground/60 mb-3 brutalist:text-foreground brutalist:text-xs">Problem</p>
             {isStreaming && !problem ? (
               <div className="h-16 w-full rounded bg-foreground/10 animate-pulse" />
             ) : (
@@ -31,7 +31,7 @@ export function ProjectDetails({
             )}
           </div>
           <div className="border-t border-foreground/15 pt-5">
-            <p className="font-ui text-[10px] uppercase tracking-widest text-foreground/40 mb-3 brutalist:text-foreground brutalist:text-xs">Solution</p>
+            <p className="font-ui text-[10px] uppercase tracking-widest text-foreground/60 mb-3 brutalist:text-foreground brutalist:text-xs">Solution</p>
             {isStreaming && !solution ? (
               <div className="h-16 w-full rounded bg-foreground/10 animate-pulse" />
             ) : (
@@ -60,7 +60,7 @@ export function ProjectDetails({
       {techStack.length > 0 && (
         <motion.div variants={activeItem} className="flex flex-wrap gap-2">
           {techStack.map((tech, i) => (
-            <span key={i} className="px-2 py-1 border border-foreground/15 font-ui text-[10px] uppercase tracking-wider text-foreground/50 brutalist:text-foreground brutalist:border-foreground brutalist:text-xs" style={{ borderRadius: 'var(--radius-pill)' }}>
+            <span key={i} className="px-2 py-1 border border-foreground/15 font-ui text-[10px] uppercase tracking-wider text-foreground/60 brutalist:text-foreground brutalist:border-foreground brutalist:text-xs" style={{ borderRadius: 'var(--radius-pill)' }}>
               {tech}
             </span>
           ))}

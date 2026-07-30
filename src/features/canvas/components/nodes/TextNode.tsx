@@ -82,7 +82,7 @@ export const TextNode = React.memo(function TextNode({ data, id }: { data: Recor
         {hasOverflow && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="mt-3 font-ui text-[10px] text-foreground/40 hover:text-foreground uppercase tracking-widest transition-colors cursor-pointer w-full text-right"
+            className="mt-3 font-ui text-[10px] text-foreground/60 hover:text-foreground uppercase tracking-widest transition-colors cursor-pointer w-full text-right"
           >
             {isExpanded ? '[ COLLAPSE ]' : `[ +${paragraphs.length - VISIBLE_COLS} MORE ]`}
           </button>

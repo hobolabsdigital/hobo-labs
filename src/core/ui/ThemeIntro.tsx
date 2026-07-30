@@ -102,9 +102,9 @@ export function ThemeIntro({ onComplete }: ThemeIntroProps) {
       ref={containerRef}
       className={`absolute inset-0 z-[100] flex flex-col items-center justify-center p-4 pt-16 md:pt-4 font-mono select-none ${isExiting ? 'pointer-events-none' : 'pointer-events-auto'}`}
     >
-      <div className="h-[80px] md:h-[60px] mb-6 md:mb-10 flex items-center justify-center w-full">
+      <div aria-live="polite" className="h-[80px] md:h-[60px] mb-6 md:mb-10 flex items-center justify-center w-full">
         <AnimatePresence mode="wait">
-          <motion.h1
+          <motion.p
             key={messageIndex}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -113,7 +113,7 @@ export function ThemeIntro({ onComplete }: ThemeIntroProps) {
             className="text-xl md:text-3xl font-heading font-bold uppercase tracking-widest text-[var(--foreground)] drop-shadow-md text-center px-4 max-w-[80vw]"
           >
             {INTRO_MESSAGES[messageIndex]}
-          </motion.h1>
+          </motion.p>
         </AnimatePresence>
       </div>
 

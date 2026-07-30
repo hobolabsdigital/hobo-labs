@@ -5,8 +5,8 @@
       "type": "refactor",
       "description": "LANE D — Repo hygiene & deps: git rm junk files (eslint-report.txt, lint-output.txt, test_depth.js, .agents/superpowers logs/pids), eslint ignore .claude/, fix duplicated playlist + delete orphan mp3, remove verified-unused deps, npm audit fix, delete dead components, add vitest for vectorStore.test.ts",
       "priority": "high",
-      "status": "pending",
-      "progress": 0,
+      "status": "completed",
+      "progress": 100,
       "assignedTo": [],
       "tags": [
         "audit-remediation",
@@ -14,15 +14,22 @@
       ],
       "createdAt": "2026-07-30T20:32:14.133Z",
       "startedAt": null,
-      "completedAt": null
+      "completedAt": "2026-07-30T20:38:53.533Z",
+      "result": {
+        "tsc": "0 errors",
+        "lint": "0 errors",
+        "test": "pass",
+        "depsRemoved": 11,
+        "cvesRemaining": 12
+      }
     },
     "task-1785443536663-tv60km": {
       "taskId": "task-1785443536663-tv60km",
       "type": "bugfix",
       "description": "LANE A — Security/API hardening: rate-limit chat + project-context routes, ignore client messages in project-context, strip _rawContent from project-data, security headers in next.config.ts, generic client errors, gate mock mode, no-arg showContact tool, fix rag.ts embedding client config",
       "priority": "critical",
-      "status": "pending",
-      "progress": 0,
+      "status": "completed",
+      "progress": 100,
       "assignedTo": [],
       "tags": [
         "audit-remediation",
@@ -30,15 +37,21 @@
       ],
       "createdAt": "2026-07-30T20:32:16.663Z",
       "startedAt": null,
-      "completedAt": null
+      "completedAt": "2026-07-30T20:43:41.579Z",
+      "result": {
+        "tsc": "0 errors",
+        "lint": "0 errors",
+        "fixes": 8,
+        "followup": "prompts.ts credential rule updated by coordinator"
+      }
     },
     "task-1785443538361-r9yfax": {
       "taskId": "task-1785443538361-r9yfax",
       "type": "bugfix",
       "description": "LANE B — WebGL/perf: ferrofluid init-once + real destroy(), pause idle RAF loops (GrainCanvas, useWebGLBarrel), InteractiveGrid NaN guard, lazy-load canvas stack via next/dynamic, cap mobile DPR, reduced-motion pause in canvas loops",
       "priority": "critical",
-      "status": "pending",
-      "progress": 0,
+      "status": "completed",
+      "progress": 100,
       "assignedTo": [],
       "tags": [
         "audit-remediation",
@@ -46,7 +59,13 @@
       ],
       "createdAt": "2026-07-30T20:32:18.361Z",
       "startedAt": null,
-      "completedAt": null
+      "completedAt": "2026-07-30T20:50:50.368Z",
+      "result": {
+        "tsc": "0 errors",
+        "lint": "0 errors",
+        "fixes": 8,
+        "followup": "fluid.js DPR cap applied by coordinator"
+      }
     },
     "task-1785443540612-41buu7": {
       "taskId": "task-1785443540612-41buu7",

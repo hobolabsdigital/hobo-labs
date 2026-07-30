@@ -32,7 +32,7 @@ export const ContactNode = React.memo(function ContactNode({ data }: { data: Con
         initial="hidden"
         animate="visible"
         exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.3 } }}
-        className="relative flex flex-col bg-background/80 backdrop-blur-md border-2 border-foreground/10 p-8 w-[400px] origin-left"
+        className="relative flex flex-col bg-background/80 backdrop-blur-md border-2 border-foreground/10 p-8 w-full max-w-[400px] origin-left"
         style={{ borderRadius: "2px" }}
       >
         <NodeHandles />

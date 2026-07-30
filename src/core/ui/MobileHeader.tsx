@@ -53,7 +53,7 @@ export function MobileHeader() {
       <div className="relative z-[100]">
         <button 
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-10 h-10 rounded-full border border-[var(--foreground)] flex items-center justify-center text-[var(--foreground)] transition-colors ${isOpen ? 'bg-[var(--foreground)] text-[var(--background)]' : 'bg-[var(--background)] hover:bg-[var(--foreground)] hover:text-[var(--background)]'}`}
+          className={`w-11 h-11 rounded-full border border-[var(--foreground)] flex items-center justify-center text-[var(--foreground)] transition-colors ${isOpen ? 'bg-[var(--foreground)] text-[var(--background)]' : 'bg-[var(--background)] hover:bg-[var(--foreground)] hover:text-[var(--background)]'}`}
           aria-label="Toggle Theme"
         >
           {/* Minimalist half-moon/circle icon */}

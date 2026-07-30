@@ -91,21 +91,28 @@ export function GallerySlider({
 
       {/* Dot Navigation */}
       {imagesCount > 1 && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="absolute -bottom-10 left-0 right-0 flex justify-center gap-3 z-20"
+          className="absolute -bottom-14 left-0 right-0 flex justify-center z-20"
         >
+          {/* Dots stay 6px visually; each button provides a ≥44px hit area */}
           {Array.from({ length: imagesCount }).map((_, i) => (
             <button
               key={`dot-${i}`}
+              type="button"
               onClick={() => setCurrentIndex(i)}
-              className={`h-1.5 transition-all duration-300 ${
-                i === currentIndex ? `w-6 bg-foreground` : `w-1.5 bg-foreground/20 hover:bg-foreground/50`
-              }`}
-              style={{ borderRadius: 'var(--radius-pill)' }}
+              className="group/dot flex min-h-11 min-w-11 items-center justify-center"
               aria-label={`Go to slide ${i + 1}`}
-            />
+              aria-current={i === currentIndex ? 'true' : undefined}
+            >
+              <span
+                className={`h-1.5 transition-all duration-300 ${
+                  i === currentIndex ? `w-6 bg-foreground` : `w-1.5 bg-foreground/20 group-hover/dot:bg-foreground/50`
+                }`}
+                style={{ borderRadius: 'var(--radius-pill)' }}
+              />
+            </button>
           ))}
         </motion.div>
       )}

@@ -3,10 +3,6 @@ import WebGLFluid from '@/features/fluid-bg/lib/fluid';
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 import { prefersReducedMotion, onReducedMotionChange } from '@/core/ui/reduced-motion';
 
-// TODO(lane-c): src/features/fluid-bg/lib/fluid.js sizes its canvas with full
-// window.devicePixelRatio (the `$` helper, ~line 485). Cap it (1.5 when
-// window.innerWidth < 768, else 2) the same way ferrofluid-system.ts now does.
-// fluid.js is outside this lane's allowed files.
 
 function hexToRgb(hex: string) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);

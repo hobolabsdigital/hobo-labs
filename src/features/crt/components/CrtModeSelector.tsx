@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCrtStore, detectDrawElementImage } from "../store/useCrtStore";
 
 /**
@@ -17,6 +17,14 @@ export function CrtModeSelector() {
 
   // Local state for rendering — drives the popup visibility
   const [detected, setDetected] = useState<boolean | null>(null);
+  const firstOptionRef = useRef<HTMLButtonElement>(null);
+
+  const showPopup = detected === true && crtMode === null;
+
+  // Blocking dialog: move focus to the first option when it appears
+  useEffect(() => {
+    if (showPopup) firstOptionRef.current?.focus();
+  }, [showPopup]);
 
   useEffect(() => {
     const supported = detectDrawElementImage();
@@ -48,15 +56,18 @@ export function CrtModeSelector() {
   return (
     <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-[var(--background)]/80 backdrop-blur-sm">
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="crt-mode-selector-title"
         className="bg-[var(--background)] border-2 border-[var(--foreground)] p-8 max-w-md w-full mx-4 font-ui"
         style={{ boxShadow: "8px 8px 0 var(--foreground)" }}
       >
         {/* Header */}
         <div className="border-b border-[var(--foreground)] pb-4 mb-6">
-          <h2 className="text-sm uppercase tracking-widest font-bold">
+          <h2 id="crt-mode-selector-title" className="text-sm uppercase tracking-widest font-bold">
             [ CRT RENDERING MODE ]
           </h2>
-          <p className="text-[10px] mt-2 opacity-60 uppercase tracking-wider">
+          <p className="text-[10px] mt-2 opacity-80 uppercase tracking-wider">
             Experimental features detected
           </p>
         </div>
@@ -73,6 +84,7 @@ export function CrtModeSelector() {
         <div className="flex flex-col gap-3">
           {/* Experimental */}
           <button
+            ref={firstOptionRef}
             onClick={() => setCrtMode("experimental")}
             className="w-full p-4 border-2 border-[var(--foreground)] text-left hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-colors group"
           >
@@ -80,11 +92,11 @@ export function CrtModeSelector() {
               <span className="text-xs font-bold uppercase tracking-wider">
                 Experimental
               </span>
-              <span className="text-[9px] uppercase tracking-wider opacity-50 group-hover:opacity-100">
+              <span className="text-[9px] uppercase tracking-wider opacity-80 group-hover:opacity-100">
                 Chrome 136+
               </span>
             </div>
-            <p className="text-[10px] opacity-60 group-hover:opacity-80">
+            <p className="text-[10px] opacity-80 group-hover:opacity-100">
               Real barrel distortion via GPU shader. Captures live DOM to WebGL
               texture at 60fps. True CRT curvature.
             </p>
@@ -99,11 +111,11 @@ export function CrtModeSelector() {
               <span className="text-xs font-bold uppercase tracking-wider">
                 Standard
               </span>
-              <span className="text-[9px] uppercase tracking-wider opacity-50 group-hover:opacity-100">
+              <span className="text-[9px] uppercase tracking-wider opacity-80 group-hover:opacity-100">
                 All Browsers
               </span>
             </div>
-            <p className="text-[10px] opacity-60 group-hover:opacity-80">
+            <p className="text-[10px] opacity-80 group-hover:opacity-100">
               CSS vignette, film grain, chromatic aberration. No geometric
               warping. Universal compatibility.
             </p>
@@ -111,7 +123,7 @@ export function CrtModeSelector() {
         </div>
 
         {/* Footer */}
-        <p className="text-[9px] mt-5 opacity-40 uppercase tracking-wider text-center">
+        <p className="text-[9px] mt-5 opacity-80 uppercase tracking-wider text-center">
           You can switch modes anytime in the CRT debug panel
         </p>
       </div>

@@ -25,11 +25,25 @@ export function HeroText({
 
     const m = getMotion(resolvedTheme ?? 'light');
     const chars = SCRAMBLE_CHARS.split('');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const tl = gsap.timeline({
       onComplete: () => {
         if (onSequenceComplete) onSequenceComplete();
       }
     });
+
+    // Reduced motion: show the final text immediately — no scramble, no
+    // transform-based exit. Hold briefly, then fade the container out.
+    if (prefersReducedMotion) {
+      line1Ref.current.textContent = text1;
+      for (let i = 0; i < text2.length; i++) {
+        const charNode = line2Ref.current.childNodes[i] as HTMLSpanElement;
+        if (charNode) charNode.textContent = text2[i] === ' ' ? ' ' : text2[i];
+      }
+      tl.to({}, { duration: m.hero.holdDuration });
+      tl.to(containerRef.current, { opacity: 0, duration: 0.4, ease: 'none' });
+      return;
+    }
 
     const state = {
       t1: 0,

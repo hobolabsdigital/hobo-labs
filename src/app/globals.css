@@ -18,7 +18,13 @@
   --font-body: var(--font-body), sans-serif;
   --font-ui: var(--font-ui), monospace;
   --color-primary: var(--primary);
-  --color-primary-foreground: #ffffff;
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-accent-blue: #5E9BFF;
   --color-accent-purple: #8F9AFF;
   --color-accent-pink: #FFB1EE;
@@ -40,6 +46,13 @@
   --background: #faf9f7;
   --foreground: #0a0a0c;
   --primary: #1a73e8;
+  --primary-foreground: #ffffff;
+  --muted: #efedea;
+  --muted-foreground: #55555e;
+  --secondary: #e2e8f0;
+  --secondary-foreground: #0a0a0c;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
   --border: #e2e8f0;
   --input: #e2e8f0;
   --ring: #1a73e8;
@@ -68,6 +81,13 @@
   --background: #0a0a0c;
   --foreground: #f4f4f5;
   --primary: #5E9BFF;
+  --primary-foreground: #0a0a0c;
+  --muted: #1c1c21;
+  --muted-foreground: #a1a1aa;
+  --secondary: #27272a;
+  --secondary-foreground: #f4f4f5;
+  --destructive: #f87171;
+  --destructive-foreground: #0a0a0c;
   --border: #333333;
   --input: #333333;
   --ring: #5E9BFF;
@@ -77,6 +97,13 @@
   --background: #f0ede6;
   --foreground: #2a3db5;
   --primary: #2a3db5;
+  --primary-foreground: #f0ede6;
+  --muted: #e4e0d6;
+  --muted-foreground: #47549e;
+  --secondary: #c8c4ba;
+  --secondary-foreground: #2a3db5;
+  --destructive: #b91c1c;
+  --destructive-foreground: #f0ede6;
   --border: #2a3db5;
   --input: #c8c4ba;
   --ring: #2a3db5;
@@ -129,6 +156,13 @@
   --background: #0c0612;
   --foreground: #e8e0f0;
   --primary: #ff2d7b;
+  --primary-foreground: #0c0612;
+  --muted: #1a0d28;
+  --muted-foreground: #b3a6c4;
+  --secondary: #2a1540;
+  --secondary-foreground: #e8e0f0;
+  --destructive: #ff5c5c;
+  --destructive-foreground: #0c0612;
   --border: #2a1540;
   --input: #2a1540;
   --ring: #ff2d7b;
@@ -182,6 +216,13 @@
   --background: #E8200E;
   --foreground: #F5F0E8;
   --primary: #0A0A0A;
+  --primary-foreground: #F5F0E8;
+  --muted: #C41A0B;
+  --muted-foreground: #F5F0E8;
+  --secondary: #0A0A0A;
+  --secondary-foreground: #F5F0E8;
+  --destructive: #0A0A0A;
+  --destructive-foreground: #F5F0E8;
   --border: #0A0A0A;
   --input: #C41A0B;
   --ring: #0A0A0A;
@@ -254,6 +295,13 @@
   --background: #F0D8C0;
   --foreground: #3D2B1F;
   --primary: #E8668A;
+  --primary-foreground: #3D2B1F;
+  --muted: #E4CCB4;
+  --muted-foreground: #6b5240;
+  --secondary: #C8B8A8;
+  --secondary-foreground: #3D2B1F;
+  --destructive: #b02a37;
+  --destructive-foreground: #F0D8C0;
   --border: #C8B8A8;
   --input: #F0E0D0;
   --ring: #E8668A;
@@ -287,6 +335,19 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+  }
+  /* Visible keyboard focus for hand-rolled buttons/links. Component-level
+     focus-visible rings (Tailwind utilities) override this where present. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  /* Kill infinite CSS animations for reduced-motion users */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-pulse,
+    .animate-wing-flap {
+      animation: none;
+    }
   }
   button, a, [role="button"], summary, select, label[for] {
     cursor: pointer;

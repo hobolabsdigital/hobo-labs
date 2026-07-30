@@ -2,26 +2,30 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { NodeHandles } from './NodeHandles';
 import { useProjectModalStore } from '@/features/project-modal/store/useProjectModalStore';
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 
 // --- Shimmer block for skeleton mode ---
 function Shimmer({ className }: { className?: string }) {
+  const prefersReducedMotion = useReducedMotion();
   return (
     <div className={`relative overflow-hidden bg-foreground/5 ${className}`}>
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/[0.07] to-transparent"
-        animate={{ x: ['-100%', '200%'] }}
-        transition={{ repeat: Infinity, duration: 1.8, ease: 'linear' }}
-      />
+      {!prefersReducedMotion && (
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/[0.07] to-transparent"
+          animate={{ x: ['-100%', '200%'] }}
+          transition={{ repeat: Infinity, duration: 1.8, ease: 'linear' }}
+        />
+      )}
     </div>
   );
 }
 
 // --- Compact Skeleton ---
 function ProjectSkeleton() {
+  const prefersReducedMotion = useReducedMotion();
   return (
     <div
       className="relative bg-background origin-center flex flex-col shadow-2xl border border-foreground/10 w-full max-w-full md:max-w-none md:w-[800px]"
@@ -29,9 +33,9 @@ function ProjectSkeleton() {
       <NodeHandles />
       <div className="w-full aspect-video bg-foreground/5 flex items-center justify-center overflow-hidden relative">
         <motion.div
-          animate={{ opacity: [0.3, 0.6, 0.3] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="font-ui text-xs text-foreground/30 uppercase tracking-widest"
+          animate={prefersReducedMotion ? { opacity: 0.6 } : { opacity: [0.3, 0.6, 0.3] }}
+          transition={prefersReducedMotion ? undefined : { repeat: Infinity, duration: 2 }}
+          className="font-ui text-xs text-foreground/60 uppercase tracking-widest"
         >
           LOADING ASSET
         </motion.div>
@@ -137,9 +141,9 @@ export const ProjectNode = React.memo(function ProjectNode({ data, id: reactFlow
         <div className="p-8 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <h2 className="text-3xl font-heading font-medium tracking-tight text-foreground brutalist:text-[var(--brutalist-cyan)]">{title}</h2>
-            <span className="font-ui text-xs text-foreground/40">{year}</span>
+            <span className="font-ui text-xs text-foreground/60">{year}</span>
           </div>
-          <p className="font-ui text-xs uppercase tracking-widest text-foreground/50">{role}</p>
+          <p className="font-ui text-xs uppercase tracking-widest text-foreground/60">{role}</p>
           {isStreaming && !quote ? (
             <Shimmer className="h-4 w-3/4 rounded mt-2" />
           ) : (

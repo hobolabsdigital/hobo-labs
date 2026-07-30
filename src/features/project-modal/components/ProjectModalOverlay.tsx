@@ -22,6 +22,9 @@ function OverlayContent() {
   const m = getMotion(resolvedTheme ?? 'light');
   const activeItem = useMemo(() => buildItemVariants(resolvedTheme ?? 'light'), [resolvedTheme]);
   const heroSlotRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
   const [targetRect, setTargetRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
 
   useEffect(() => {
@@ -61,14 +64,46 @@ function OverlayContent() {
   }, [close]);
 
   useEffect(() => {
+    if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') handleClose(); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [handleClose]);
+  }, [isOpen, handleClose]);
 
-  if (!isOpen || !projectData) return null;
+  // Focus management: on open remember the trigger and move focus into the
+  // modal; on close return focus to the triggering element.
+  useEffect(() => {
+    if (!isOpen) return;
+    triggerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const raf = requestAnimationFrame(() => closeBtnRef.current?.focus());
+    return () => {
+      cancelAnimationFrame(raf);
+      triggerRef.current?.focus();
+      triggerRef.current = null;
+    };
+  }, [isOpen]);
 
-  const { title, year, role, problem, solution } = projectData;
+  // Minimal focus trap: Tab / Shift+Tab wrap within the dialog.
+  const handleTrapKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key !== 'Tab' || !dialogRef.current) return;
+    const focusables = Array.from(
+      dialogRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter((el) => !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true');
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }, []);
+
+  const { title, year, role, problem, solution } = (projectData ?? {}) as Record<string, unknown>;
   const quote = (projectData?.quote as string) || (projectData?.summary as string) || '';
   const techStack: string[] = Array.isArray(projectData?.techStack) ? projectData.techStack as string[] : [];
 
@@ -143,6 +178,15 @@ function OverlayContent() {
           )}
 
           {/* Full-screen scrollable portal — the ProjectExpandedView layout */}
+          <div
+            key="dialog"
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="project-modal-title"
+            onKeyDown={handleTrapKeyDown}
+            className="contents"
+          >
           <motion.div
             key="modal"
             className="fixed inset-0 z-[10001] overflow-y-auto overflow-x-hidden"
@@ -156,7 +200,7 @@ function OverlayContent() {
             >
               {/* ── Title & meta ── */}
               <motion.header variants={activeItem} className="mb-10">
-                <h1 className="text-4xl md:text-6xl mb-3 leading-tight font-heading brutalist:text-[var(--brutalist-cyan)]">{(title as string) || ''}</h1>
+                <h1 id="project-modal-title" className="text-4xl md:text-6xl mb-3 leading-tight font-heading brutalist:text-[var(--brutalist-cyan)]">{(title as string) || ''}</h1>
                 <div className="flex gap-3 font-ui text-sm uppercase opacity-60">
                   {!!year && <span>{year as string}</span>}
                   {!!year && !!role && <span>•</span>}
@@ -204,22 +248,30 @@ function OverlayContent() {
             </motion.div>
           </motion.div>
 
-          {/* Close */}
+          {/* Close — ≥44px hit target; visual chip stays small via inner span */}
           <motion.button
             key="close-btn"
-            className={[
-              'fixed top-5 right-6 z-[10002] font-ui uppercase tracking-widest text-[10px] transition-all',
-              'px-3 py-1 border border-foreground/30 text-foreground/70 hover:text-foreground hover:border-foreground',
-              'bg-background/70 backdrop-blur-sm',
-              'brutalist:bg-foreground brutalist:text-background brutalist:border-foreground brutalist:hover:opacity-80 brutalist:backdrop-blur-none',
-            ].join(' ')}
+            ref={closeBtnRef}
+            type="button"
+            aria-label="Close project details"
+            className="group fixed top-2 right-3 z-[10002] flex min-h-11 min-w-11 items-center justify-center p-1.5"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { delay: 0.4 } }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
           >
-            [ ✕ CLOSE ]
+            <span
+              className={[
+                'font-ui uppercase tracking-widest text-[10px] transition-all',
+                'px-3 py-1 border border-foreground/30 text-foreground/70 group-hover:text-foreground group-hover:border-foreground',
+                'bg-background/70 backdrop-blur-sm',
+                'brutalist:bg-foreground brutalist:text-background brutalist:border-foreground brutalist:group-hover:opacity-80 brutalist:backdrop-blur-none',
+              ].join(' ')}
+            >
+              [ ✕ CLOSE ]
+            </span>
           </motion.button>
+          </div>
         </>
       )}
     </AnimatePresence>

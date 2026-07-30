@@ -99,7 +99,7 @@ export function ChatInput() {
           onChange={handleInputChange}
           placeholder={isHistoryMode ? "Type to branch off from this point in time..." : "Ask me about my work, process, or vision..."}
           disabled={false}
-          className="flex-1 border-0 bg-transparent text-foreground outline-none focus:outline-none focus-visible:ring-0 rounded-none px-4 text-base md:text-lg brutalist:text-lg brutalist:font-bold transition-opacity placeholder:text-foreground/40 font-body"
+          className="flex-1 border-0 bg-transparent text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/70 rounded-[calc(var(--radius-input)/2)] blueprint:rounded-none cyberpunk:rounded-none brutalist:rounded-none px-4 text-base md:text-lg brutalist:text-lg brutalist:font-bold transition-opacity placeholder:text-foreground/40 font-body"
         />
         <Button
           type="submit"
@@ -129,7 +129,7 @@ export function ChatInput() {
       </form>
 
       {/* Context Bloat Indicator */}
-      <div className="w-[calc(100%-2rem)] md:w-full max-w-2xl px-4 flex items-center justify-between gap-4 opacity-50 transition-opacity hover:opacity-100">
+      <div className="w-[calc(100%-2rem)] md:w-full max-w-2xl px-4 flex items-center justify-between gap-4 opacity-75 transition-opacity hover:opacity-100">
         <div className="font-ui text-[10px] uppercase tracking-widest text-foreground/70 whitespace-nowrap">
           Context Load
         </div>

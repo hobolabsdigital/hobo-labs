@@ -27,15 +27,15 @@ export const HeroNode = React.memo(function HeroNode({ data }: { data: Record<st
         exit={{ y: '100vh', opacity: 0, rotate: 15, transition: { duration: 0.6, ease: 'easeIn' } }}
         className="relative flex flex-col items-start bg-transparent origin-bottom-left w-full max-w-full md:max-w-[900px]"
       >
-        <motion.div className="mb-4" variants={typewriterContainer} initial="hidden" animate="visible">
+        <motion.h1 className="mb-4" variants={typewriterContainer} initial="hidden" animate="visible">
           {headlineLines.map((line: string, i: number) => (
-            <h1 key={i} className={`text-7xl md:text-9xl font-heading font-medium text-foreground leading-[0.85] tracking-tighter uppercase ${i > 0 ? 'brutalist:text-[var(--brutalist-cyan)]' : ''}`} style={{ overflowWrap: 'break-word' }}>
+            <span key={i} className={`block text-7xl md:text-9xl font-heading font-medium text-foreground leading-[0.85] tracking-tighter uppercase ${i > 0 ? 'brutalist:text-[var(--brutalist-cyan)]' : ''}`} style={{ overflowWrap: 'break-word' }}>
               {line.split('').map((char, charIdx) => (
                 <motion.span key={charIdx} variants={typewriterChar}>{char}</motion.span>
               ))}
-            </h1>
+            </span>
           ))}
-        </motion.div>
+        </motion.h1>
 
         {data.imageUrl && (
           <div 
@@ -45,7 +45,7 @@ export const HeroNode = React.memo(function HeroNode({ data }: { data: Record<st
               boxShadow: "10px 10px 0px 0px var(--color-accent-lime)"
             }}
           >
-            <Image src={data.imageUrl} alt="mask" fill className="object-cover" />
+            <Image src={data.imageUrl} alt="" fill className="object-cover" />
           </div>
         )}
 

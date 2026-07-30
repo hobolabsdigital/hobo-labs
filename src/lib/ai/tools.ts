@@ -28,8 +28,6 @@ export const createHeroNode = tool({
  * Deliberately takes NO arguments: contact details are hard-coded in
  * ContactNode's fallbacks, so the model cannot inject fraudulent info.
  */
-// TODO(lane-c): src/lib/ai/prompts.ts (rule 4) still instructs the model to pass
-// credentials to showContact — update that prompt line to just "call showContact".
 export const showContact = tool({
   description: 'Show the contact information card on the canvas. Takes no parameters — the contact details are rendered from trusted static data.',
   inputSchema: z.object({}),

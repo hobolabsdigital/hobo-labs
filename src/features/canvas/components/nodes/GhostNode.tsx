@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { NodeHandles } from './NodeHandles';
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
 
 const GhostText = React.memo(function GhostText({ id, fallbackText, isFinished, isExpanded }: { id: string, fallbackText: string, isFinished: boolean, isExpanded: boolean }) {
@@ -54,25 +54,29 @@ const GhostText = React.memo(function GhostText({ id, fallbackText, isFinished, 
 export const GhostNode = React.memo(function GhostNode({ id, data }: { id: string, data: Record<string, string | boolean | undefined> }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const isFinished = Boolean(data.isFinished);
+  const prefersReducedMotion = useReducedMotion();
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className={`max-w-md p-6 relative ${isFinished ? 'bg-[var(--background)] opacity-60' : 'bg-foreground/20 animate-pulse opacity-100'}`}
+      className={`max-w-md p-6 relative ${isFinished ? 'bg-[var(--background)] opacity-60' : `bg-foreground/20 opacity-100 ${prefersReducedMotion ? '' : 'animate-pulse'}`}`}
     >
       <NodeHandles />
-      
+
       <div className="flex flex-col gap-4">
-        <motion.div 
-          animate={!isFinished ? { opacity: [0.5, 1, 0.5] } : { opacity: 1 }}
-          transition={!isFinished ? { repeat: Infinity, duration: 2 } : {}}
+        <motion.button
+          type="button"
+          animate={!isFinished && !prefersReducedMotion ? { opacity: [0.5, 1, 0.5] } : { opacity: 1 }}
+          transition={!isFinished && !prefersReducedMotion ? { repeat: Infinity, duration: 2 } : {}}
           onClick={() => isFinished && setIsExpanded(!isExpanded)}
-          className={`font-ui text-xs font-bold uppercase tracking-widest self-start px-2 py-1 ${isFinished ? 'bg-foreground/5 text-foreground/50 cursor-pointer hover:bg-foreground/10' : 'bg-foreground/15 text-foreground'}`}
+          disabled={!isFinished}
+          aria-expanded={isFinished ? isExpanded : undefined}
+          className={`font-ui text-xs font-bold uppercase tracking-widest self-start px-2 py-1 text-left ${isFinished ? 'bg-foreground/5 text-foreground/60 cursor-pointer hover:bg-foreground/10' : 'bg-foreground/15 text-foreground'}`}
         >
           {isFinished ? (isExpanded ? '[ - REASONING ]' : '[ + REASONING ]') : '[ THINKING... ]'}
-        </motion.div>
+        </motion.button>
         
         <GhostText id={id} fallbackText={String(data.text || '')} isFinished={isFinished} isExpanded={isExpanded} />
       </div>

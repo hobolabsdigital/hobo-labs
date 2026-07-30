@@ -34,7 +34,7 @@ export function CrtControls() {
       <div className="bg-[var(--background)] border border-[var(--foreground)] border-l-0 p-4 shadow-2xl flex flex-col gap-4 font-ui w-72 max-h-[90vh] overflow-y-auto">
         {/* Master toggle */}
         <div className="flex items-center justify-between border-b border-[var(--foreground)] pb-3">
-          <h3 className="text-xs uppercase tracking-wider font-bold">CRT Effect</h3>
+          <h2 className="text-xs uppercase tracking-wider font-bold">CRT Effect</h2>
           <label className="flex items-center gap-2 cursor-pointer">
             <span className="text-[10px] uppercase">{config.enabled ? "ON" : "OFF"}</span>
             <input
@@ -49,7 +49,7 @@ export function CrtControls() {
         {/* Rendering Mode indicator */}
         <div className="flex items-center justify-between border-b border-[var(--foreground)] pb-3">
           <div>
-            <h4 className="text-[10px] uppercase tracking-wider font-bold">Mode</h4>
+            <h3 className="text-[10px] uppercase tracking-wider font-bold">Mode</h3>
             <span className="text-[9px] uppercase opacity-60">
               {crtMode === "experimental" ? "Experimental (GPU)" : "Standard (CSS)"}
             </span>
@@ -66,7 +66,7 @@ export function CrtControls() {
 
         {/* CRT Curvature */}
         <div className="flex flex-col gap-2 border-b border-[var(--foreground)] pb-3">
-          <h4 className="text-[10px] uppercase tracking-wider font-bold">CRT Curvature</h4>
+          <h3 className="text-[10px] uppercase tracking-wider font-bold">CRT Curvature</h3>
           <Slider
             label="Strength"
             value={config.barrelStrength}
@@ -80,7 +80,7 @@ export function CrtControls() {
 
         {/* Vignette */}
         <div className="flex flex-col gap-2 border-b border-[var(--foreground)] pb-3">
-          <h4 className="text-[10px] uppercase tracking-wider font-bold">Vignette</h4>
+          <h3 className="text-[10px] uppercase tracking-wider font-bold">Vignette</h3>
           <Slider
             label="Strength"
             value={config.vignetteStrength}
@@ -104,7 +104,7 @@ export function CrtControls() {
         {/* Border / Corners — experimental only */}
         {crtMode === "experimental" && (
           <div className="flex flex-col gap-2 border-b border-[var(--foreground)] pb-3">
-            <h4 className="text-[10px] uppercase tracking-wider font-bold">CRT Border</h4>
+            <h3 className="text-[10px] uppercase tracking-wider font-bold">CRT Border</h3>
             <Slider
               label="Corner Radius"
               value={config.cornerRadius}
