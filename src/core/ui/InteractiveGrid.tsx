@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import { useViewport } from '@xyflow/react';
 import { useTheme } from '@/core/theme/theme-provider';
 import { getCanvasConfig } from '@/core/theme/theme-canvas';
+import { prefersReducedMotion, onReducedMotionChange } from '@/core/ui/reduced-motion';
 
 interface InteractiveGridProps {
   gap?: number;
@@ -27,10 +28,17 @@ export function InteractiveGrid({
   const mouseRef = useRef({ x: -1000, y: -1000 });
   const retroGlowRef = useRef({ x: 0.5, y: 0.3 });
   const viewportRef = useRef({ x, y, zoom });
+  const renderOnceRef = useRef<(() => void) | null>(null);
+  const reducedMotionRef = useRef(false);
 
   // Update viewport ref without triggering effect teardown
   useEffect(() => {
     viewportRef.current = { x, y, zoom };
+    // With reduced motion the perpetual loop is off, but the grid must still
+    // stay aligned when the canvas is panned/zoomed — draw a single frame.
+    if (reducedMotionRef.current) {
+      renderOnceRef.current?.();
+    }
   }, [x, y, zoom]);
 
   useEffect(() => {
@@ -63,6 +71,10 @@ export function InteractiveGrid({
         canvas.height = height * dpr;
         const ctx = canvas.getContext('2d');
         if (ctx) ctx.scale(dpr, dpr);
+      }
+      // Keep the static frame in sync when the loop is not running
+      if (reducedMotionRef.current) {
+        renderOnceRef.current?.();
       }
     });
     
@@ -155,8 +167,8 @@ export function InteractiveGrid({
             const dx = px - mx;
             const dy = py - my;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            
-            if (dist < effectiveRepelRadius) {
+
+            if (dist < effectiveRepelRadius && dist > 0) {
               const force = Math.pow((effectiveRepelRadius - dist) / effectiveRepelRadius, 2); 
               drawX += (dx / dist) * force * effectiveRepelStrength * vzoom;
               drawY += (dy / dist) * force * effectiveRepelStrength * vzoom;
@@ -200,14 +212,29 @@ export function InteractiveGrid({
         ctx.lineWidth = dotSize;
         ctx.stroke();
       }
-      
-      animationFrameId = requestAnimationFrame(render);
+
+      // Reduced motion: render this one static frame and stop — no loop.
+      if (!reducedMotionRef.current) {
+        animationFrameId = requestAnimationFrame(render);
+      }
     };
-    
+
+    reducedMotionRef.current = prefersReducedMotion();
+    renderOnceRef.current = render;
+
     render();
-    
+
+    // Re-evaluate when the user's motion preference changes
+    const unsubReducedMotion = onReducedMotionChange((reduced) => {
+      reducedMotionRef.current = reduced;
+      cancelAnimationFrame(animationFrameId);
+      render(); // static frame if reduced; restarts the loop otherwise
+    });
+
     return () => {
       cancelAnimationFrame(animationFrameId);
+      unsubReducedMotion();
+      renderOnceRef.current = null;
       resizeObserver.disconnect();
     };
   }, [gap, size, repelRadiusProp, repelStrengthProp, color, resolvedTheme]);

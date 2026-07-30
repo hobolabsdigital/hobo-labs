@@ -482,7 +482,8 @@ function e(e, t) {
 		};
 	}
 	function $(e) {
-		let t = window.devicePixelRatio || 1;
+		// ponytail: cap DPR (1.5 on mobile, 2 elsewhere) — full 3x retina wastes GPU on a background sim
+		let t = Math.min(window.devicePixelRatio || 1, window.innerWidth < 768 ? 1.5 : 2);
 		return Math.floor(e * t);
 	}
 	return { 

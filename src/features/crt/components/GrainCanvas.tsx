@@ -119,18 +119,13 @@ export function GrainCanvas() {
 
     glRef.current = { gl, program, locs };
 
-    const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      gl.viewport(0, 0, canvas.width, canvas.height);
-    };
-
-    resize();
-    window.addEventListener("resize", resize);
-
-    const startTime = performance.now();
-
+    /*
+     * The shader output depends only on config + resolution (the vignette is
+     * static), so there is no need for a perpetual rAF loop. Render a single
+     * frame whenever the config changes or the window resizes. This also means
+     * nothing runs while crtConfig.enabled is false, and prefers-reduced-motion
+     * is inherently respected (no continuous animation).
+     */
     function render() {
       const ctx = glRef.current;
       if (!ctx) return;
@@ -141,10 +136,7 @@ export function GrainCanvas() {
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
 
-      if (!config.enabled) {
-        rafRef.current = requestAnimationFrame(render);
-        return;
-      }
+      if (!config.enabled) return;
 
       gl.useProgram(program);
       gl.uniform2f(locs.u_resolution, canvas!.width, canvas!.height);
@@ -152,14 +144,38 @@ export function GrainCanvas() {
       gl.uniform1f(locs.u_vignetteRadius, config.vignetteRadius);
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      rafRef.current = requestAnimationFrame(render);
     }
 
-    rafRef.current = requestAnimationFrame(render);
+    // Coalesce render requests into a single frame
+    const requestRender = () => {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(render);
+    };
+
+    const resize = () => {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      requestRender();
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    // Re-render when the CRT config changes (enable/disable, sliders)
+    const unsubscribe = useCrtStore.subscribe((state, prevState) => {
+      if (state.crtConfig !== prevState.crtConfig) {
+        requestRender();
+      }
+    });
 
     return () => {
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener("resize", resize);
+      unsubscribe();
+      glRef.current = null;
+      gl.deleteBuffer(posBuffer);
       gl.deleteProgram(program);
       gl.deleteShader(vs);
       gl.deleteShader(fs);

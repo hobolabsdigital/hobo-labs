@@ -1,6 +1,12 @@
 import { useEffect, useRef } from "react";
 import WebGLFluid from '@/features/fluid-bg/lib/fluid';
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
+import { prefersReducedMotion, onReducedMotionChange } from '@/core/ui/reduced-motion';
+
+// TODO(lane-c): src/features/fluid-bg/lib/fluid.js sizes its canvas with full
+// window.devicePixelRatio (the `$` helper, ~line 485). Cap it (1.5 when
+// window.innerWidth < 768, else 2) the same way ferrofluid-system.ts now does.
+// fluid.js is outside this lane's allowed files.
 
 function hexToRgb(hex: string) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -129,13 +135,38 @@ export function FluidBackground() {
           config.SPLAT_COLOR = hexToRgb(c.SPLAT_COLOR);
         }
       }
-      animationFrameId = requestAnimationFrame(update);
+      if (!reducedMotion) {
+        animationFrameId = requestAnimationFrame(update);
+      }
     }
 
-    update();
+    let reducedMotion = prefersReducedMotion();
+
+    const applyReducedMotion = (reduced: boolean) => {
+      reducedMotion = reduced;
+      cancelAnimationFrame(animationFrameId);
+      if (fluidRef.current) {
+        // PAUSED halts the fluid simulation step inside lib/fluid.js, leaving
+        // a static frame (its internal rAF keeps polling, but does no work).
+        fluidRef.current.config.PAUSED = reduced;
+      }
+      if (!reduced) {
+        update(); // restart our config-update loop
+      }
+    };
+
+    if (reducedMotion) {
+      applyReducedMotion(true);
+    } else {
+      update();
+    }
+
+    // Re-evaluate when the user's motion preference changes
+    const unsubReducedMotion = onReducedMotionChange(applyReducedMotion);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      unsubReducedMotion();
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('pointerdown', handlePointerDown);
       window.removeEventListener('pointerup', handlePointerUp);

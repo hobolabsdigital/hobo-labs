@@ -6,6 +6,9 @@ export function useWebGLBarrel(glRef: RefObject<HTMLCanvasElement | null>) {
   useEffect(() => {
     let destroyed = false;
     let rafId = 0;
+    let retryTimeoutId: ReturnType<typeof setTimeout> | undefined;
+    let unsubscribe: (() => void) | null = null;
+    let cleanupGl: (() => void) | null = null;
 
     function trySetup() {
       const glCanvas = glRef.current;
@@ -13,7 +16,7 @@ export function useWebGLBarrel(glRef: RefObject<HTMLCanvasElement | null>) {
 
       const captureCanvas = document.getElementById("crt-capture") as HTMLCanvasElement | null;
       if (!captureCanvas) {
-        setTimeout(trySetup, 200);
+        retryTimeoutId = setTimeout(trySetup, 200);
         return;
       }
 
@@ -25,7 +28,7 @@ export function useWebGLBarrel(glRef: RefObject<HTMLCanvasElement | null>) {
 
       const mainEl = captureCanvas.querySelector("#crt-main") as HTMLElement | null;
       if (!mainEl) {
-        setTimeout(trySetup, 200);
+        retryTimeoutId = setTimeout(trySetup, 200);
         return;
       }
 
@@ -47,13 +50,22 @@ export function useWebGLBarrel(glRef: RefObject<HTMLCanvasElement | null>) {
 
       const vs = compile(VERT, gl.VERTEX_SHADER);
       const fs = compile(FRAG, gl.FRAGMENT_SHADER);
-      if (!vs || !fs) return;
+      if (!vs || !fs) {
+        if (vs) gl.deleteShader(vs);
+        if (fs) gl.deleteShader(fs);
+        return;
+      }
 
       const prog = gl.createProgram()!;
       gl.attachShader(prog, vs);
       gl.attachShader(prog, fs);
       gl.linkProgram(prog);
-      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+        gl.deleteProgram(prog);
+        gl.deleteShader(vs);
+        gl.deleteShader(fs);
+        return;
+      }
 
       const vao = gl.createVertexArray()!;
       gl.bindVertexArray(vao);
@@ -91,14 +103,38 @@ export function useWebGLBarrel(glRef: RefObject<HTMLCanvasElement | null>) {
       output.style.height = initH + "px";
 
       let frameCount = 0;
+      let running = false;
+
+      const startLoop = () => {
+        if (running || destroyed) return;
+        running = true;
+        rafId = requestAnimationFrame(render);
+      };
+
+      const stopLoop = () => {
+        running = false;
+        cancelAnimationFrame(rafId);
+      };
+
+      // GL resource cleanup, invoked from the effect teardown
+      cleanupGl = () => {
+        gl.deleteTexture(tex);
+        gl.deleteBuffer(buf);
+        gl.deleteVertexArray(vao);
+        gl.deleteProgram(prog);
+        gl.deleteShader(vs);
+        gl.deleteShader(fs);
+      };
 
       function render() {
-        if (destroyed) return;
+        if (destroyed || !running) return;
 
         const config = useCrtStore.getState().crtConfig;
         if (!config.enabled) {
+          // Stop the loop entirely while disabled; the store subscription
+          // below restarts it when the effect is re-enabled.
           output.style.display = "none";
-          rafId = requestAnimationFrame(render);
+          stopLoop();
           return;
         }
 
@@ -147,14 +183,24 @@ export function useWebGLBarrel(glRef: RefObject<HTMLCanvasElement | null>) {
         rafId = requestAnimationFrame(render);
       }
 
-      rafId = requestAnimationFrame(render);
+      // Restart the loop when the CRT effect gets re-enabled
+      unsubscribe = useCrtStore.subscribe((state, prevState) => {
+        if (state.crtConfig.enabled && !prevState.crtConfig.enabled) {
+          startLoop();
+        }
+      });
+
+      startLoop();
     }
 
     requestAnimationFrame(() => requestAnimationFrame(trySetup));
 
     return () => {
       destroyed = true;
+      if (retryTimeoutId !== undefined) clearTimeout(retryTimeoutId);
       cancelAnimationFrame(rafId);
+      unsubscribe?.();
+      cleanupGl?.();
     };
   }, [glRef]);
 }

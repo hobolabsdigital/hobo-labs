@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useTheme } from "@/core/theme/theme-provider";
+import { prefersReducedMotion, onReducedMotionChange } from "@/core/ui/reduced-motion";
 
 /**
  * Full-viewport tropical gradient that follows the mouse cursor.
@@ -26,13 +27,18 @@ export function RetroGradient() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    let reducedMotion = prefersReducedMotion();
+
     // Size canvas to viewport
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      // Keep the static frame in sync when the loop is not running
+      if (reducedMotion) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = requestAnimationFrame(draw);
+      }
     };
-    resize();
-    window.addEventListener("resize", resize);
 
     // Track mouse
     const onMouseMove = (e: MouseEvent) => {
@@ -78,14 +84,28 @@ export function RetroGradient() {
       ctx.fillStyle = radGrad;
       ctx.fillRect(0, 0, w, h);
 
-      rafRef.current = requestAnimationFrame(draw);
+      // Reduced motion: this frame is static — don't run the perpetual loop.
+      if (!reducedMotion) {
+        rafRef.current = requestAnimationFrame(draw);
+      }
     };
 
+    resize();
+    window.addEventListener("resize", resize);
+
     rafRef.current = requestAnimationFrame(draw);
+
+    // Re-evaluate when the user's motion preference changes
+    const unsubReducedMotion = onReducedMotionChange((reduced) => {
+      reducedMotion = reduced;
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(draw); // static frame or restarted loop
+    });
 
     return () => {
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMouseMove);
+      unsubReducedMotion();
       cancelAnimationFrame(rafRef.current);
     };
   }, [isRetro]);

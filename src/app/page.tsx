@@ -14,9 +14,6 @@ import { TimelineScrubber } from '@/features/timeline/components/TimelineScrubbe
 
 import { InteractiveGrid } from '@/core/ui/InteractiveGrid';
 import { MobileHeader } from '@/core/ui/MobileHeader';
-import { FerrofluidCanvas } from '@/features/ferrofluid/components/FerrofluidCanvas';
-import { FluidBackground } from "@/features/fluid-bg/components/FluidBackground";
-import { CrtEffect } from '@/features/crt/components/CrtEffect';
 import { ProjectModalOverlay } from '@/features/project-modal/components/ProjectModalOverlay';
 import { RetroGradient } from '@/core/ui/RetroGradient';
 import { ThemeIntro } from '@/core/ui/ThemeIntro';
@@ -25,6 +22,21 @@ const EditorialCanvas = dynamic(() => import("@/features/canvas/components/Edito
   ssr: false,
   loading: () => <Preloader />,
 });
+
+// Heavy WebGL components — client-only, code-split out of the initial bundle.
+// Mount order / z-index behavior is unchanged (same JSX positions as before).
+const FerrofluidCanvas = dynamic(
+  () => import('@/features/ferrofluid/components/FerrofluidCanvas').then((m) => m.FerrofluidCanvas),
+  { ssr: false }
+);
+const FluidBackground = dynamic(
+  () => import('@/features/fluid-bg/components/FluidBackground').then((m) => m.FluidBackground),
+  { ssr: false }
+);
+const CrtEffect = dynamic(
+  () => import('@/features/crt/components/CrtEffect').then((m) => m.CrtEffect),
+  { ssr: false }
+);
 
 import { IntroNode } from '@/features/canvas/components/nodes/IntroNode';
 import { useMediaQuery } from '@/core/hooks/useMediaQuery';

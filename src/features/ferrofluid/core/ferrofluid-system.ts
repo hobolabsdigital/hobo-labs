@@ -15,6 +15,8 @@ export class FerrofluidSystem {
     private quadBufferInfo: twgl.BufferInfo;
     private fboInfo: twgl.FramebufferInfo;
     private requestAnimationId: number = 0;
+    private running: boolean = false;
+    private lastTime: number = 0;
 
     private time: number = 0;
     private theme: string = 'default';
@@ -102,7 +104,11 @@ export class FerrofluidSystem {
 
     resize() {
         if (!this.gl) return;
-        if (twgl.resizeCanvasToDisplaySize(this.gl.canvas as HTMLCanvasElement, window.devicePixelRatio || 1)) {
+        // Cap devicePixelRatio to keep GPU cost reasonable:
+        // max 1.5 on small (mobile) viewports, max 2 everywhere else.
+        const rawDpr = window.devicePixelRatio || 1;
+        const dpr = Math.min(rawDpr, window.innerWidth < 768 ? 1.5 : 2);
+        if (twgl.resizeCanvasToDisplaySize(this.gl.canvas as HTMLCanvasElement, dpr)) {
             // Resize FBO if canvas resized
             twgl.resizeFramebufferInfo(this.gl, this.fboInfo, [
                 { internalFormat: this.gl.RGBA8, format: this.gl.RGBA, type: this.gl.UNSIGNED_BYTE, min: this.gl.LINEAR, wrap: this.gl.CLAMP_TO_EDGE },
@@ -125,11 +131,35 @@ export class FerrofluidSystem {
     }
 
     run() {
-        let lastTime = 0;
+        if (this.running) return;
+        this.running = true;
+        this.lastTime = 0;
 
-        const render = (time: number) => {
-            const dt = time - lastTime;
-            lastTime = time;
+        const loop = (time: number) => {
+            if (!this.running) return;
+            this.renderFrame(time);
+            this.requestAnimationId = requestAnimationFrame(loop);
+        };
+
+        this.requestAnimationId = requestAnimationFrame(loop);
+    }
+
+    /** Stops the animation loop without releasing GL resources. */
+    stop() {
+        this.running = false;
+        if (this.requestAnimationId) {
+            cancelAnimationFrame(this.requestAnimationId);
+            this.requestAnimationId = 0;
+        }
+    }
+
+    /**
+     * Renders a single frame. Used by the run() loop, and directly for a
+     * one-off static frame when prefers-reduced-motion is active.
+     */
+    renderFrame(time: number = performance.now()) {
+            const dt = this.lastTime === 0 ? 16 : time - this.lastTime;
+            this.lastTime = time;
 
             // Accumulate time for fluid simulation
             this.time += dt;
@@ -284,17 +314,46 @@ export class FerrofluidSystem {
             });
 
             twgl.drawBufferInfo(gl, this.quadBufferInfo);
-
-            this.requestAnimationId = requestAnimationFrame(render);
-        };
-
-        this.requestAnimationId = requestAnimationFrame(render);
     }
 
     destroy() {
-        if (this.requestAnimationId) {
-            cancelAnimationFrame(this.requestAnimationId);
+        this.stop();
+
+        const gl = this.gl;
+
+        // Delete vertex/index buffers created via twgl primitives
+        const deleteBufferInfo = (bufferInfo: twgl.BufferInfo) => {
+            if (bufferInfo.attribs) {
+                for (const attrib of Object.values(bufferInfo.attribs)) {
+                    if (attrib.buffer) {
+                        gl.deleteBuffer(attrib.buffer);
+                    }
+                }
+            }
+            if (bufferInfo.indices) {
+                gl.deleteBuffer(bufferInfo.indices);
+            }
+        };
+        deleteBufferInfo(this.bufferInfo);
+        deleteBufferInfo(this.quadBufferInfo);
+
+        // Delete FBO attachments (color texture + depth texture/renderbuffer)
+        for (const attachment of this.fboInfo.attachments) {
+            if (attachment instanceof WebGLRenderbuffer) {
+                gl.deleteRenderbuffer(attachment);
+            } else {
+                gl.deleteTexture(attachment);
+            }
         }
-        // Additional WebGL cleanup could go here
+        if (this.fboInfo.framebuffer) {
+            gl.deleteFramebuffer(this.fboInfo.framebuffer);
+        }
+
+        // Delete shader programs
+        gl.deleteProgram(this.programInfo.program);
+        gl.deleteProgram(this.dofProgramInfo.program);
+
+        // Final backstop: release the context entirely
+        gl.getExtension('WEBGL_lose_context')?.loseContext();
     }
 }

@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import { FerrofluidSystem } from '../core/ferrofluid-system';
 import { useTheme } from '@/core/theme/theme-provider';
 import { useFerrofluidStore } from '../store/useFerrofluidStore';
+import { prefersReducedMotion, onReducedMotionChange } from '@/core/ui/reduced-motion';
 
 export const FerrofluidCanvas = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -14,22 +15,37 @@ export const FerrofluidCanvas = () => {
     const dataArrayRef = useRef<Uint8Array>(new Uint8Array(0));
 
     const { theme } = useTheme();
+    const themeRef = useRef(theme);
 
     const config = useFerrofluidStore((s) => s.config);
     const setIsPlaying = useFerrofluidStore((s) => s.setIsPlaying);
     const setToggleAudioFn = useFerrofluidStore((s) => s.setToggleAudioFn);
 
+    // Keep the latest theme in a ref (declared before the init effect so the
+    // mount-once init below sees the theme active at mount time).
+    useEffect(() => {
+        themeRef.current = theme;
+    }, [theme]);
+
+    // Init once on mount — theme switches are handled via setTheme() below,
+    // so the whole WebGL system is not rebuilt on every theme change.
     useEffect(() => {
         if (!canvasRef.current) return;
 
         const onInit = (instance: FerrofluidSystem) => {
-            instance.run();
+            // Respect prefers-reduced-motion: render a single static frame
+            // instead of running the perpetual animation loop.
+            if (prefersReducedMotion()) {
+                instance.renderFrame();
+            } else {
+                instance.run();
+            }
         };
 
         systemRef.current = new FerrofluidSystem(canvasRef.current, onInit);
 
-        // Initial setup
-        systemRef.current.setTheme(theme || 'dark');
+        // Initial setup — apply the theme active at mount time
+        systemRef.current.setTheme(themeRef.current || 'dark');
 
         const handleResize = () => {
             if (systemRef.current) {
@@ -39,13 +55,26 @@ export const FerrofluidCanvas = () => {
 
         window.addEventListener('resize', handleResize);
 
+        // Live-toggle the loop when the reduced-motion preference changes
+        const unsubReducedMotion = onReducedMotionChange((reduced) => {
+            if (!systemRef.current) return;
+            if (reduced) {
+                systemRef.current.stop();
+                systemRef.current.renderFrame();
+            } else {
+                systemRef.current.run();
+            }
+        });
+
         return () => {
             window.removeEventListener('resize', handleResize);
+            unsubReducedMotion();
             if (systemRef.current) {
                 systemRef.current.destroy();
+                systemRef.current = null;
             }
         };
-    }, [theme]); // Run when theme changes to setup the correct mode
+    }, []); // Mount once — theme is applied via the setTheme effect
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
@@ -197,9 +226,10 @@ export const FerrofluidCanvas = () => {
         };
     }, [setToggleAudioFn, setIsPlaying]);
 
-    // Multi-band audio analysis loop
+    // Multi-band audio analysis loop — only runs while audio is actually playing
     useEffect(() => {
-        let raf: number;
+        let raf = 0;
+        let running = false;
 
         // Adaptive gain: running peak trackers per band (~3s decay at 60fps)
         const PEAK_DECAY = 0.997;
@@ -214,10 +244,18 @@ export const FerrofluidCanvas = () => {
         let smoothTransient = 0;
 
         const loop = () => {
+            if (!running) return;
+
             if (analyserRef.current && dataArrayRef.current && systemRef.current) {
                 const isPlaying = !audioRef.current?.paused;
 
-                if (isPlaying) {
+                if (!isPlaying) {
+                    // Audio stopped mid-loop: decay bands and halt until 'play'
+                    stopLoop();
+                    return;
+                }
+
+                {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     analyserRef.current.getByteFrequencyData(dataArrayRef.current as any);
                     const bins = dataArrayRef.current;
@@ -271,16 +309,43 @@ export const FerrofluidCanvas = () => {
                     const highs = normHighs; // already sparse, don't compress
 
                     systemRef.current.setAudioBands(bass, mids, highs, normEnergy, normTransient);
-                } else {
-                    // Decay all bands smoothly when paused
-                    systemRef.current.setAudioBands(0, 0, 0, 0, 0);
                 }
             }
 
             raf = requestAnimationFrame(loop);
         };
-        loop();
-        return () => cancelAnimationFrame(raf);
+
+        const startLoop = () => {
+            if (running) return;
+            running = true;
+            raf = requestAnimationFrame(loop);
+        };
+
+        const stopLoop = () => {
+            running = false;
+            cancelAnimationFrame(raf);
+            // Drive the smoothed bands down to zero so the blob settles
+            // (setAudioBands applies per-call exponential smoothing).
+            if (systemRef.current) {
+                for (let i = 0; i < 60; i++) {
+                    systemRef.current.setAudioBands(0, 0, 0, 0, 0);
+                }
+            }
+        };
+
+        // The audio element is created by the setup effect above (declared
+        // earlier, so it has already run). Gate the analysis loop on playback.
+        const audio = audioRef.current;
+        audio?.addEventListener('play', startLoop);
+        audio?.addEventListener('pause', stopLoop);
+        if (audio && !audio.paused) startLoop();
+
+        return () => {
+            audio?.removeEventListener('play', startLoop);
+            audio?.removeEventListener('pause', stopLoop);
+            running = false;
+            cancelAnimationFrame(raf);
+        };
     }, []);
 
     // Determine theme-specific opacity and blend mode to ensure visibility
