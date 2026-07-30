@@ -1,0 +1,87 @@
+{
+  "timestamp": "2026-07-30T20:15:46.057Z",
+  "target": ".",
+  "depth": "standard",
+  "type": "all",
+  "summary": {
+    "critical": 0,
+    "high": 7,
+    "medium": 3,
+    "low": 2,
+    "total": 12
+  },
+  "findings": [
+    {
+      "severity": "LOW",
+      "type": "Dependency CVE",
+      "location": "package.json:@babel/core",
+      "description": "@babel/core: Arbitrary File Read vi"
+    },
+    {
+      "severity": "MEDIUM",
+      "type": "Dependency CVE",
+      "location": "package.json:@hono/node-server",
+      "description": "Node.js Adapter for Hono: Path trav"
+    },
+    {
+      "severity": "MEDIUM",
+      "type": "Dependency CVE",
+      "location": "package.json:@modelcontextprotocol/sdk",
+      "description": "Vulnerability"
+    },
+    {
+      "severity": "LOW",
+      "type": "Dependency CVE",
+      "location": "package.json:body-parser",
+      "description": "body-parser vulnerable to denial of"
+    },
+    {
+      "severity": "HIGH",
+      "type": "Dependency CVE",
+      "location": "package.json:brace-expansion",
+      "description": "brace-expansion: DoS via exponentia"
+    },
+    {
+      "severity": "HIGH",
+      "type": "Dependency CVE",
+      "location": "package.json:fast-uri",
+      "description": "fast-uri vulnerable to host confusi"
+    },
+    {
+      "severity": "HIGH",
+      "type": "Dependency CVE",
+      "location": "package.json:hono",
+      "description": "Hono: IP Restriction bypasses stati"
+    },
+    {
+      "severity": "HIGH",
+      "type": "Dependency CVE",
+      "location": "package.json:js-yaml",
+      "description": "JS-YAML: Quadratic-complexity DoS i"
+    },
+    {
+      "severity": "HIGH",
+      "type": "Dependency CVE",
+      "location": "package.json:next",
+      "description": "Next.js: Middleware / Proxy bypass "
+    },
+    {
+      "severity": "HIGH",
+      "type": "Dependency CVE",
+      "location": "package.json:postcss",
+      "description": "PostCSS has XSS via Unescaped </sty"
+    },
+    {
+      "severity": "MEDIUM",
+      "type": "Dependency CVE",
+      "location": "package.json:qs",
+      "description": "qs has a remotely triggerable DoS: "
+    },
+    {
+      "severity": "HIGH",
+      "type": "Dependency CVE",
+      "location": "package.json:sharp",
+      "description": "sharp inherited vulnerabilities in "
+    }
+  ]
+}

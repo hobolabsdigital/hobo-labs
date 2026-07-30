@@ -1,0 +1,23 @@
+{
+  "swarms": {
+    "swarm-1785442533906-dngops": {
+      "swarmId": "swarm-1785442533906-dngops",
+      "topology": "hierarchical",
+      "maxAgents": 8,
+      "status": "running",
+      "agents": [],
+      "tasks": [],
+      "config": {
+        "topology": "hierarchical",
+        "maxAgents": 8,
+        "strategy": "specialized",
+        "communicationProtocol": "message-bus",
+        "autoScaling": true,
+        "consensusMechanism": "majority"
+      },
+      "createdAt": "2026-07-30T20:15:33.906Z",
+      "updatedAt": "2026-07-30T20:15:33.906Z"
+    }
+  },
+  "version": "3.0.0"
+}
