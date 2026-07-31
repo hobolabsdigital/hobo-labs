@@ -352,8 +352,7 @@ export class FerrofluidSystem {
         // Delete shader programs
         gl.deleteProgram(this.programInfo.program);
         gl.deleteProgram(this.dofProgramInfo.program);
-
-        // Final backstop: release the context entirely
-        gl.getExtension('WEBGL_lose_context')?.loseContext();
+        // No loseContext() here: React StrictMode re-runs effects on the same
+        // canvas element, and a lost context can never link programs again.
     }
 }

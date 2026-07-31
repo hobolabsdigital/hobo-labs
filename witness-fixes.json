@@ -38,9 +38,9 @@
     },
     {
       "id": "PERF-1",
-      "desc": "FerrofluidSystem.destroy frees GL programs/buffers/FBOs with lose_context backstop (P1)",
+      "desc": "FerrofluidSystem.destroy frees GL programs/buffers/FBOs (P1; no loseContext — breaks StrictMode remount)",
       "file": "src/features/ferrofluid/core/ferrofluid-system.ts",
-      "marker": "WEBGL_lose_context"
+      "marker": "deleteFramebuffer(this.fboInfo.framebuffer)"
     },
     {
       "id": "PERF-2",
