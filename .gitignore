@@ -62,3 +62,10 @@ lint-output.txt
 .agents/**/*.log
 .agents/**/*.pid
 agentdb.rvf*
+.claude-flow/intelligence/
+.claude-flow/policy/
+.claude-flow/swarm/
+.claude-flow/tasks/
+.claude-flow/learning/
+.claude-flow/security/
+.claude-flow/daemon.log

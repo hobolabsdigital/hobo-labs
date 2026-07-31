@@ -1,0 +1,76 @@
+{
+  "fixes": [
+    {
+      "id": "SEC-1",
+      "desc": "Per-IP rate limiting on /api/chat (audit 2026-07-30 P1)",
+      "file": "src/app/api/chat/route.ts",
+      "marker": "enforceRateLimit("
+    },
+    {
+      "id": "SEC-2",
+      "desc": "Per-IP rate limiting on /api/project-context (audit 2026-07-30 P1)",
+      "file": "src/app/api/project-context/route.ts",
+      "marker": "enforceRateLimit("
+    },
+    {
+      "id": "SEC-3",
+      "desc": "project-data no longer leaks _rawContent to clients (P2)",
+      "file": "src/app/api/project-data/route.ts",
+      "marker": "_rawContent"
+    },
+    {
+      "id": "SEC-4",
+      "desc": "Security headers incl. CSP frame-ancestors (P2)",
+      "file": "next.config.ts",
+      "marker": "frame-ancestors 'none'"
+    },
+    {
+      "id": "SEC-5",
+      "desc": "showContact is a no-argument tool — prompt injection cannot forge contact info (P2)",
+      "file": "src/lib/ai/tools.ts",
+      "marker": "Takes no parameters"
+    },
+    {
+      "id": "SEC-6",
+      "desc": "rag.ts uses configured Ollama client, not default localhost (P3)",
+      "file": "src/lib/ai/rag.ts",
+      "marker": "ollamaClient"
+    },
+    {
+      "id": "PERF-1",
+      "desc": "FerrofluidSystem.destroy frees GL programs/buffers/FBOs with lose_context backstop (P1)",
+      "file": "src/features/ferrofluid/core/ferrofluid-system.ts",
+      "marker": "WEBGL_lose_context"
+    },
+    {
+      "id": "PERF-2",
+      "desc": "InteractiveGrid repel math guards dist > 0 against NaN (P3)",
+      "file": "src/core/ui/InteractiveGrid.tsx",
+      "marker": "dist > 0"
+    },
+    {
+      "id": "A11Y-1",
+      "desc": "Shared prefers-reduced-motion helper gates all canvas sims (P1)",
+      "file": "src/core/ui/reduced-motion.ts",
+      "marker": "prefers-reduced-motion"
+    },
+    {
+      "id": "A11Y-2",
+      "desc": "App wrapped in MotionConfig reducedMotion=user (P1)",
+      "file": "src/app/layout.tsx",
+      "marker": "reducedMotion=\"user\""
+    },
+    {
+      "id": "A11Y-3",
+      "desc": "Project modal has dialog semantics + focus management (P2)",
+      "file": "src/features/project-modal/components/ProjectModalOverlay.tsx",
+      "marker": "aria-modal"
+    },
+    {
+      "id": "FEAT-1",
+      "desc": "Experimental CRT mode removed; standard-only CrtEffect (user request 2026-07-31)",
+      "file": "src/features/crt/components/CrtEffect.tsx",
+      "marker": "Controls live in the Playground panel"
+    }
+  ]
+}

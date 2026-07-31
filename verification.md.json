@@ -1,0 +1,121 @@
+{
+  "manifest": {
+    "schema": "ruflo-witness/v1",
+    "issuedAt": "2026-07-31T09:12:15.385Z",
+    "gitCommit": "66ef7c3d8e41936ab3ec4bf00bb16869cdc8bb07",
+    "branch": "audit-remediation",
+    "os": "macos",
+    "releases": {},
+    "summary": {
+      "totalFixes": 12,
+      "verified": 12,
+      "missing": 0
+    },
+    "fixes": [
+      {
+        "id": "SEC-1",
+        "desc": "Per-IP rate limiting on /api/chat (audit 2026-07-30 P1)",
+        "file": "src/app/api/chat/route.ts",
+        "sha256": "f8637931cb1b7b0649367f0abf2ae11b3f1d6638d1325fcf4debd7cc8427441b",
+        "marker": "enforceRateLimit(",
+        "markerVerified": true
+      },
+      {
+        "id": "SEC-2",
+        "desc": "Per-IP rate limiting on /api/project-context (audit 2026-07-30 P1)",
+        "file": "src/app/api/project-context/route.ts",
+        "sha256": "b9d9e049c3fdb8f784d4d3e98d1afda7de86bc67718e6a46a01e69ca7ff87f8c",
+        "marker": "enforceRateLimit(",
+        "markerVerified": true
+      },
+      {
+        "id": "SEC-3",
+        "desc": "project-data no longer leaks _rawContent to clients (P2)",
+        "file": "src/app/api/project-data/route.ts",
+        "sha256": "4d8fa538c881fad8316b198391d04f80879b62e369dcb2cbb5e8e6134ed4922c",
+        "marker": "_rawContent",
+        "markerVerified": true
+      },
+      {
+        "id": "SEC-4",
+        "desc": "Security headers incl. CSP frame-ancestors (P2)",
+        "file": "next.config.ts",
+        "sha256": "6b5626f9f2504847fc5663227aabcabf0c4b1dbf2331504c781b5f9cd08cda52",
+        "marker": "frame-ancestors 'none'",
+        "markerVerified": true
+      },
+      {
+        "id": "SEC-5",
+        "desc": "showContact is a no-argument tool — prompt injection cannot forge contact info (P2)",
+        "file": "src/lib/ai/tools.ts",
+        "sha256": "4fa38ef0b137fc04c626a6b78cbe89319b257f03ce08f35e3d32427edf8ecdcd",
+        "marker": "Takes no parameters",
+        "markerVerified": true
+      },
+      {
+        "id": "SEC-6",
+        "desc": "rag.ts uses configured Ollama client, not default localhost (P3)",
+        "file": "src/lib/ai/rag.ts",
+        "sha256": "c9b450e222e4327e65137289bc80cdfcdfd077012a66e38b29f540bb4e538015",
+        "marker": "ollamaClient",
+        "markerVerified": true
+      },
+      {
+        "id": "PERF-1",
+        "desc": "FerrofluidSystem.destroy frees GL programs/buffers/FBOs with lose_context backstop (P1)",
+        "file": "src/features/ferrofluid/core/ferrofluid-system.ts",
+        "sha256": "77bb02d499a3c5ce6b30465867f3d9423bf7231676f6f4150e4601de538a717d",
+        "marker": "WEBGL_lose_context",
+        "markerVerified": true
+      },
+      {
+        "id": "PERF-2",
+        "desc": "InteractiveGrid repel math guards dist > 0 against NaN (P3)",
+        "file": "src/core/ui/InteractiveGrid.tsx",
+        "sha256": "ab758eb21b1c00fddcc82f28bcdd7a6b8bccd854b0a9d7d695bcab9911f0b009",
+        "marker": "dist > 0",
+        "markerVerified": true
+      },
+      {
+        "id": "A11Y-1",
+        "desc": "Shared prefers-reduced-motion helper gates all canvas sims (P1)",
+        "file": "src/core/ui/reduced-motion.ts",
+        "sha256": "f61ae25ef849b9c1edc2e447bb0ca5e5dfbb4fec15b8e277a24bd5450677ea91",
+        "marker": "prefers-reduced-motion",
+        "markerVerified": true
+      },
+      {
+        "id": "A11Y-2",
+        "desc": "App wrapped in MotionConfig reducedMotion=user (P1)",
+        "file": "src/app/layout.tsx",
+        "sha256": "5630ad03e9459b19d4cacc973d266fd510e986bc40608d1bba8fcff5a6c8900d",
+        "marker": "reducedMotion=\"user\"",
+        "markerVerified": true
+      },
+      {
+        "id": "A11Y-3",
+        "desc": "Project modal has dialog semantics + focus management (P2)",
+        "file": "src/features/project-modal/components/ProjectModalOverlay.tsx",
+        "sha256": "86f5b4f204358dfb82966b1f853ff3409f84502af4feebe670ef0ba14f2ee96a",
+        "marker": "aria-modal",
+        "markerVerified": true
+      },
+      {
+        "id": "FEAT-1",
+        "desc": "Experimental CRT mode removed; standard-only CrtEffect (user request 2026-07-31)",
+        "file": "src/features/crt/components/CrtEffect.tsx",
+        "sha256": "8d06665522e57acf7cda3b2e6b81dbe86495f4c5e8acdaf444cbbc6a75e1e7cc",
+        "marker": "Controls live in the Playground panel",
+        "markerVerified": true
+      }
+    ]
+  },
+  "integrity": {
+    "manifestHashAlgo": "sha256",
+    "manifestHash": "3477666dfc90b45872f03093d9f57b357d898e55504bb59f18335a734610062e",
+    "signatureAlgo": "ed25519",
+    "publicKey": "c1da00830f2c3c87004f2e8cc4225afff398d456b4442d8baa83840dca2c15c0",
+    "signature": "e8ccbf27604daa9c67ef7782427dbe930f5bba92e656f6d020ebf1b4e6027bdec97247361fe05c8461a0db2ec52fcf95843d7166d6529fd106cd2a512b749306",
+    "seedDerivation": "sha256(gitCommit + ':ruflo-witness/v1')"
+  }
+}
