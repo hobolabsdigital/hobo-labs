@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
+import type { UIMessage } from 'ai';
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
+import { ARCHIVE_THRESHOLD } from '@/features/canvas/constants';
 import { dispatchToolCall } from './dispatchToolCall';
 
 interface MessagePart {
@@ -13,6 +15,38 @@ interface MessagePart {
   argsText?: string;
   toolName?: string;
   toolCallId?: string;
+}
+
+const FALLBACK_PROMPT_COUNT = 5;
+const FALLBACK_PROMPT_MAX_LENGTH = 80;
+
+function messageText(message: UIMessage): string {
+  return (message.parts || [])
+    .map(part => (part.type === 'text' ? part.text : ''))
+    .join('');
+}
+
+/** Flattens the UI message list into the shape /api/summarize expects */
+function toSummaryPayload(messages: UIMessage[]) {
+  return messages
+    .filter(m => m.role === 'user' || m.role === 'assistant')
+    .map(m => ({ role: m.role, text: messageText(m).trim() }))
+    .filter(m => m.text.length > 0);
+}
+
+/** Used when /api/summarize is unreachable — archiving must never be blocked by it */
+function buildFallbackSummary(messages: UIMessage[]): string {
+  const prompts = messages
+    .filter(m => m.role === 'user')
+    .map(m => messageText(m).trim())
+    .filter(text => text.length > 0)
+    .slice(0, FALLBACK_PROMPT_COUNT)
+    .map(text => text.length > FALLBACK_PROMPT_MAX_LENGTH
+      ? `${text.slice(0, FALLBACK_PROMPT_MAX_LENGTH).trimEnd()}…`
+      : text);
+
+  if (prompts.length === 0) return 'Earlier conversation covered: an introduction.';
+  return `Earlier conversation covered: ${prompts.join('; ')}`;
 }
 
 export function useEditorialChat() {
@@ -30,6 +64,11 @@ export function useEditorialChat() {
   const timeCursor = useCanvasStore(state => state.timeCursor);
   const truncateHistory = useCanvasStore(state => state.truncateHistory);
   const nodes = useCanvasStore(state => state.nodes);
+
+  const archiveEpoch = useCanvasStore(state => state.archiveEpoch);
+  const setIsArchiving = useCanvasStore(state => state.setIsArchiving);
+  const isArchiving = useCanvasStore(state => state.isArchiving);
+  const viewingEpochId = useCanvasStore(state => state.viewingEpochId);
 
   const setActiveSuggestions = useCanvasStore(state => state.setActiveSuggestions);
   const clearSuggestions = useCanvasStore(state => state.clearSuggestions);
@@ -112,7 +151,8 @@ export function useEditorialChat() {
 
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
-    if (!lastMessage || lastMessage?.role === 'user') {
+    // Assistant-only — the epoch seed is a system message and must not spawn a text node
+    if (lastMessage?.role !== 'assistant') {
       return
     }
 
@@ -140,10 +180,65 @@ export function useEditorialChat() {
   }, [messages, status, addText]);
 
   // ---------------------------------------------------------------------------
+  // Epoch archiving — folds a full context window into a chapter and reseeds
+  // ---------------------------------------------------------------------------
+  const isArchivingRef = useRef(false);
+
+  useEffect(() => {
+    if (status !== 'ready') return;
+    if (messages.length < ARCHIVE_THRESHOLD) return;
+    if (viewingEpochId !== null) return;
+    if (isArchivingRef.current) return;
+
+    isArchivingRef.current = true;
+    const archived = messages;
+
+    const run = async () => {
+      setIsArchiving(true);
+
+      let summary = '';
+      try {
+        const res = await fetch('/api/summarize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: toSummaryPayload(archived) }),
+        });
+        if (res.ok) {
+          const data = await res.json() as { summary?: string };
+          summary = data.summary?.trim() || '';
+        }
+      } catch {
+        summary = '';
+      }
+
+      if (!summary) summary = buildFallbackSummary(archived);
+
+      archiveEpoch({ summary, messages: archived });
+
+      // System role keeps the seed out of the time-travel branch-cut math,
+      // which counts user messages against prompt-node counts.
+      setMessages([{
+        id: `epoch-seed-${Date.now()}`,
+        role: 'system',
+        parts: [{
+          type: 'text',
+          text: `Context: this conversation continues from an earlier chapter. Summary of that chapter: ${summary}`,
+        }],
+      }]);
+
+      setIsArchiving(false);
+      isArchivingRef.current = false;
+    };
+
+    void run();
+  }, [status, messages, viewingEpochId, archiveEpoch, setIsArchiving, setMessages]);
+
+  // ---------------------------------------------------------------------------
   // Send Logic — handles time-travel truncation and dispatches to the AI
   // ---------------------------------------------------------------------------
   const sendPromptText = (text: string) => {
     if (!text.trim()) return;
+    if (viewingEpochId !== null || isArchiving) return;
 
     if (timeCursor !== null) {
       // Branching from history — truncate canvas and AI message history
@@ -185,6 +280,7 @@ export function useEditorialChat() {
     submitPrompt,
     status,
     stop,
-    messages
+    messages,
+    isArchiving
   };
 }

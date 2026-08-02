@@ -42,8 +42,21 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
   const isIntroAnimationFinished = useCanvasStore(state => state.isIntroAnimationFinished);
   const isIntroReasoningFinished = useCanvasStore(state => state.isIntroReasoningFinished);
   const timeCursor = useCanvasStore(state => state.timeCursor);
+  const epochs = useCanvasStore(state => state.epochs);
+  const viewingEpochId = useCanvasStore(state => state.viewingEpochId);
 
   const isIntroActive = !(isIntroAnimationFinished && isIntroReasoningFinished);
+
+  // While an archived epoch is open the canvas renders that epoch's finished
+  // graph instead of the live one — read-only, and exempt from both the
+  // timeline cursor and the intro hide (its content is already complete).
+  const viewingEpoch = React.useMemo(
+    () => epochs.find(epoch => epoch.id === viewingEpochId) ?? null,
+    [epochs, viewingEpochId]
+  );
+  const isViewingEpoch = viewingEpoch !== null;
+  const sourceNodes = viewingEpoch ? viewingEpoch.nodes : nodes;
+  const sourceEdges = viewingEpoch ? viewingEpoch.edges : edges;
 
   // Debug bounding box mode — toggle with 'D' key
   const [showDebugBounds, setShowDebugBounds] = useState(false);
@@ -61,9 +74,9 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
 
   // Filter nodes and edges based on the timeline scrubber and intro state
   const visibleNodes = React.useMemo(() => {
-    return nodes.map((node, index) => {
+    return sourceNodes.map((node, index) => {
       const isPastCursor = timeCursor !== null && index > timeCursor;
-      const isHidden = isIntroActive || isPastCursor;
+      const isHidden = !isViewingEpoch && (isIntroActive || isPastCursor);
 
       // Debug bounding box colors per node type
       const debugColors: Record<string, string> = {
@@ -88,18 +101,18 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
         }
       };
     });
-  }, [nodes, timeCursor, isIntroActive, showDebugBounds]);
+  }, [sourceNodes, isViewingEpoch, timeCursor, isIntroActive, showDebugBounds]);
 
   const visibleEdges = React.useMemo(() => {
     // Build an O(1) lookup map for node indices to drastically improve scrubbing performance
-    const nodeIndexMap = new Map(nodes.map((n, i) => [n.id, i]));
-    
-    return edges.map(edge => {
+    const nodeIndexMap = new Map(sourceNodes.map((n, i) => [n.id, i]));
+
+    return sourceEdges.map(edge => {
       const sourceNodeIndex = nodeIndexMap.get(edge.source) ?? -1;
       const targetNodeIndex = nodeIndexMap.get(edge.target) ?? -1;
       const isPastCursor = timeCursor !== null && (sourceNodeIndex > timeCursor || targetNodeIndex > timeCursor);
-      const isHidden = isIntroActive || isPastCursor;
-      
+      const isHidden = !isViewingEpoch && (isIntroActive || isPastCursor);
+
       return {
         ...edge,
         style: {
@@ -109,7 +122,7 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
         }
       };
     });
-  }, [edges, nodes, timeCursor, isIntroActive]);
+  }, [sourceEdges, sourceNodes, isViewingEpoch, timeCursor, isIntroActive]);
 
   // Camera focus on Intro Node
   useEffect(() => {
@@ -129,7 +142,7 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
   // Camera tracking — pan to latest active node via setCenter
   // Suppressed during intro so it doesn't fight the hero-pan animation
   useEffect(() => {
-    if (trackedNodeId && rfInstance && !isIntroActive) {
+    if (trackedNodeId && rfInstance && !isIntroActive && !isViewingEpoch) {
       const nodes = useCanvasStore.getState().nodes;
       const targetNode = nodes.find(n => n.id === trackedNodeId);
       if (!targetNode) return;
@@ -155,17 +168,17 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
         clearTimeout(resetId);
       };
     }
-  }, [trackedNodeId, rfInstance, setTrackedNodeId, isIntroActive]);
+  }, [trackedNodeId, rfInstance, setTrackedNodeId, isIntroActive, isViewingEpoch]);
 
-  // Fit view when traveling through time
+  // Fit view when traveling through time, or when entering/leaving an archived epoch
   useEffect(() => {
-    if (rfInstance && timeCursor !== undefined) {
+    if (rfInstance) {
       const timeoutId = setTimeout(() => {
         rfInstance.fitView({ padding: 0.3, duration: 800, maxZoom: 1.2 });
       }, 50);
       return () => clearTimeout(timeoutId);
     }
-  }, [timeCursor, rfInstance]);
+  }, [timeCursor, viewingEpochId, rfInstance]);
 
   // Activate custom hooks
   // Physics is temporarily disabled per user request for deterministic static layout
@@ -175,12 +188,18 @@ export default function EditorialCanvas({ children }: { children?: React.ReactNo
 
   return (
     <div className="w-full h-screen relative bg-transparent">
+      {/* While viewing an epoch the rendered nodes are not in the live graph, so
+          change handlers are detached — a measurement pass must not write back
+          into live canvas state. */}
       <ReactFlow
         nodes={visibleNodes}
         edges={visibleEdges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
+        onNodesChange={isViewingEpoch ? undefined : onNodesChange}
+        onEdgesChange={isViewingEpoch ? undefined : onEdgesChange}
+        onConnect={isViewingEpoch ? undefined : onConnect}
+        nodesDraggable={!isViewingEpoch}
+        nodesConnectable={!isViewingEpoch}
+        elementsSelectable={!isViewingEpoch}
         nodeTypes={nodeTypes}
         onInit={setRfInstance}
         proOptions={{ hideAttribution: true }}

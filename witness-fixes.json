@@ -71,6 +71,12 @@
       "desc": "Experimental CRT mode removed; standard-only CrtEffect (user request 2026-07-31)",
       "file": "src/features/crt/components/CrtEffect.tsx",
       "marker": "Controls live in the Playground panel"
+    },
+    {
+      "id": "FEAT-2",
+      "desc": "Chat context management: epoch archiving with summary-seeded reset + scrubber chapters (user request 2026-08-03)",
+      "file": "src/features/canvas/store/slices/epochSlice.ts",
+      "marker": "archiveEpoch"
     }
   ]
 }

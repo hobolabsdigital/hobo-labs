@@ -3,8 +3,9 @@ import { Node, Edge, OnNodesChange, OnEdgesChange, OnConnect, applyNodeChanges, 
 
 import { FluidSlice, createFluidSlice } from './slices/fluidSlice';
 import { NodeActionSlice, createNodeActionSlice } from './slices/nodeActionSlice';
+import { EpochSlice, createEpochSlice } from './slices/epochSlice';
 
-export interface CanvasState extends FluidSlice, NodeActionSlice {
+export interface CanvasState extends FluidSlice, NodeActionSlice, EpochSlice {
   nodes: Node[];
   edges: Edge[];
   rfInstance: ReactFlowInstance | null;
@@ -78,4 +79,5 @@ export const useCanvasStore = create<CanvasState>((set, get, store) => ({
 
   ...createFluidSlice(set, get, store),
   ...createNodeActionSlice(set, get, store),
+  ...createEpochSlice(set, get, store),
 }));

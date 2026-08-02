@@ -3,7 +3,7 @@
 import { Button } from '@/core/ui/components/button';
 import { SendIcon } from "lucide-react";
 import { useCanvasStore } from '@/features/canvas/store/useCanvasStore';
-import { INTRO_REVEAL_CLASSES } from '@/features/canvas/constants';
+import { INTRO_REVEAL_CLASSES, ARCHIVE_THRESHOLD } from '@/features/canvas/constants';
 import { useEditorialChat } from '@/features/editor-chat/hooks/useEditorialChat';
 
 export function ChatInput() {
@@ -11,17 +11,24 @@ export function ChatInput() {
   const isHistoryMode = timeCursor !== null;
 
   const activeSuggestions = useCanvasStore((state) => state.activeSuggestions);
+  const epochs = useCanvasStore((state) => state.epochs);
+  const viewingEpochId = useCanvasStore((state) => state.viewingEpochId);
+  const setViewingEpoch = useCanvasStore((state) => state.setViewingEpoch);
+  const isArchiving = useCanvasStore((state) => state.isArchiving);
 
+  const isViewingEpoch = viewingEpochId !== null;
 
   const { input, setInput, handleSend, submitPrompt, status, messages } = useEditorialChat();
   const isLoading = status === 'submitted' || status === 'streaming';
-  
-  // Visual representation of context bloat
+  const isComposingDisabled = isArchiving || isViewingEpoch;
+
+  // Context load against the real archiving threshold — the meter hits 100%
+  // exactly when the conversation gets archived into an epoch.
   const contextLoad = messages.length;
-  const maxContext = 20; // Soft visual limit
+  const maxContext = ARCHIVE_THRESHOLD;
   const loadPercentage = Math.min((contextLoad / maxContext) * 100, 100);
   const getLoadColor = () => {
-    if (loadPercentage < 50) return 'bg-[var(--brutalist-cyan)]';
+    if (loadPercentage < 50) return 'bg-primary';
     if (loadPercentage < 80) return 'bg-yellow-400';
     return 'bg-red-500';
   };
@@ -54,7 +61,7 @@ export function ChatInput() {
               <button
                 key={idx}
                 onClick={() => handleSuggestionClick(suggestion)}
-                disabled={isLoading}
+                disabled={isLoading || isComposingDisabled}
                 className={[
                   'whitespace-nowrap transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
                   // Default (light/dark)
@@ -73,6 +80,45 @@ export function ChatInput() {
               </button>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Mobile chapter strip — desktop navigates chapters via the TimelineScrubber */}
+      {epochs.length > 0 && (
+        <div className="md:hidden w-full flex gap-2 justify-start overflow-x-auto scrollbar-none px-8 pb-1 snap-x">
+          {epochs.map((epoch) => {
+            const isActive = epoch.id === viewingEpochId;
+            const label = String(epoch.index).padStart(2, '0');
+            return (
+              <button
+                key={epoch.id}
+                type="button"
+                onClick={() => setViewingEpoch(isActive ? null : epoch.id)}
+                aria-label={`View chapter ${epoch.index}: ${epoch.title}`}
+                aria-current={isActive}
+                className={`shrink-0 min-w-[2.5rem] px-3 py-1.5 font-ui text-[10px] uppercase tracking-widest rounded-full border transition-colors ${
+                  isActive
+                    ? 'border-foreground bg-foreground text-background'
+                    : 'border-foreground/15 bg-foreground/5 text-foreground/80'
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            onClick={() => setViewingEpoch(null)}
+            aria-label="Return to present"
+            aria-current={!isViewingEpoch}
+            className={`shrink-0 min-w-[2.5rem] px-3 py-1.5 flex items-center justify-center rounded-full border transition-colors ${
+              !isViewingEpoch
+                ? 'border-foreground bg-foreground text-background'
+                : 'border-foreground/15 bg-foreground/5 text-foreground/80'
+            }`}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-current" />
+          </button>
         </div>
       )}
 
@@ -97,14 +143,20 @@ export function ChatInput() {
           id="chat-input"
           value={input}
           onChange={handleInputChange}
-          placeholder={isHistoryMode ? "Type to branch off from this point in time..." : "Ask me about my work, process, or vision..."}
-          disabled={false}
+          placeholder={
+            isViewingEpoch
+              ? "Viewing a past chapter — return to present to continue"
+              : isHistoryMode
+                ? "Type to branch off from this point in time..."
+                : "Ask me about my work, process, or vision..."
+          }
+          disabled={isComposingDisabled}
           className="flex-1 border-0 bg-transparent text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/70 rounded-[calc(var(--radius-input)/2)] blueprint:rounded-none cyberpunk:rounded-none brutalist:rounded-none px-4 text-base md:text-lg brutalist:text-lg brutalist:font-bold transition-opacity placeholder:text-foreground/40 font-body"
         />
         <Button
           type="submit"
           size="icon"
-          disabled={isLoading || !input.trim()}
+          disabled={isLoading || isComposingDisabled || !input.trim()}
           aria-label={isHistoryMode ? "Branch off from this point" : "Send message"}
           className={[
             'shrink-0 h-12 w-12 transition-[transform,background-color,box-shadow] active:scale-95',
@@ -140,7 +192,7 @@ export function ChatInput() {
           />
         </div>
         <div className="font-ui text-[10px] uppercase tracking-widest text-foreground/70 whitespace-nowrap">
-          {contextLoad} MSG
+          {isArchiving ? 'Archiving…' : `${contextLoad} MSG`}
         </div>
       </div>
     </div>

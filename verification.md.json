@@ -1,14 +1,14 @@
 {
   "manifest": {
     "schema": "ruflo-witness/v1",
-    "issuedAt": "2026-07-31T09:17:05.499Z",
-    "gitCommit": "5f4838d26ed35dd87ca73b2337e81a1e9df18fee",
+    "issuedAt": "2026-08-02T23:35:10.232Z",
+    "gitCommit": "30616f576c282aa790322a41022e5c46158a8d63",
     "branch": "audit-remediation",
     "os": "macos",
     "releases": {},
     "summary": {
-      "totalFixes": 12,
-      "verified": 12,
+      "totalFixes": 13,
+      "verified": 13,
       "missing": 0
     },
     "fixes": [
@@ -107,15 +107,23 @@
         "sha256": "8d06665522e57acf7cda3b2e6b81dbe86495f4c5e8acdaf444cbbc6a75e1e7cc",
         "marker": "Controls live in the Playground panel",
         "markerVerified": true
+      },
+      {
+        "id": "FEAT-2",
+        "desc": "Chat context management: epoch archiving with summary-seeded reset + scrubber chapters (user request 2026-08-03)",
+        "file": "src/features/canvas/store/slices/epochSlice.ts",
+        "sha256": "41ac26868c7012196be83861e218b63d2fe725ffe6b2766b2b19fd8a05937821",
+        "marker": "archiveEpoch",
+        "markerVerified": true
       }
     ]
   },
   "integrity": {
     "manifestHashAlgo": "sha256",
-    "manifestHash": "b503c026c4315ab2faa831e7633c44b341b32c0132b2c79115271685d05d6c95",
+    "manifestHash": "32af0030da4ede438259b249f10e146c590b79f34a46d00a12bedebc0d996717",
     "signatureAlgo": "ed25519",
-    "publicKey": "c3551404c9254e887c6f4e1f63cdd83c1eeaa030ab19f2b69e0cfd018cf830f4",
-    "signature": "06a907c32bfe29be0d7fe9f5edebb20a8550ca5af445a68bcc77f9fb6c0f82685eed460daeaa7a70c020d4388642ce5632a4b44b9504638d9e0bc220cf3b7f0c",
+    "publicKey": "1f1f7ac1c0f034b584a3904142e955861e3c798a173572e3ce90b9dd2651a563",
+    "signature": "bed6ef2a8d98f22cc83a09b9f571df1c059bab56ceaf53f5f87d9586d0849318743d3dc1b766a494f331f36a65587a8836a62bc4ed6b8e4b22cc4148915d4a04",
     "seedDerivation": "sha256(gitCommit + ':ruflo-witness/v1')"
   }
 }

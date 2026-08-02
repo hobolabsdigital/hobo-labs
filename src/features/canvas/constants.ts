@@ -63,3 +63,9 @@ export const AABB_GAP = 30;
 
 /** Maximum length (px) a link spring will allow between two connected nodes */
 export const LINK_MAX_DISTANCE = 800;
+
+// ---------------------------------------------------------------------------
+// Epochs
+// ---------------------------------------------------------------------------
+
+export const ARCHIVE_THRESHOLD = 20; // messages — epoch archive fires at this count once the stream is idle

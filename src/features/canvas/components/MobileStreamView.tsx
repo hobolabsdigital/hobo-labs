@@ -8,6 +8,7 @@ import { PromptNode } from './nodes/PromptNode';
 import { GhostNode } from './nodes/GhostNode';
 import { ProjectNode } from './nodes/ProjectNode';
 import { IntroNode } from './nodes/IntroNode';
+import { ContactNode } from './nodes/ContactNode';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const nodeTypes: Record<string, React.ComponentType<any>> = {
@@ -16,7 +17,8 @@ const nodeTypes: Record<string, React.ComponentType<any>> = {
   prompt: PromptNode,
   ghost: GhostNode,
   project: ProjectNode,
-  intro: IntroNode
+  intro: IntroNode,
+  contact: ContactNode
 };
 
 export function MobileStreamView() {
@@ -24,6 +26,12 @@ export function MobileStreamView() {
   const isIntroAnimationFinished = useCanvasStore(state => state.isIntroAnimationFinished);
   const isIntroReasoningFinished = useCanvasStore(state => state.isIntroReasoningFinished);
   const timeCursor = useCanvasStore(state => state.timeCursor);
+  const epochs = useCanvasStore(state => state.epochs);
+  const viewingEpochId = useCanvasStore(state => state.viewingEpochId);
+
+  // While viewing an archived chapter, render its snapshot instead of the live stream
+  const viewingEpoch = epochs.find(epoch => epoch.id === viewingEpochId) ?? null;
+  const sourceNodes = viewingEpoch ? viewingEpoch.nodes : nodes;
   const bottomRef = useRef<HTMLDivElement>(null);
   const isInitialLoad = useRef(true);
 
@@ -45,13 +53,13 @@ export function MobileStreamView() {
 
   return (
     <div className={`w-full h-full overflow-y-auto overflow-x-hidden p-4 pt-32 pb-40 flex flex-col gap-12 scroll-smooth transition-opacity duration-1000 ease-in-out ${isIntroActive ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto bg-transparent'}`}>
-      {!isIntroActive && nodes.map((node, index) => {
+      {!isIntroActive && sourceNodes.map((node, index) => {
         if (node.type === 'intro') return null;
 
         const Component = nodeTypes[node.type || 'text'];
         if (!Component) return null;
 
-        const isPastCursor = timeCursor !== null && index > timeCursor;
+        const isPastCursor = !viewingEpoch && timeCursor !== null && index > timeCursor;
 
         return (
           <div
