@@ -184,61 +184,62 @@ export function useEditorialChat() {
   // ---------------------------------------------------------------------------
   const isArchivingRef = useRef(false);
 
-  useEffect(() => {
-    if (status !== 'ready') return;
-    if (messages.length < ARCHIVE_THRESHOLD) return;
-    if (viewingEpochId !== null) return;
-    if (isArchivingRef.current) return;
+  const archiveConversation = async (archived: UIMessage[]) => {
+    setIsArchiving(true);
 
-    isArchivingRef.current = true;
-    const archived = messages;
-
-    const run = async () => {
-      setIsArchiving(true);
-
-      let summary = '';
-      try {
-        const res = await fetch('/api/summarize', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: toSummaryPayload(archived) }),
-        });
-        if (res.ok) {
-          const data = await res.json() as { summary?: string };
-          summary = data.summary?.trim() || '';
-        }
-      } catch {
-        summary = '';
+    let summary = '';
+    try {
+      const res = await fetch('/api/summarize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: toSummaryPayload(archived) }),
+      });
+      if (res.ok) {
+        const data = await res.json() as { summary?: string };
+        summary = data.summary?.trim() || '';
       }
+    } catch {
+      summary = '';
+    }
 
-      if (!summary) summary = buildFallbackSummary(archived);
+    if (!summary) summary = buildFallbackSummary(archived);
 
-      archiveEpoch({ summary, messages: archived });
+    archiveEpoch({ summary, messages: archived });
 
-      // System role keeps the seed out of the time-travel branch-cut math,
-      // which counts user messages against prompt-node counts.
-      setMessages([{
-        id: `epoch-seed-${Date.now()}`,
-        role: 'system',
-        parts: [{
-          type: 'text',
-          text: `Context: this conversation continues from an earlier chapter. Summary of that chapter: ${summary}`,
-        }],
-      }]);
+    // System role keeps the seed out of the time-travel branch-cut math,
+    // which counts user messages against prompt-node counts.
+    setMessages([{
+      id: `epoch-seed-${Date.now()}`,
+      role: 'system',
+      parts: [{
+        type: 'text',
+        text: `Context: this conversation continues from an earlier chapter. Summary of that chapter: ${summary}`,
+      }],
+    }]);
 
-      setIsArchiving(false);
-      isArchivingRef.current = false;
-    };
-
-    void run();
-  }, [status, messages, viewingEpochId, archiveEpoch, setIsArchiving, setMessages]);
+    setIsArchiving(false);
+  };
 
   // ---------------------------------------------------------------------------
   // Send Logic — handles time-travel truncation and dispatches to the AI
   // ---------------------------------------------------------------------------
-  const sendPromptText = (text: string) => {
+  const sendPromptText = async (text: string) => {
     if (!text.trim()) return;
     if (viewingEpochId !== null || isArchiving) return;
+
+    // Context full — archive into a chapter on the NEXT send, not the moment
+    // the final reply lands, so the visitor reads it at their own pace. This
+    // message then opens the fresh, summary-seeded chapter.
+    if (timeCursor === null && messages.length >= ARCHIVE_THRESHOLD && !isArchivingRef.current) {
+      isArchivingRef.current = true;
+      await archiveConversation(messages);
+      isArchivingRef.current = false;
+
+      addPrompt(text);
+      clearSuggestions();
+      sendMessage({ text });
+      return;
+    }
 
     if (timeCursor !== null) {
       // Branching from history — truncate canvas and AI message history
