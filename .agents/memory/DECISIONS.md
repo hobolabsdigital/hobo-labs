@@ -144,11 +144,12 @@ src/
 - `stagger`: the container stays and its children cascade
 - `content`: for hairline-grid cells, the cell stays and its contents cascade
 - `.plate`: the frame lands, then a paper shutter with a red scan line slides off the image
+- work preview: it can't be hovered, so it lands in duotone and develops to full colour after 0.3s (the plates keep hover-to-colour)
 - `.pipeline`: the rail draws and the nodes pop
 The hero headline plays the line rise as a CSS load animation, so it never waits on hydration.
-**Scroll-linked** (only under `prefers-reduced-motion: no-preference` and `@supports (animation-timeline: view())`): plate images drift, method numerals drift, a top scroll meter, and two `Tape` bands that move with the scroll. Browsers without scroll timelines get a slow time-based tape and nothing else.
+**Scroll-linked** (only under `prefers-reduced-motion: no-preference` and `@supports (animation-timeline: view())`): plate images drift, method numerals drift, and a top scroll meter. Browsers without scroll timelines get the reveals only. (Two full-bleed tape bands between sheets shipped briefly and were removed at Emile's request; don't reintroduce banners.)
 **Rules**:
 - Animate only opacity, translate, rotate and scale. Animating clip-path over large images repainted every frame and stalled software GL.
-- Use `overflow: clip`, not `hidden`, on anything wrapping a `view()` subject. `hidden` makes a scroll container and strands the timeline, so `.plate__img` and `.tape` are clip.
+- Use `overflow: clip`, not `hidden`, on anything wrapping a `view()` subject. `hidden` makes a scroll container and strands the timeline, so `.plate__img` is clip.
 - Never fade a cell whose grid draws its 1px rules as the container background; it flashes that colour as a solid block. Use `content`.
 **Verified**: timelines bind (View/ScrollTimeline). Everything reveals after a slow walk down the page. No horizontal overflow at 1440 or 390. Zero scroll animations under reduced motion, and zero hidden elements with JS off.

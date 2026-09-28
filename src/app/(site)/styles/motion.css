@@ -260,56 +260,6 @@
   }
 }
 
-/* ---------- Tape: a full-bleed band between sheets ---------- */
-
-.tape {
-  position: relative;
-  /* clip, not hidden: keeps the band's corners off the page without making a
-     scroll container (the track's view() timeline needs the root scroller). */
-  overflow: clip;
-  padding: clamp(30px, 4.5vw, 64px) 0;
-  background: var(--paper);
-  background-image: var(--page-texture);
-  background-size: var(--page-texture-size);
-}
-.tape__band {
-  width: 112vw;
-  margin-left: -6vw;
-  rotate: -2deg;
-  background: var(--ink);
-  color: var(--paper);
-  border-block: 3px solid var(--signal);
-}
-.tape--reverse .tape__band {
-  rotate: 1.5deg;
-  background: var(--signal);
-  color: var(--on-signal);
-  border-color: var(--ink);
-}
-.tape__track {
-  display: flex;
-  width: max-content;
-  padding: 0.2em 0 0.16em;
-  font-family: var(--f-display);
-  font-weight: var(--display-weight);
-  text-transform: var(--display-case);
-  letter-spacing: var(--display-track);
-  font-size: clamp(26px, calc(4.4vw * var(--display-scale)), 76px);
-  line-height: 1;
-  white-space: nowrap;
-}
-.tape__track > span {
-  flex: none;
-}
-.tape__track i {
-  font-style: normal;
-  margin: 0 0.45em;
-  color: var(--signal);
-}
-.tape--reverse .tape__track i {
-  color: var(--ink);
-}
-
 /* ---------- Scroll meter: the plotter head's progress ---------- */
 
 .scroll-meter {
@@ -319,38 +269,7 @@
 /* ---------- Scroll-linked layer ---------- */
 
 @media (prefers-reduced-motion: no-preference) {
-  /* Browsers without scroll timelines still get a slow, time-based tape. */
-  @keyframes tape-loop {
-    to {
-      translate: -33.333% 0;
-    }
-  }
-  .tape__track {
-    animation: tape-loop 70s linear infinite;
-  }
-  .tape--reverse .tape__track {
-    animation-direction: reverse;
-  }
-
   @supports (animation-timeline: view()) {
-    /* Tape moves with the scroll, not the clock. */
-    @keyframes tape-scroll {
-      from {
-        translate: 0 0;
-      }
-      to {
-        translate: -12% 0;
-      }
-    }
-    .tape__track {
-      animation: tape-scroll linear both;
-      animation-timeline: view();
-      animation-range: cover;
-    }
-    .tape--reverse .tape__track {
-      animation-direction: reverse;
-    }
-
     /* Plates drift against the page: a little depth behind the frame. */
     @keyframes plate-drift {
       from {

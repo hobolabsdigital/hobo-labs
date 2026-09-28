@@ -1,4 +1,4 @@
-import { CONTACT, TAPES } from '@/features/site/content';
+import { CONTACT } from '@/features/site/content';
 import { Contact } from '@/features/site/components/Contact';
 import { Hero } from '@/features/site/components/Hero';
 import { Method } from '@/features/site/components/Method';
@@ -8,7 +8,6 @@ import { Nutrons } from '@/features/site/components/Nutrons';
 import { Orchestration } from '@/features/site/components/Orchestration';
 import { PageChrome } from '@/features/site/components/PageChrome';
 import { Receipts } from '@/features/site/components/Receipts';
-import { Tape } from '@/features/site/components/Tape';
 import { Work } from '@/features/site/components/Work';
 
 const personJsonLd = {
@@ -41,11 +40,9 @@ export default function Home() {
         <Receipts />
         <Nutrons />
         <Monstoryx />
-        <Tape items={TAPES.method} />
         <Method />
         <Orchestration />
         <Work />
-        <Tape items={TAPES.roles} reverse />
         <Contact />
       </main>
       <PageChrome />

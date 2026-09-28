@@ -289,12 +289,6 @@ export const ORCHESTRATION = {
   ] as RigCard[],
 };
 
-/** Tape bands between sheets: words that already appear on the page, set large. */
-export const TAPES = {
-  method: METHOD.map((m) => m.title),
-  roles: ['Creative technologist', 'Senior engineer', 'Agentic AI systems', 'WebGL & GLSL', 'Design systems', 'Graz · CET'],
-};
-
 export type WorkItem = {
   years: string;
   title: string;
