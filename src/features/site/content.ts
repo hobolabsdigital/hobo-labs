@@ -142,8 +142,8 @@ export const NUTRONS = {
 export const REEL = {
   heading: 'In motion — Nutrons films',
   label: 'Reel 01 · Nutrons',
-  // Say how they were made once confirmed; left blank rather than guessed.
-  intro: '',
+  intro:
+    'Generated in Higgsfield and directed through the Nutrons bible, my canon plugin: character sheets, style clause and camera grammar travel with every prompt, so the crew stays on-model from shot to shot.',
 };
 
 export const MONSTORYX = {
@@ -299,7 +299,7 @@ export const ALSO = 'Also: Bauhaus100 face filters · Spark AR social games · M
 export const PARTS: { k: string; v: string }[] = [
   { k: 'Core', v: 'TypeScript (strict), Node.js 22, SQL · Next.js 16, React 19, TanStack Query, Tailwind, Radix' },
   { k: 'Backend & data', v: 'Fastify 5, Hono, Prisma 6, Postgres 16 (RLS, row locks, idempotency), Stripe, pnpm + Turborepo' },
-  { k: 'Agents & AI', v: 'Flue, Gemini (text & vision), fal.ai (Ideogram v4, Nano Banana 2, Wan 3.0), ComfyUI (SDXL + LoRA), Resemble TTS, ffmpeg' },
+  { k: 'Agents & AI', v: 'Flue, Gemini (text & vision), fal.ai (Ideogram v4, Nano Banana 2, Wan 3.0), Higgsfield, ComfyUI (SDXL + LoRA), Resemble TTS, ffmpeg' },
   { k: 'Evals & ops', v: 'promptfoo, LLM & vision judges, Vitest, Playwright, MSW, OpenTelemetry, GitHub Actions' },
   { k: 'Infra', v: 'Cloud Run, Cloud SQL, Cloud Build, Docker, Vercel' },
   { k: 'Design', v: 'Figma (libraries, variables, Figma MCP), FigJam, design tokens & atomic systems, Adobe CC' },
