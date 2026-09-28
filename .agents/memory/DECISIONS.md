@@ -153,3 +153,15 @@ The hero headline plays the line rise as a CSS load animation, so it never waits
 - Use `overflow: clip`, not `hidden`, on anything wrapping a `view()` subject. `hidden` makes a scroll container and strands the timeline, so `.plate__img` is clip.
 - Never fade a cell whose grid draws its 1px rules as the container background; it flashes that colour as a solid block. Use `content`.
 **Verified**: timelines bind (View/ScrollTimeline). Everything reveals after a slow walk down the page. No horizontal overflow at 1440 or 390. Zero scroll animations under reduced motion, and zero hidden elements with JS off.
+
+### D017 — MonstoryX told as the product, with a scroll-scrubbed quest (2026-09-28)
+**Copy**: the section now leads with what MonstoryX is: a language-learning game for primary children with a teacher platform behind it. The principle is that AI never reaches the child, and answers are judged by code. The description is sourced from the MonstoryX lead session. A Web Summit Lisbon 2026 stamp (ALPHA startup, Impact startup, 9–12 Nov) links to the lis26 appearance page.
+**Fig. 3.0**: `QuestSequence.tsx` plus `styles/quest.css`. It shows the five teacher screens of one real quest ("Learning Shapes") and then the student game.
+- Layout is CSS-only: pinned under `.js` + no-preference, a static grid otherwise, so there's no hydration shift.
+- JS feeds an eased `--p` and the current step. Each card's transform is a pure function of `--p` and its index (`--t`, `--e` fly-in, `--d` sink).
+- Cards are opaque almost at once; translucent cards in flight read as a double exposure.
+- Phones deal cards from the side, so a card in flight never covers the caption.
+- The video loads only from step 4 and plays only while it's the top card and on screen. It's muted with a sound toggle; reduced motion and no-JS get native controls.
+**Assets**:
+- Screens: cropped from Emile's window captures to the app viewport, which removes his browser chrome, bookmarks and the Next.js dev badge. Stored at `public/work/monstoryx/01–05-*.jpg` (1800w, q92).
+- Video: `MonstoryXGame.mov` is 1280×736, 75fps, 1:48. Encoded to H.264 30fps CRF 24 faststart (21 MB) with a poster at 92s, both on Emile's Higgsfield CDN. Deleting those uploads breaks Fig. 3.0.

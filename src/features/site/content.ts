@@ -157,12 +157,21 @@ export const REEL = {
 export const MONSTORYX = {
   role: 'Co-founder & chief technologist',
   years: '2024 — present',
-  title: ['Agents write it, draw it,', 'voice it, film it.', 'Code decides what ships.'],
+  title: ['Children speak.', 'Monsters listen.', 'A teacher approved every word.'],
   intro:
-    'A 264,000-line TypeScript platform, built in fourteen weeks, where AI agents write, illustrate, voice and film lessons for schools. The agents are the smaller half of the code — every output is linted, judged or compiled before it’s allowed anywhere near a child.',
+    'A language-learning game for primary-school children, about four to ten, with a teacher platform behind it. Teachers author short spoken quests with an AI co-author and approve every step; children play them in a world of clay monsters and answer by speaking, in English or Austrian German. The AI never reaches the child: every line was written or approved by a teacher, and every answer is judged by code against the answers the teacher accepted.',
+  summit: {
+    href: 'https://websummit.com/appearances/lis26/3925c4e5-b878-419d-8fe9-194ec7cf3bda/monstoryx/',
+    impactHref: 'https://websummit.com/startups/impact-startups/',
+    event: 'Web Summit Lisbon 2026',
+    dates: '9–12 Nov',
+    tracks: ['ALPHA startup', 'Impact startup'],
+    note: 'Impact startups are picked for work towards the UN Sustainable Development Goals.',
+  },
   links: [
-    { label: 'youtube.com/@monstoryx/shorts', note: 'the output, public', href: 'https://www.youtube.com/@monstoryx/shorts' },
-    { label: 'teach.monstoryx.app', note: 'pre-alpha, with teachers', href: 'https://teach.monstoryx.app' },
+    { label: 'Web Summit — MonstoryX', note: 'ALPHA · Impact startup · Lisbon, 9–12 Nov 2026', href: 'https://websummit.com/appearances/lis26/3925c4e5-b878-419d-8fe9-194ec7cf3bda/monstoryx/' },
+    { label: 'youtube.com/@monstoryx/shorts', note: 'the studio’s films, public', href: 'https://www.youtube.com/@monstoryx/shorts' },
+    { label: 'teach.monstoryx.app', note: 'the teacher platform, pre-alpha with teachers', href: 'https://teach.monstoryx.app' },
   ],
   pipeline: [
     { stage: 'Brief', gate: 'Co-author won’t plan until the level is settled — a rule in code' },
@@ -199,6 +208,68 @@ export const MONSTORYX = {
       stack: 'Fastify · Prisma · Postgres · Next.js 16 · React 19 · Stripe · Turborepo',
     },
   ],
+};
+
+export type QuestStep = { n: string; label: string; title: string; body: string; src?: string; alt?: string };
+
+/** Fig. 3.0 — one real quest ("Learning Shapes"), from the teacher's sentence to the child's world. */
+export const QUEST = {
+  caption: 'Fig. 3.0 — One quest, start to finish: a teacher’s sentence becomes a world a child can talk to.',
+  video: {
+    src: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/d11faea3-6c02-47a4-8758-1b6b78d0bb72.mp4',
+    poster: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/b97dfb42-f961-44d5-9305-faa012905fd6.jpg',
+    width: 1280,
+    height: 736,
+    label: 'The student game · 1:48',
+  },
+  steps: [
+    {
+      n: '01',
+      label: 'Describe',
+      title: 'The teacher says what it’s for',
+      body: 'One sentence: “I want to teach shapes to 2nd year primary class.” Reading level and subject are checked before anything is sent.',
+      src: '/work/monstoryx/01-describe.jpg',
+      alt: 'MonstoryX teacher platform: the Describe your lesson step, with reading level, subject and a one-sentence lesson.',
+    },
+    {
+      n: '02',
+      label: 'Co-author',
+      title: 'The co-author asks before it writes',
+      body: 'Pictures or not? What should the children be able to do by the end? Nothing reaches a child until the teacher approves it.',
+      src: '/work/monstoryx/02-co-author.jpg',
+      alt: 'The AI co-author interviewing the teacher about the shapes lesson.',
+    },
+    {
+      n: '03',
+      label: 'Brief',
+      title: 'A brief to approve, not a surprise',
+      body: 'Outcome, keywords from the school’s catalogue, one activity, the cast. A new word, “triangle”, is coined and queued for review rather than slipped in.',
+      src: '/work/monstoryx/03-brief.jpg',
+      alt: 'The proposed brief: learning outcome, keywords with one new word, activity and characters, ready for Approve & build.',
+    },
+    {
+      n: '04',
+      label: 'Build & check',
+      title: 'Built beat by beat, then checked',
+      body: 'Every beat has a setup, a spoken prompt and three recorded outcomes: correct, try again, reveal. Checks read the text for safety, reading level, structure and mood arc. Pass or flag, never a score.',
+      src: '/work/monstoryx/04-build.jpg',
+      alt: 'The built quest: beats in Blorp’s voice with correct, try-again and reveal lines, and checks that all pass.',
+    },
+    {
+      n: '05',
+      label: 'Finale',
+      title: 'Agree the story, then film it',
+      body: 'The mission’s closing film starts as a story the teacher signs off: where it happens, the fact children take home, the word they hear. Only then is it scripted, pictured and rendered.',
+      src: '/work/monstoryx/05-finale.jpg',
+      alt: 'The Finale step: shaping the story of the closing film before the script is written.',
+    },
+    {
+      n: '06',
+      label: 'Play',
+      title: 'And a child plays it',
+      body: 'In the browser, in a world of clay monsters. The child answers by speaking, judged against the teacher’s accepted answers, deterministically. The platform never stores the audio.',
+    },
+  ] as QuestStep[],
 };
 
 export const METHOD = [

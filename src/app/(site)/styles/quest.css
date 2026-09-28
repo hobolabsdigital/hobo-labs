@@ -1,0 +1,385 @@
+/* ---------- Web Summit stamp ---------- */
+
+.split__side {
+  display: grid;
+  gap: 26px;
+}
+.summit-stamp {
+  justify-self: start;
+  text-decoration: none;
+}
+.summit-stamp__event {
+  display: inline-grid;
+  justify-items: center;
+  gap: 5px;
+  padding: 12px 20px 11px;
+  color: var(--signal);
+  border: 3px solid var(--signal);
+  outline: 1px solid var(--signal);
+  outline-offset: 4px;
+  rotate: -3.5deg;
+  font-family: var(--f-mono);
+  text-transform: uppercase;
+  text-align: center;
+  transition: rotate 0.35s var(--ease-out);
+}
+.summit-stamp:hover .summit-stamp__event {
+  rotate: 0deg;
+}
+.summit-stamp__top {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+.summit-stamp__tracks {
+  font-family: var(--f-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-track);
+  font-size: clamp(19px, 1.7vw, 26px);
+  line-height: 1;
+}
+.summit-stamp__meta {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+
+/* ---------- Fig. 3.0: one quest, start to finish ----------
+   Two layouts from the same markup. By default (no JS, or reduced motion) it
+   is a plain grid of the six frames and their captions. With JS and motion it
+   pins a stage and deals the frames onto a stack as --p runs 0 → 1. */
+
+.quest {
+  margin: 0 0 clamp(56px, 7vw, 104px);
+}
+
+/* ----- Static layout ----- */
+
+.quest__rail {
+  display: none;
+}
+.quest__deck {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 18px;
+}
+.quest__card {
+  position: relative;
+  aspect-ratio: 1800 / 955;
+  overflow: clip;
+  background: #fff;
+  border: 3px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--plate-shadow);
+}
+.quest__card img,
+.quest__video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 0 0;
+}
+.quest__video {
+  object-position: 50% 50%;
+  background: #0a0a0a;
+}
+.quest__card-n {
+  position: absolute;
+  left: 10px;
+  /* Top, so the badges never sit on the video's native controls. */
+  top: 10px;
+  padding: 4px 8px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+.quest__tag {
+  position: absolute;
+  left: 50px;
+  top: 10px;
+  padding: 4px 8px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.quest__sound {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+.quest__captions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 18px 24px;
+  margin-top: 26px;
+}
+.quest__caption {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+.quest__caption-n {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--signal);
+  font-weight: 700;
+}
+.quest__caption-title {
+  font-family: var(--f-display);
+  font-weight: var(--display-weight);
+  text-transform: var(--display-case);
+  letter-spacing: var(--display-track);
+  font-size: clamp(20px, calc(1.9vw * var(--display-scale) + 4px), 32px);
+  line-height: 1.02;
+}
+.quest__caption-body {
+  max-width: 46ch;
+  font-size: calc(var(--body-size) * 0.95);
+}
+
+/* ----- Pinned, scroll-scrubbed layout ----- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .quest__track {
+    --p: 0;
+    position: relative;
+    height: calc(100svh - var(--nav-h) + var(--n) * 68svh);
+  }
+  .js .quest__stage {
+    position: sticky;
+    top: var(--nav-h);
+    height: calc(100svh - var(--nav-h));
+    display: grid;
+    grid-template-columns: minmax(230px, 0.75fr) minmax(0, 2.25fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas:
+      'rail deck'
+      'caption deck';
+    gap: 28px clamp(24px, 3.5vw, 56px);
+    align-items: center;
+    padding: clamp(18px, 3vh, 40px) 0;
+    overflow: clip;
+  }
+
+  /* The rail: six stations and a line that fills with --p. */
+  .js .quest__rail {
+    grid-area: rail;
+    align-self: end;
+    position: relative;
+    display: grid;
+    gap: 12px;
+    padding-left: 22px;
+  }
+  .js .quest__rail::before,
+  .js .quest__rail::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: var(--line);
+  }
+  .js .quest__rail::after {
+    background: var(--signal);
+    transform-origin: 50% 0;
+    scale: 1 var(--p);
+  }
+  .js .quest__rail-item {
+    position: relative;
+    display: flex;
+    gap: 10px;
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: color 0.3s var(--ease-out);
+  }
+  .js .quest__rail-item::before {
+    content: '';
+    position: absolute;
+    left: -22px;
+    top: 3px;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--line-strong);
+    background: var(--paper);
+    transition:
+      background-color 0.3s var(--ease-out),
+      scale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .js .quest__rail-item[data-done] {
+    color: var(--ink);
+  }
+  .js .quest__rail-item[data-done]::before {
+    background: var(--ink);
+  }
+  .js .quest__rail-item[aria-current] {
+    color: var(--signal);
+    font-weight: 700;
+  }
+  .js .quest__rail-item[aria-current]::before {
+    background: var(--signal);
+    border-color: var(--signal);
+    scale: 1.35;
+    rotate: 45deg;
+  }
+  .js .quest__rail-n {
+    font-weight: 700;
+  }
+
+  /* Captions share one cell; the current one rises in. */
+  .js .quest__captions {
+    grid-area: caption;
+    align-self: start;
+    display: grid;
+    margin: 0;
+  }
+  .js .quest__caption {
+    grid-area: 1 / 1;
+    opacity: 0;
+    translate: 0 16px;
+    pointer-events: none;
+    transition:
+      opacity 0.35s var(--ease-out),
+      translate 0.5s var(--ease-out);
+  }
+  .js .quest__caption[data-active] {
+    opacity: 1;
+    translate: none;
+    pointer-events: auto;
+    transition-delay: 0.08s;
+  }
+
+  /* The deck: every card is a function of --p and its index. */
+  .js .quest__deck {
+    grid-area: deck;
+    position: relative;
+    display: block;
+    /* As wide as the column allows, but never taller than the stage. */
+    width: min(100%, calc((100svh - var(--nav-h) - 96px) * 1.885));
+    aspect-ratio: 1800 / 955;
+    align-self: center;
+    justify-self: center;
+  }
+  .js .quest__card {
+    /* t: where this card is in its own step (0 = arrived, 1 = next arrives). */
+    --t: calc(var(--p) * var(--n) - var(--i));
+    /* e: 0 → 1 while it flies in; d: how far it has sunk into the stack. */
+    --e: clamp(0, calc(var(--t) / 0.6 + 1), 1);
+    --d: clamp(0, calc(var(--t) - 0.4), 4);
+    position: absolute;
+    inset: 0;
+    aspect-ratio: auto;
+    z-index: var(--i);
+    transform-origin: 50% 100%;
+    translate: calc((1 - var(--e)) * 38%) calc((1 - var(--e)) * 64% - var(--d) * 4.5%);
+    rotate: calc((1 - var(--e)) * 10deg + min(var(--d), 1) * var(--tilt, 0deg));
+    scale: calc(0.93 - var(--d) * 0.055);
+    /* Opaque almost at once: a dealt card, not a double exposure. */
+    opacity: calc(clamp(0, var(--e) * 5, 1) * (1 - clamp(0, calc(var(--d) - 2.6), 1)));
+    will-change: translate, rotate, scale, opacity;
+  }
+  .js .quest__card:nth-child(odd) {
+    --tilt: -2.2deg;
+  }
+  .js .quest__card:nth-child(even) {
+    --tilt: 1.8deg;
+  }
+  /* Sunk cards dim, so the top of the stack always reads first. */
+  .js .quest__card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    opacity: calc(min(var(--d), 2.5) * 0.12);
+    pointer-events: none;
+  }
+  /* The game arrives bigger than the paperwork: it rises and opens out. */
+  .js .quest__card--play {
+    translate: 0 calc((1 - var(--e)) * 45%);
+    rotate: calc((1 - var(--e)) * -7deg);
+    scale: calc(0.72 + var(--e) * 0.28);
+    opacity: clamp(0, var(--e) * 4, 1);
+  }
+  .js .quest__card--play::after {
+    content: none;
+  }
+  .js .quest__card-n {
+    display: none;
+  }
+  .js .quest__tag {
+    left: 10px;
+  }
+
+  @media (max-width: 900px) {
+    .js .quest__track {
+      height: calc(100svh - var(--nav-h) + var(--n) * 55svh);
+    }
+    .js .quest__stage {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto auto minmax(0, 1fr);
+      grid-template-areas:
+        'rail'
+        'deck'
+        'caption';
+      align-content: center;
+      gap: 18px;
+    }
+    /* Deal from the side on a phone, so a card in flight never covers the caption. */
+    .js .quest__card {
+      translate: calc((1 - var(--e)) * 105%) calc((1 - var(--e)) * 6% - var(--d) * 5%);
+      rotate: calc((1 - var(--e)) * 6deg + min(var(--d), 1) * var(--tilt, 0deg));
+    }
+    .js .quest__card--play {
+      translate: calc((1 - var(--e)) * 105%) 0;
+      rotate: calc((1 - var(--e)) * 5deg);
+    }
+    /* On a phone the rail becomes a row of stations. */
+    .js .quest__rail {
+      align-self: start;
+      grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+      gap: 4px;
+      padding: 0;
+    }
+    .js .quest__rail::before,
+    .js .quest__rail::after {
+      left: 0;
+      right: 0;
+      top: auto;
+      bottom: 0;
+      width: auto;
+      height: 2px;
+    }
+    .js .quest__rail::after {
+      transform-origin: 0 50%;
+      scale: var(--p) 1;
+    }
+    .js .quest__rail-item {
+      flex-direction: column;
+      gap: 2px;
+      padding-bottom: 10px;
+      font-size: 9px;
+    }
+    .js .quest__rail-item::before {
+      display: none;
+    }
+    .js .quest__rail-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .js .quest__deck {
+      width: 100%;
+    }
+  }
+}

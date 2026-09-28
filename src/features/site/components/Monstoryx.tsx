@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { MONSTORYX } from '../content';
 import { Pipeline } from './Pipeline';
+import { QuestSequence } from './QuestSequence';
 import { ExtLink, Headline, SheetHead } from './Sheet';
 
 // Stages whose gate can bounce work back once.
@@ -16,21 +17,33 @@ export function Monstoryx() {
         <div className="split__main" data-reveal>
           <p className="lede">{MONSTORYX.intro}</p>
         </div>
-        <ul className="link-list" data-reveal="stagger">
-          {MONSTORYX.links.map((l) => (
-            <li key={l.href}>
-              <ExtLink href={l.href} className="link-list__a">
-                <span className="link-list__label">{l.label} ↗</span>
-                <span className="link-list__note">{l.note}</span>
-              </ExtLink>
-            </li>
-          ))}
-          <li className="link-list__private">Repository private — I’ll screen-share any part of it.</li>
-        </ul>
+        <div className="split__side">
+          <ExtLink href={MONSTORYX.summit.href} className="summit-stamp">
+            <span className="summit-stamp__event" data-reveal="stamp">
+              <span className="summit-stamp__top">{MONSTORYX.summit.event}</span>
+              <span className="summit-stamp__tracks">{MONSTORYX.summit.tracks.join(' · ')}</span>
+              <span className="summit-stamp__meta">{MONSTORYX.summit.dates} · Education · Austria</span>
+            </span>
+          </ExtLink>
+          <ul className="link-list" data-reveal="stagger">
+            {MONSTORYX.links.map((l) => (
+              <li key={l.href}>
+                <ExtLink href={l.href} className="link-list__a">
+                  <span className="link-list__label">{l.label} ↗</span>
+                  <span className="link-list__note">{l.note}</span>
+                </ExtLink>
+              </li>
+            ))}
+            <li className="link-list__private">Repository private — I’ll screen-share any part of it.</li>
+          </ul>
+        </div>
       </div>
 
+      <QuestSequence />
+
       <h4 className="caption-head" data-reveal>
-        Fig. 3.0 — Finale: a quest becomes a narrated film. Every hop an agent run, every gate code.
+        Fig. 3.1 — The Finale pipeline: a mission’s quests become a narrated film. Every hop an agent run, every gate
+        code.
       </h4>
       <Pipeline stages={MONSTORYX.pipeline} loops={FINALE_RETRIES} />
 
@@ -59,7 +72,7 @@ export function Monstoryx() {
               <Image src={img.src} alt={img.alt} width={1920} height={1080} sizes="(min-width: 900px) 46vw, 100vw" />
             </div>
             <figcaption>
-              <span>Fig. 3.{i + 1}</span> {i === 0 ? 'The cast — sculpted in plasticine, rigged in UE5' : 'Children speak. Monsters listen. Stories grow.'}
+              <span>Fig. 3.{i + 2}</span> {i === 0 ? 'The cast — sculpted in plasticine, rigged in UE5' : 'The front door — speak to play'}
             </figcaption>
           </figure>
         ))}
