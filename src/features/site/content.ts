@@ -25,9 +25,12 @@ export const SECTIONS = [
   { id: 'nutrons', sheet: '03', label: 'Nutrons' },
   { id: 'monstoryx', sheet: '04', label: 'MonstoryX' },
   { id: 'method', sheet: '05', label: 'Method' },
-  { id: 'work', sheet: '06', label: 'Section view' },
-  { id: 'contact', sheet: '07', label: 'Contact' },
+  { id: 'orchestration', sheet: '06', label: 'Orchestration' },
+  { id: 'work', sheet: '07', label: 'Section view' },
+  { id: 'contact', sheet: '08', label: 'Contact' },
 ] as const;
+
+export const SHEET_COUNT = String(SECTIONS.length).padStart(2, '0');
 
 export const HERO = {
   kicker: 'Portfolio — Rev. 2026.09',
@@ -44,8 +47,8 @@ export type Receipt = { value: number; prefix?: string; suffix?: string; display
 export const RECEIPTS: Receipt[] = [
   { value: 264000, label: 'lines of TypeScript', src: 'MonstoryX platform' },
   { value: 14, label: 'weeks, blank repo to pre-alpha', src: 'MonstoryX platform' },
-  { value: 1569, label: 'commits', src: 'MonstoryX platform' },
-  { value: 36, label: 'architecture decision records', src: 'MonstoryX platform' },
+  { value: 2006, label: 'commits on main', src: 'MonstoryX platform' },
+  { value: 62, label: 'architecture decision records', src: 'MonstoryX platform' },
   { value: 6600, prefix: '~', label: 'tests', src: 'MonstoryX platform' },
   { value: 3, display: '3/3', label: 'defects caught by the vision judge, 0 false fails', src: 'Keyframe QA' },
   { value: 18, prefix: '+', suffix: '%', label: 'conversion, Find My Mazda', src: 'Mazda Germany' },
@@ -209,7 +212,7 @@ export const METHOD = [
   },
   {
     title: 'No agent grades its own work',
-    body: 'I run engineering as a multi-agent team: owner agents hired by the paths a change touches, blind critics, memory as the bus, every binding decision an ADR. I set the architecture, review the diffs and own what ships.',
+    body: 'Owners write, critics prove. The agent that builds never grades it: a critic with fresh context does, blind, against the bar the spec set. I set the architecture, review the diffs and merge what ships. The whole rig is on the next sheet.',
   },
   {
     title: 'Prototypes that are already code',
@@ -220,6 +223,71 @@ export const METHOD = [
     body: 'A capability that lives in one person’s head is a bottleneck with good taste. Mine ships as rules, eval suites and installable plugins — plus coaching until a colleague no longer needs me.',
   },
 ];
+
+export type RigCard = { id: string; title: string; body: string; stack: string };
+export type RigStat = { value: string; label: string };
+
+/** Figures measured from the MonstoryX platform repo and its Jira board, 2026-09-28. */
+export const ORCHESTRATION = {
+  title: ['Jira holds the ask.', 'The ADR holds the why.', 'A blind critic holds the line.'],
+  intro:
+    'I don’t prompt a chatbot and hope. I run a team of coding agents on the rails a good engineering org already trusts. A lead session dispatches, eleven owner agents each hold one seam of the codebase, and nobody grades their own work. Every change is a Jira ticket, every creative brief a spec with a bar to beat, every decision future code must obey an ADR. I merge. Nothing reaches main any other way.',
+  rig: [
+    { k: 'Tickets', v: 'Jira — the unit of delegation' },
+    { k: 'Specs', v: 'Intent, constraints, acceptance test, the bar' },
+    { k: 'Decisions', v: '62 ADRs, each titled as the decision' },
+    { k: 'Owners', v: '11 charters, hired by the paths a change touches' },
+    { k: 'Loop', v: 'Gauntlet — builder, blind critic, browser tester' },
+    { k: 'Memory', v: 'Ruflo — memory bus, hooks, router', href: 'https://github.com/ruvnet/ruflo' },
+    { k: 'Design', v: 'impeccable — fires on every UI write', href: 'https://github.com/pbakaus/impeccable' },
+    { k: 'UX', v: 'intent agents — frame, design, audit, hand off' },
+    { k: 'Harness', v: 'Claude Code — subagents, skills, hooks, MCP' },
+  ] as { k: string; v: string; href?: string }[],
+  flow: [
+    { stage: 'Ticket', gate: 'Jira. Out of scope still gets a ticket, or it’s lost' },
+    { stage: 'Spec', gate: 'Intent, constraints, acceptance test, the bar to beat' },
+    { stage: 'Owner', gate: 'Hired by name from the paths the change touches' },
+    { stage: 'Build', gate: 'One worktree, one branch, gates reported as totals' },
+    { stage: 'Critic', gate: 'Fresh context, labels stripped, graded against the bar' },
+    { stage: 'Re-check', gate: 'The lead re-runs every “not found” itself' },
+    { stage: 'Merge', gate: 'The PR maps each change to its ADR. I merge' },
+  ],
+  flowLoops: { Critic: '↺ 1–3 rounds' } as Record<string, string>,
+  stats: [
+    { value: '62', label: 'ADRs, each titled as the decision it records' },
+    { value: '51', label: 'PRs merged, not one of them by an agent' },
+    { value: '110', label: 'tickets done, of ~511 filed. The board stays honest' },
+    { value: '807', label: 'test files across 24 packages' },
+    { value: '1–3', label: 'rounds for a typical change: one builder, one critic' },
+    { value: '36 h', label: 'documents → quests: 7 build rounds, 4 browser passes' },
+  ] as RigStat[],
+  cards: [
+    {
+      id: 'RIG-01',
+      title: 'A ticket for everything',
+      body: 'A ticket is the unit of delegation. The lead session searches, then files it with the finding in the description, and anything a session calls “out of scope” or “pre-existing” must become one: a finding that lives only in a chat report is lost. Each ticket gets its own worktree and branch; its PR maps the change to the ADRs it obeys, rule by rule, and verdicts land as comments on the ticket. I merge and close. The lead never merges.',
+      stack: 'Jira · git worktrees · one PR per ticket',
+    },
+    {
+      id: 'RIG-02',
+      title: 'Decisions written as sentences',
+      body: 'An ADR’s title is the decision, as a sentence. Each one records who decided: my calls kept apart from the lead’s, and the lead’s marked as dials I can overturn. Code that obeys a decision cites its ADR at that line, and a reversal is written down as a reversal, the same day. Anything creative or ambiguous gets a spec first: intent in my words, the constraints, the acceptance test and the real reference it has to beat.',
+      stack: '62 ADRs · design specs in the repo and an Obsidian vault',
+    },
+    {
+      id: 'RIG-03',
+      title: 'Owners write, critics prove',
+      body: 'Eleven owner charters each name a seam by its paths and its invariants. The lead reads a ticket’s changed paths against them and hires an owner by name, to analyse or to build; the database owner reviews and never builds features. The builder reports its gates as totals, a critic with fresh context grades the work blind, and for UI a tester drives my browser in its own tab. Then the lead re-runs every “not found” itself. An agent’s grep scope is part of its claim.',
+      stack: 'Gauntlet loop · 11 owner charters · browser tester',
+    },
+    {
+      id: 'RIG-04',
+      title: 'Memory, hooks and a design tripwire',
+      body: 'Ruflo is the memory bus and hook layer, not the executor. Every non-trivial task starts with a memory search and ends by storing the lesson, written as the sentence a future session would type into the search box. Its router suggests the agent a prompt needs. impeccable fires on every write to a UI file (layout, tokens, accessibility basics) and a finish reviewer reads the build against its design contract. Intent’s UX agents frame, design, audit and hand off flows on demand.',
+      stack: 'Ruflo · impeccable · intent · Claude Code hooks',
+    },
+  ] as RigCard[],
+};
 
 export type WorkItem = {
   years: string;
@@ -309,7 +377,7 @@ export const PARTS: { k: string; v: string }[] = [
   { k: 'Infra', v: 'Cloud Run, Cloud SQL, Cloud Build, Docker, Vercel' },
   { k: 'Design', v: 'Figma (libraries, variables, Figma MCP), FigJam, design tokens & atomic systems, Adobe CC' },
   { k: 'Interactive', v: 'WebGL & GLSL, Three.js / React Three Fiber, Spark AR, Unreal Engine 5, Swift / iOS, React Native' },
-  { k: 'Agentic dev', v: 'Claude Code (subagents, skills, hooks, MCP), owner/critic agent teams, memory as the bus, ADR-governed decisions' },
+  { k: 'Agentic dev', v: 'Claude Code (subagents, skills, hooks, MCP), Ruflo memory & hooks, gauntlet loop (owner agents, blind critics, browser tester), impeccable & intent, Jira → spec → ADR' },
   { k: 'Clients', v: 'Mazda · Nestlé Wagner · Super RTL · Bauhaus100 · Médecins Sans Frontières · XiTrust · Awesome Nuts' },
 ];
 

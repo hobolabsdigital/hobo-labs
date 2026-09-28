@@ -3,6 +3,9 @@ import { MONSTORYX } from '../content';
 import { Pipeline } from './Pipeline';
 import { ExtLink, Headline, SheetHead } from './Sheet';
 
+// Stages whose gate can bounce work back once.
+const FINALE_RETRIES = { Script: '↺ retry ×1', 'Vision QA': '↺ retry ×1', Render: '↺ retry ×1' };
+
 export function Monstoryx() {
   return (
     <section id="monstoryx" className="section monstoryx" data-sheet="04" data-sheet-label="MonstoryX">
@@ -29,7 +32,7 @@ export function Monstoryx() {
       <h4 className="caption-head" data-reveal>
         Fig. 3.0 — Finale: a quest becomes a narrated film. Every hop an agent run, every gate code.
       </h4>
-      <Pipeline />
+      <Pipeline stages={MONSTORYX.pipeline} loops={FINALE_RETRIES} />
 
       <div className="systems">
         {MONSTORYX.systems.map((s) => (

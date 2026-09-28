@@ -393,8 +393,9 @@ main > .section:last-of-type {
 .pipeline__rail {
   position: absolute;
   top: 52px;
-  left: calc(100% / 14);
-  right: calc(100% / 14);
+  /* Node centres: half a column in from each end. */
+  left: calc(100% / (2 * var(--n)));
+  right: calc(100% / (2 * var(--n)));
   height: 2px;
   background: var(--line-strong);
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { SHEET_COUNT } from '../content';
 
 /**
  * Page-level behaviour with no markup of its own beyond the sheet tab:
@@ -49,7 +50,7 @@ export function PageChrome() {
   return (
     <div className={`sheet-tab${sheet ? ' is-on' : ''}`} aria-hidden="true">
       <span className="sheet-tab__k">Sheet</span>
-      <span className="sheet-tab__v">{sheet ? `${sheet.n} / 07` : '01 / 07'}</span>
+      <span className="sheet-tab__v">{sheet ? `${sheet.n} / ${SHEET_COUNT}` : `01 / ${SHEET_COUNT}`}</span>
       <span className="sheet-tab__label">{sheet?.label ?? 'General arrangement'}</span>
     </div>
   );

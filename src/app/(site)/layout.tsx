@@ -7,6 +7,7 @@ import './styles/hero.css';
 import './styles/sections.css';
 import './styles/closing.css';
 import './styles/reel.css';
+import './styles/orchestration.css';
 
 // Blueprint (the default sheet) is all Space Mono, so it's the only face preloaded.
 // The other themes' faces load the first time someone switches to them.
@@ -41,6 +42,7 @@ export const metadata: Metadata = {
     'creative technologist',
     'senior software engineer',
     'agentic AI',
+    'multi-agent orchestration',
     'TypeScript',
     'Next.js',
     'WebGL',

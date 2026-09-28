@@ -1,4 +1,4 @@
-import { CONTACT, HERO } from '../content';
+import { CONTACT, HERO, SHEET_COUNT } from '../content';
 import { HeroStage } from './HeroStage';
 import { Headline, TitleBlock } from './Sheet';
 
@@ -59,7 +59,7 @@ export function Hero() {
           { k: 'Discipline', v: HERO.roles.slice(0, 2).join(' · ') },
           { k: 'Base', v: `${CONTACT.base} · CET` },
           { k: 'Date', v: '2026-09' },
-          { k: 'Sheet', v: '01 / 07' },
+          { k: 'Sheet', v: `01 / ${SHEET_COUNT}` },
         ]}
       />
     </HeroStage>

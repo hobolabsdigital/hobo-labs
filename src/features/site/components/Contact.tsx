@@ -1,13 +1,13 @@
-import { CONTACT } from '../content';
+import { CONTACT, SHEET_COUNT } from '../content';
 import { ExtLink, Headline, TitleBlock } from './Sheet';
 import { ThemeSwitcher } from './ThemeSwitcher';
 
 export function Contact() {
   return (
-    <section id="contact" className="contact" data-sheet="07" data-sheet-label="Contact">
+    <section id="contact" className="contact" data-sheet="08" data-sheet-label="Contact">
       <div className="contact__inner">
         <p className="contact__kicker" data-reveal>
-          §07 — Open application, always
+          §08 — Open application, always
         </p>
         <Headline lines={['Send me the brief.', 'I’ll send back receipts.']} as="h2" className="headline--contact" />
 
@@ -66,7 +66,7 @@ export function Contact() {
             { k: 'Project', v: 'Hobo Labs' },
             { k: 'Scale', v: '1:1' },
             { k: 'Date', v: '2026-09' },
-            { k: 'Sheet', v: '07 / 07' },
+            { k: 'Sheet', v: `${SHEET_COUNT} / ${SHEET_COUNT}` },
           ]}
         />
         <p className="colophon">
