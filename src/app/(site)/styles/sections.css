@@ -112,7 +112,9 @@ main > .section:last-of-type {
 }
 .plate__img {
   position: relative;
-  overflow: hidden;
+  /* clip, not hidden: hidden would make this a scroll container and strand
+     the image's view() timeline (motion.css) on a box that never scrolls. */
+  overflow: clip;
   border: 3px solid var(--line-strong);
   border-radius: var(--radius);
   box-shadow: var(--plate-shadow);

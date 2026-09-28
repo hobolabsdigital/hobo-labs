@@ -47,7 +47,7 @@ export function Nutrons() {
             ))}
           </div>
         </div>
-        <dl className="facts" data-reveal>
+        <dl className="facts" data-reveal="stagger">
           {NUTRONS.facts.map((f) => (
             <div key={f.k} className="facts__row">
               <dt>{f.k}</dt>

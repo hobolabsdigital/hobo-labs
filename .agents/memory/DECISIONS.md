@@ -134,3 +134,21 @@ src/
 **Sources**: facts and counts come from the MonstoryX lead session, measured 2026-09-28: 62 ADRs, 51 merged PRs, 110 of ~511 tickets done, 807 test files, 11 owner charters, 1–3 rounds per change. They supersede the CV's 36 ADRs and 1,569 commits, and the Receipts now use 62 ADRs and 2,006 commits on main.
 **Accuracy rules**: Ruflo is the memory bus and hook layer, not the executor. Don't claim swarm_init, the neural layer, witness or daemon workers as part of the daily loop. Owner routing is manual (the lead reads paths against the charters). impeccable runs as a per-edit hook, not a PR gate. The UX skill set is "intent". There is no "taste" skill, so don't name one. No model names in site copy.
 **Gotcha**: every animated part of the gauntlet figure is opacity/transform only. A mix of main-thread (background colour) and compositor animations drifted out of sync under load, which showed a "pass" stamp beside a single failed round.
+
+### D016 — Motion layer: reveal variants + scroll-linked CSS, no JS animation library (2026-09-28)
+**Decision**: All motion is in `src/app/(site)/styles/motion.css`. It hangs off one IntersectionObserver in `PageChrome`, which sets `data-revealed` plus a `--reveal-delay`. That delay cascades each batch in DOM order and is removed after it has played, so hover transitions aren't late.
+**Variants** (`data-reveal` value):
+- default: fade up
+- `lines`: headlines rise out of per-line masks
+- `rule`: sheet-head rule draws, then its words
+- `stagger`: the container stays and its children cascade
+- `content`: for hairline-grid cells, the cell stays and its contents cascade
+- `.plate`: the frame lands, then a paper shutter with a red scan line slides off the image
+- `.pipeline`: the rail draws and the nodes pop
+The hero headline plays the line rise as a CSS load animation, so it never waits on hydration.
+**Scroll-linked** (only under `prefers-reduced-motion: no-preference` and `@supports (animation-timeline: view())`): plate images drift, method numerals drift, a top scroll meter, and two `Tape` bands that move with the scroll. Browsers without scroll timelines get a slow time-based tape and nothing else.
+**Rules**:
+- Animate only opacity, translate, rotate and scale. Animating clip-path over large images repainted every frame and stalled software GL.
+- Use `overflow: clip`, not `hidden`, on anything wrapping a `view()` subject. `hidden` makes a scroll container and strands the timeline, so `.plate__img` and `.tape` are clip.
+- Never fade a cell whose grid draws its 1px rules as the container background; it flashes that colour as a solid block. Use `content`.
+**Verified**: timelines bind (View/ScrollTimeline). Everything reveals after a slow walk down the page. No horizontal overflow at 1440 or 390. Zero scroll animations under reduced motion, and zero hidden elements with JS off.

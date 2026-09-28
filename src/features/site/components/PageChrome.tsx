@@ -13,15 +13,23 @@ export function PageChrome() {
   const [sheet, setSheet] = useState<{ n: string; label: string } | null>(null);
 
   useEffect(() => {
+    const timers: number[] = [];
     const revealIO = new IntersectionObserver(
       (entries) => {
+        // Everything that arrives in one batch cascades in DOM order, so a
+        // grid row or a list lands as a sequence rather than all at once.
+        let k = 0;
         for (const e of entries) {
-          if (e.isIntersecting) {
-            // An attribute, not a class: React rewrites className on re-render
-            // (e.g. WorkList's hover state) and would silently un-reveal the row.
-            e.target.setAttribute('data-revealed', '');
-            revealIO.unobserve(e.target);
-          }
+          if (!e.isIntersecting) continue;
+          const el = e.target as HTMLElement;
+          const delay = Math.min(k++, 6) * 85;
+          el.style.setProperty('--reveal-delay', `${delay}ms`);
+          // An attribute, not a class: React rewrites className on re-render
+          // (e.g. WorkList's hover state) and would silently un-reveal the row.
+          el.setAttribute('data-revealed', '');
+          revealIO.unobserve(el);
+          // Drop the delay once it has played, so hover transitions aren't late.
+          timers.push(window.setTimeout(() => el.style.removeProperty('--reveal-delay'), delay + 1600));
         }
       },
       { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
@@ -44,6 +52,7 @@ export function PageChrome() {
     return () => {
       revealIO.disconnect();
       sheetIO.disconnect();
+      timers.forEach(clearTimeout);
     };
   }, []);
 

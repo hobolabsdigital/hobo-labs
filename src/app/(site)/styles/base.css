@@ -448,19 +448,7 @@ table {
   max-width: 80ch;
 }
 
-/* ---------- Reveal (only hides when JS is present) ---------- */
-
-.js [data-reveal] {
-  opacity: 0;
-  transform: translateY(22px);
-  transition:
-    opacity 0.8s var(--ease-out),
-    transform 0.9s var(--ease-out);
-}
-.js [data-reveal][data-revealed] {
-  opacity: 1;
-  transform: none;
-}
+/* Reveal-on-scroll lives in motion.css. */
 
 /* ---------- Sheet tab (fixed mini title block) ---------- */
 

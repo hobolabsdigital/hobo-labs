@@ -16,7 +16,7 @@ export function Monstoryx() {
         <div className="split__main" data-reveal>
           <p className="lede">{MONSTORYX.intro}</p>
         </div>
-        <ul className="link-list" data-reveal>
+        <ul className="link-list" data-reveal="stagger">
           {MONSTORYX.links.map((l) => (
             <li key={l.href}>
               <ExtLink href={l.href} className="link-list__a">
@@ -36,7 +36,7 @@ export function Monstoryx() {
 
       <div className="systems">
         {MONSTORYX.systems.map((s) => (
-          <article key={s.id} className="system" data-reveal>
+          <article key={s.id} className="system" data-reveal="content">
             <header className="system__head">
               <span className="system__id">{s.id}</span>
               <h4 className="system__title">{s.title}</h4>

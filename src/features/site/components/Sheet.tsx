@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 /** Section header in the CV's drawing-sheet grammar: §NN TITLE ——— RIGHT LABEL */
 export function SheetHead({ n, title, label }: { n: string; title: string; label?: string }) {
   return (
-    <div className="sheet-head" data-reveal>
+    <div className="sheet-head" data-reveal="rule">
       <span className="sheet-head__n">§{n}</span>
       <h2 className="sheet-head__title">{title}</h2>
       {label && <span className="sheet-head__label">{label}</span>}
@@ -27,12 +27,17 @@ export function TitleBlock({ cells, className = '' }: { cells: Cell[]; className
   );
 }
 
-/** Headline with the letter's move: last line knocked out in a solid bar. */
+/**
+ * Headline with the letter's move: last line knocked out in a solid bar.
+ * Lines rise out of their own masks on reveal (`reveal={false}` for the hero,
+ * which plays the same move on load instead of on scroll).
+ */
 export function Headline({
   lines,
   as: Tag = 'h3',
   className = '',
   knockLast = true,
+  reveal = true,
   srPrefix,
   id,
 }: {
@@ -40,14 +45,19 @@ export function Headline({
   as?: 'h1' | 'h2' | 'h3';
   className?: string;
   knockLast?: boolean;
+  reveal?: boolean;
   srPrefix?: string;
   id?: string;
 }) {
   return (
-    <Tag className={`headline ${className}`} id={id}>
+    <Tag className={`headline ${className}`} id={id} data-reveal={reveal ? 'lines' : undefined}>
       {srPrefix && <span className="sr-only">{srPrefix} </span>}
       {lines.map((l, i) => (
-        <span key={l} className={`headline__line${knockLast && i === lines.length - 1 ? ' headline__line--knock' : ''}`}>
+        <span
+          key={l}
+          className={`headline__line${knockLast && i === lines.length - 1 ? ' headline__line--knock' : ''}`}
+          style={{ '--i': i } as React.CSSProperties}
+        >
           <span>{l}</span>
         </span>
       ))}

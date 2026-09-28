@@ -73,7 +73,7 @@ export function Orchestration() {
         <div className="split__main" data-reveal>
           <p className="lede">{ORCHESTRATION.intro}</p>
         </div>
-        <dl className="facts" data-reveal>
+        <dl className="facts" data-reveal="stagger">
           {ORCHESTRATION.rig.map((r) => (
             <div key={r.k} className="facts__row">
               <dt>{r.k}</dt>
@@ -90,9 +90,9 @@ export function Orchestration() {
 
       <div className="rig-duo">
         <Gauntlet />
-        <dl className="rig-stats" data-reveal>
+        <dl className="rig-stats">
           {ORCHESTRATION.stats.map((s) => (
-            <div key={s.label} className="rig-stat">
+            <div key={s.label} className="rig-stat" data-reveal="content">
               <dt className="rig-stat__value">{s.value}</dt>
               <dd className="rig-stat__label">{s.label}</dd>
             </div>
@@ -102,7 +102,7 @@ export function Orchestration() {
 
       <div className="systems">
         {ORCHESTRATION.cards.map((c) => (
-          <article key={c.id} className="system" data-reveal>
+          <article key={c.id} className="system" data-reveal="content">
             <header className="system__head">
               <span className="system__id">{c.id}</span>
               <h4 className="system__title">{c.title}</h4>

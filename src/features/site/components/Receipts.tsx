@@ -12,7 +12,7 @@ export function Receipts() {
       </p>
       <ul className="receipts__grid">
         {RECEIPTS.map((r) => (
-          <li key={r.label} className="receipt" data-reveal>
+          <li key={r.label} className="receipt" data-reveal="content">
             <span className="receipt__value">
               {r.display ?? <CountUp value={r.value} prefix={r.prefix} suffix={r.suffix} />}
             </span>

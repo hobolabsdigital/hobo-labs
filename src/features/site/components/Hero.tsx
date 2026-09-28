@@ -36,6 +36,7 @@ export function Hero() {
           lines={HERO.lines}
           as="h1"
           className="headline--hero"
+          reveal={false}
           srPrefix="Emile Harmel, creative technologist and senior engineer:"
         />
         <div className="hero__aside">
