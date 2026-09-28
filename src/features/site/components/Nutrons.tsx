@@ -2,13 +2,21 @@ import Image from 'next/image';
 import { NUTRONS } from '../content';
 import { ExtLink, Headline, SheetHead } from './Sheet';
 
-const GALLERY = [
+// The live build (screens from portal.getnutrons.com), all 1041×778.
+const SHIPPED = [
+  { src: '/work/nutrons/run-junkropolis.webp', cap: 'Canopy Run, Junkropolis — hold to rise, release to dive; Ghost Glow active', area: 'a' },
+  { src: '/work/nutrons/run-venus-city.webp', cap: 'Venus-City — world two, levels 6–10', area: 'b' },
+  { src: '/work/nutrons/run-over.webp', cap: 'Run over — Seeds banked, chain bonus, one more run', area: 'c' },
+  { src: '/work/nutrons/base-camp.webp', cap: 'Base Camp — XP, streaks, heroes, worlds and the community World Tree', area: 'd' },
+  { src: '/work/nutrons/heroes.webp', cap: 'Heroes — four Nutrons, stats per hero', area: 'e' },
+];
+
+// The same product as designed in Figma.
+const DESIGNED = [
   { src: '/work/nutrons/product.webp', w: 1600, h: 1076, cap: 'Product — halftone, starbursts, the pack as hero', area: 'a' },
+  { src: '/work/nutrons/mobile-hero.webp', w: 393, h: 640, cap: 'Mobile 393', area: 'd' },
   { src: '/work/nutrons/crew.webp', w: 1600, h: 908, cap: 'The crew — four elements, four characters', area: 'b' },
   { src: '/work/nutrons/worlds.webp', w: 1600, h: 850, cap: 'Worlds of Nu-Terra — carousel', area: 'c' },
-  { src: '/work/nutrons/mobile-hero.webp', w: 393, h: 640, cap: 'Mobile 393', area: 'd' },
-  { src: '/work/nutrons/canopy-run.webp', w: 1600, h: 623, cap: 'Canopy Run — hold to rise, release to dive', area: 'e' },
-  { src: '/work/nutrons/funnel.webp', w: 1600, h: 598, cap: 'Scan. Collect. Play. — the reward loop', area: 'f' },
 ];
 
 export function Nutrons() {
@@ -60,6 +68,28 @@ export function Nutrons() {
         </figcaption>
       </figure>
 
+      <h4 className="caption-head" data-reveal>
+        Shipped — early access, live now. Pick a hero, fly three worlds, bank Seeds, come back to Base Camp.
+      </h4>
+      <div className="shipped">
+        {SHIPPED.map((g, i) => (
+          <figure key={g.src} className={`plate shipped__${g.area}`} data-reveal>
+            <div className="plate__img">
+              <Image
+                src={g.src}
+                alt={g.cap}
+                width={1041}
+                height={778}
+                sizes={g.area === 'a' ? '(min-width: 900px) 62vw, 100vw' : '(min-width: 900px) 40vw, 100vw'}
+              />
+            </div>
+            <figcaption>
+              <span>Fig. 2.{i + 1}</span> {g.cap}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+
       <ol className="trail">
         {NUTRONS.trail.map((s) => (
           <li key={s.n} className="trail__row" data-reveal>
@@ -79,14 +109,17 @@ export function Nutrons() {
         ))}
       </ol>
 
+      <h4 className="caption-head" data-reveal>
+        Designed — the hub in Figma, three breakpoints, one component library.
+      </h4>
       <div className="gallery">
-        {GALLERY.map((g, i) => (
+        {DESIGNED.map((g, i) => (
           <figure key={g.src} className={`plate gallery__${g.area}`} data-reveal>
             <div className="plate__img">
               <Image src={g.src} alt={g.cap} width={g.w} height={g.h} sizes="(min-width: 900px) 50vw, 100vw" />
             </div>
             <figcaption>
-              <span>Fig. 2.{i + 1}</span> {g.cap}
+              <span>Fig. 2.{i + 1 + SHIPPED.length}</span> {g.cap}
             </figcaption>
           </figure>
         ))}

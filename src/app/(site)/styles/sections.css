@@ -287,9 +287,49 @@ main > .section:last-of-type {
 .gallery__c {
   grid-column: span 6;
 }
-.gallery__e,
-.gallery__f {
-  grid-column: span 12;
+/* Live build: gameplay large, two stacked beside it, then camp + heroes. */
+.shipped {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(28px, 3vw, 44px) clamp(20px, 2.4vw, 36px);
+  margin-bottom: clamp(56px, 7vw, 104px);
+}
+.shipped .plate {
+  display: flex;
+  flex-direction: column;
+}
+.shipped .plate__img {
+  flex: 1;
+}
+.shipped .plate__img img {
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+.shipped__a {
+  grid-column: 1 / span 8;
+  grid-row: 1 / span 2;
+}
+.shipped__a .plate__img img {
+  position: absolute;
+  inset: 0;
+}
+.shipped__b,
+.shipped__c {
+  grid-column: 9 / span 4;
+}
+.shipped__d,
+.shipped__e {
+  grid-column: span 6;
+}
+@media (max-width: 760px) {
+  .shipped > .plate {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+  .shipped__a .plate__img {
+    aspect-ratio: 1041 / 778;
+  }
 }
 @media (max-width: 760px) {
   .gallery > .plate {

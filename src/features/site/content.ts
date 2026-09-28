@@ -73,16 +73,17 @@ export const NUTRONS = {
   year: '2026',
   title: ['Blank canvas → on‑brand generation.', 'The whole trail, in public.'],
   intro:
-    'Nutrons is a comic-book snack brand with a world behind every pack. I designed and built the hub: scan the QR code on a pack, collect Seeds, fly Canopy Run, grow the Community Tree. Fixed fee, hard launch — AI in every phase, a human owning every decision.',
+    'Nutrons is a comic-book snack brand with a world behind every pack. I designed and built the hub: scan the QR code on a pack, collect Seeds, fly Canopy Run, grow the World Tree. Fixed fee, hard launch — AI in every phase, a human owning every decision.',
   live: [
-    { label: 'portal.getnutrons.com', href: 'https://portal.getnutrons.com/' },
-    { label: 'portal.getnutrons.com/camp', href: 'https://portal.getnutrons.com/camp' },
+    { label: 'Hub · portal.getnutrons.com', href: 'https://portal.getnutrons.com/' },
+    { label: 'Base Camp · portal.getnutrons.com/camp', href: 'https://portal.getnutrons.com/camp' },
   ],
   facts: [
     { k: 'Stack', v: 'Next.js · TypeScript · Postgres with RLS' },
     { k: 'Economy', v: 'QR-scan rewards, levels and a leaderboard' },
     { k: 'Codes', v: '20,000 unique, generated and validated' },
-    { k: 'Play', v: 'Canopy Run — a one-input endless runner' },
+    { k: 'Play', v: 'Canopy Run — one input, three worlds, 15 levels' },
+    { k: 'Camp', v: 'XP, streaks, factions and a community World Tree' },
   ],
   trail: [
     {
@@ -113,7 +114,10 @@ export const NUTRONS = {
       n: '04',
       title: 'Build',
       body: 'The design system driven straight into a working app — agent-coded, human-reviewed, deployed.',
-      links: [{ label: 'Live → portal.getnutrons.com', href: 'https://portal.getnutrons.com/', live: true }],
+      links: [
+        { label: 'Live → portal.getnutrons.com', href: 'https://portal.getnutrons.com/', live: true },
+        { label: 'Live → Base Camp', href: 'https://portal.getnutrons.com/camp', live: true },
+      ],
     },
     {
       n: '05',
