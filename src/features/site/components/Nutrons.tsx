@@ -1,6 +1,10 @@
 import Image from 'next/image';
 import { NUTRONS } from '../content';
 import { ExtLink, Headline, SheetHead } from './Sheet';
+import { Showreel } from './Showreel';
+
+// Screens and comics carry fine line work; the default q75 smears it.
+const WORK_QUALITY = 90;
 
 // The live build (screens from portal.getnutrons.com), all 1041×778.
 const SHIPPED = [
@@ -13,10 +17,10 @@ const SHIPPED = [
 
 // The same product as designed in Figma.
 const DESIGNED = [
-  { src: '/work/nutrons/product.webp', w: 1600, h: 1076, cap: 'Product — halftone, starbursts, the pack as hero', area: 'a' },
+  { src: '/work/nutrons/product.webp', w: 1728, h: 1163, cap: 'Product — halftone, starbursts, the pack as hero', area: 'a' },
   { src: '/work/nutrons/mobile-hero.webp', w: 393, h: 640, cap: 'Mobile 393', area: 'd' },
-  { src: '/work/nutrons/crew.webp', w: 1600, h: 908, cap: 'The crew — four elements, four characters', area: 'b' },
-  { src: '/work/nutrons/worlds.webp', w: 1600, h: 850, cap: 'Worlds of Nu-Terra — carousel', area: 'c' },
+  { src: '/work/nutrons/crew.webp', w: 1728, h: 980, cap: 'The crew — four elements, four characters', area: 'b' },
+  { src: '/work/nutrons/worlds.webp', w: 1728, h: 918, cap: 'Worlds of Nu-Terra — carousel', area: 'c' },
 ];
 
 export function Nutrons() {
@@ -58,8 +62,9 @@ export function Nutrons() {
           <Image
             src="/work/nutrons/hub-hero.webp"
             alt="Nutrons hub hero: four nut superheroes surf leaves past the World Tree of Nu-Terra under the Nutrons logo."
-            width={1600}
-            height={850}
+            width={1728}
+            height={918}
+            quality={WORK_QUALITY}
             sizes="(min-width: 1100px) 92vw, 100vw"
           />
         </div>
@@ -67,6 +72,8 @@ export function Nutrons() {
           <span>Fig. 2.0</span> Hub, desktop 1728 — built from the Nutrons design system v0.1
         </figcaption>
       </figure>
+
+      <Showreel />
 
       <h4 className="caption-head" data-reveal>
         Shipped — early access, live now. Pick a hero, fly three worlds, bank Seeds, come back to Base Camp.
@@ -80,6 +87,7 @@ export function Nutrons() {
                 alt={g.cap}
                 width={1041}
                 height={778}
+                quality={WORK_QUALITY}
                 sizes={g.area === 'a' ? '(min-width: 900px) 62vw, 100vw' : '(min-width: 900px) 40vw, 100vw'}
               />
             </div>
@@ -116,7 +124,14 @@ export function Nutrons() {
         {DESIGNED.map((g, i) => (
           <figure key={g.src} className={`plate gallery__${g.area}`} data-reveal>
             <div className="plate__img">
-              <Image src={g.src} alt={g.cap} width={g.w} height={g.h} sizes="(min-width: 900px) 50vw, 100vw" />
+              <Image
+                src={g.src}
+                alt={g.cap}
+                width={g.w}
+                height={g.h}
+                quality={WORK_QUALITY}
+                sizes="(min-width: 900px) 50vw, 100vw"
+              />
             </div>
             <figcaption>
               <span>Fig. 2.{i + 1 + SHIPPED.length}</span> {g.cap}

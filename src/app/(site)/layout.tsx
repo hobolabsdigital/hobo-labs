@@ -6,6 +6,7 @@ import './styles/base.css';
 import './styles/hero.css';
 import './styles/sections.css';
 import './styles/closing.css';
+import './styles/reel.css';
 
 // Blueprint (the default sheet) is all Space Mono, so it's the only face preloaded.
 // The other themes' faces load the first time someone switches to them.

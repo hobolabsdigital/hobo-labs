@@ -139,6 +139,13 @@ export const NUTRONS = {
     'Also: three sessions coaching the client’s in-house AI designer, from watching the workflow to running it herself.',
 };
 
+export const REEL = {
+  heading: 'In motion — Nutrons films',
+  label: 'Reel 01 · Nutrons',
+  // Say how they were made once confirmed; left blank rather than guessed.
+  intro: '',
+};
+
 export const MONSTORYX = {
   role: 'Co-founder & chief technologist',
   years: '2024 — present',

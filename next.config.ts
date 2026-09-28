@@ -4,6 +4,11 @@ const nextConfig: NextConfig = {
   /* config options here */
   allowedDevOrigins: ["10.0.0.13", "10.0.0.14"],
 
+  images: {
+    // 90 is for work screenshots and comic art, where q75 visibly smears line work.
+    qualities: [75, 90],
+  },
+
   async headers() {
     return [
       {
