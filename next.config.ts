@@ -4,6 +4,13 @@ const nextConfig: NextConfig = {
   /* config options here */
   allowedDevOrigins: ["10.0.0.13", "10.0.0.14"],
 
+  images: {
+    // 90 is for work screenshots and comic art, where q75 visibly smears line work.
+    qualities: [75, 90],
+    // Showreel posters live in Emile's Higgsfield storage.
+    remotePatterns: [new URL("https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/**")],
+  },
+
   async headers() {
     return [
       {

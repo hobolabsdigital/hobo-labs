@@ -1,0 +1,205 @@
+/* ---------- Showreel ---------- */
+
+.showreel {
+  margin-bottom: clamp(56px, 7vw, 104px);
+}
+.showreel__intro {
+  margin-bottom: 24px;
+}
+.reel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+}
+.reel__stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #0a0a0a;
+  border: 3px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--plate-shadow);
+}
+/* Fills the letterbox when a clip's shape differs from the stage. */
+.reel__backdrop {
+  position: absolute;
+  inset: -40px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(28px) saturate(1.1);
+  opacity: 0.5;
+}
+.reel__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  cursor: pointer;
+}
+.reel__hud {
+  position: absolute;
+  inset: 12px 12px auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  pointer-events: none;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.reel__hud > span {
+  padding: 6px 9px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+}
+.reel__hud > .reel__tc {
+  background: var(--ink);
+  color: var(--paper);
+  font-variant-numeric: tabular-nums;
+}
+.reel__big-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  padding: 14px 20px;
+  background: var(--signal);
+  color: var(--on-signal);
+  font-family: var(--f-mono);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.reel__side {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+.reel__segments {
+  display: flex;
+  gap: 3px;
+  height: 8px;
+}
+.reel__segments span {
+  position: relative;
+  flex-basis: 0;
+  overflow: hidden;
+  background: var(--line);
+}
+.reel__segments i {
+  position: absolute;
+  inset: 0;
+  background: var(--signal);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.reel__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.reel__controls .chip {
+  height: 38px;
+}
+.reel__sound {
+  margin-left: auto;
+}
+.reel__now {
+  font-family: var(--f-mono);
+  font-size: 12px;
+}
+.reel__now > span:first-child {
+  font-weight: 700;
+  margin-right: 6px;
+}
+.reel__note {
+  color: var(--muted);
+}
+.reel__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.reel__item {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  padding: 0;
+  text-align: left;
+}
+.reel__thumb {
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 2px solid var(--line-strong);
+  background: var(--paper-2);
+  transition: box-shadow 0.2s;
+}
+.reel__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.72;
+  transition: opacity 0.2s;
+}
+.reel__item:hover .reel__thumb img,
+.reel__item[aria-current='true'] .reel__thumb img {
+  opacity: 1;
+}
+.reel__item[aria-current='true'] .reel__thumb {
+  border-color: var(--signal);
+  box-shadow: 3px 3px 0 var(--signal);
+}
+.reel__item-text {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 6px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+}
+.reel__item-n {
+  font-weight: 700;
+}
+.reel__item-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.reel__item-dur {
+  color: var(--muted);
+}
+
+/* Mostly vertical films: a phone-shaped stage with the list alongside. */
+.reel--portrait {
+  grid-template-columns: minmax(260px, 420px) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 44px);
+  align-items: start;
+}
+.reel--portrait .reel__stage {
+  aspect-ratio: 9 / 16;
+  max-height: 82vh;
+}
+.reel--portrait .reel__list {
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+}
+.reel--portrait .reel__thumb {
+  aspect-ratio: 9 / 16;
+}
+@media (max-width: 760px) {
+  .reel--portrait {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .reel--portrait .reel__stage {
+    max-height: 78svh;
+  }
+  .reel__list {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+.showreel__cut {
+  margin-top: 18px;
+}
