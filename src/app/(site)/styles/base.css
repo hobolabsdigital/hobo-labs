@@ -457,7 +457,7 @@ table {
     opacity 0.8s var(--ease-out),
     transform 0.9s var(--ease-out);
 }
-.js [data-reveal].is-in {
+.js [data-reveal][data-revealed] {
   opacity: 1;
   transform: none;
 }

@@ -16,7 +16,9 @@ export function PageChrome() {
       (entries) => {
         for (const e of entries) {
           if (e.isIntersecting) {
-            e.target.classList.add('is-in');
+            // An attribute, not a class: React rewrites className on re-render
+            // (e.g. WorkList's hover state) and would silently un-reveal the row.
+            e.target.setAttribute('data-revealed', '');
             revealIO.unobserve(e.target);
           }
         }
