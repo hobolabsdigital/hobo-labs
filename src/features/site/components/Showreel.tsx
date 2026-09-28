@@ -19,6 +19,11 @@ export function Showreel() {
         </p>
       )}
       <ReelPlayer clips={clips} label={REEL.label} />
+      <p className="showreel__cut" data-reveal>
+        <a className="tag tag--live" href={REEL.fullCut.href} target="_blank" rel="noopener noreferrer">
+          {REEL.fullCut.label} ↗
+        </a>
+      </p>
     </div>
   );
 }

@@ -142,6 +142,11 @@ export const NUTRONS = {
 export const REEL = {
   heading: 'In motion — Nutrons films',
   label: 'Reel 01 · Nutrons',
+  // The edited cut: title card, the seven films with crossfades, end card.
+  fullCut: {
+    href: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/7c87ffda-fc42-4cfe-a258-c823fa6b0c99.mp4',
+    label: 'Watch the full cut · 1:02 · 1080p',
+  },
   intro:
     'Generated in Higgsfield and directed through the Nutrons bible, my canon plugin: character sheets, style clause and camera grammar travel with every prompt, so the crew stays on-model from shot to shot.',
 };

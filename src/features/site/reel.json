@@ -1,1 +1,79 @@
-[]
+[
+  {
+    "slug": "01-world-tree",
+    "title": "World Tree — through the crown",
+    "note": "Seedance 2.0 · watercolour storybook, one continuous shot",
+    "src": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/7f79d8f3-ee13-4405-86a0-01e225e1a608.mp4",
+    "poster": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/51311331-0e71-4eb3-b558-36f293caf3d7.jpg",
+    "width": 1280,
+    "height": 720,
+    "duration": 8.04,
+    "audio": false
+  },
+  {
+    "slug": "02-crew",
+    "title": "The crew — leaf gliders over Nu-Terra",
+    "note": "Seedance 2.0 · bold comic cel, the whole squad in formation",
+    "src": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/6e19fa7a-4cd7-444c-a962-7f7f29c68fd2.mp4",
+    "poster": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/2a3cd527-8370-4084-b3f3-a1e4883671ea.jpg",
+    "width": 1280,
+    "height": 720,
+    "duration": 8.04,
+    "audio": false
+  },
+  {
+    "slug": "03-promenade",
+    "title": "Venus-City — the promenade",
+    "note": "Seedance 1.5 · hand-painted gouache, all four heroes on foot",
+    "src": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/c6434c18-60cf-4987-a103-4edc08051e7b.mp4",
+    "poster": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/528be368-0cda-4715-b26f-827a712fd927.jpg",
+    "width": 1280,
+    "height": 720,
+    "duration": 8.06,
+    "audio": true
+  },
+  {
+    "slug": "04-venus-city",
+    "title": "Venus-City — kite-turbines",
+    "note": "Seedance 1.5 · a painted scene brought gently to life",
+    "src": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/32c4b48b-98d6-4134-b180-95cee1335a8e.mp4",
+    "poster": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/56f07eb1-cd8d-44cb-b846-15b8b0ed5c83.jpg",
+    "width": 1280,
+    "height": 720,
+    "duration": 8.06,
+    "audio": true
+  },
+  {
+    "slug": "05-junkropolis",
+    "title": "Junkropolis — salvage machines",
+    "note": "Seedance 1.5 · the grittier district, same bible",
+    "src": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/7e72ef85-a6c5-470d-b4d6-e16feea435a4.mp4",
+    "poster": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/954a9422-f718-470e-9691-d8f81ff89d69.jpg",
+    "width": 1280,
+    "height": 720,
+    "duration": 8.06,
+    "audio": true
+  },
+  {
+    "slug": "06-rise",
+    "title": "Junkropolis — rising above the stacks",
+    "note": "Seedance 2.0 · one continuous rise into the light",
+    "src": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/217d5854-b64a-4698-9ebc-71d39802a477.mp4",
+    "poster": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/06e7c5d5-5998-46c1-9aa5-c2165c413f98.jpg",
+    "width": 1280,
+    "height": 720,
+    "duration": 8.04,
+    "audio": false
+  },
+  {
+    "slug": "07-brand-film",
+    "title": "Brand film — the packs",
+    "note": "Seedance 2.0 · stepped, Spider-Verse-style motion; Barbecue and Salted Caramel",
+    "src": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/26ef3538-63f1-4bbe-a5c1-f796763bc5ad.mp4",
+    "poster": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Eqykldhtmuqrb56bPCwGP0px9L/14ab0700-803c-45f4-b9f8-ab5e4d8aaf50.jpg",
+    "width": 1280,
+    "height": 720,
+    "duration": 10.06,
+    "audio": true
+  }
+]
