@@ -165,3 +165,9 @@ The hero headline plays the line rise as a CSS load animation, so it never waits
 **Assets**:
 - Screens: cropped from Emile's window captures to the app viewport, which removes his browser chrome, bookmarks and the Next.js dev badge. Stored at `public/work/monstoryx/01–05-*.jpg` (1800w, q92).
 - Video: `MonstoryXGame.mov` is 1280×736, 75fps, 1:48. Encoded to H.264 30fps CRF 24 faststart (21 MB) with a poster at 92s, both on Emile's Higgsfield CDN. Deleting those uploads breaks Fig. 3.0.
+**Fig. 3.2 (added the same day)**: `FinaleFilm.tsx`, a real Finale pipeline output ("Learning Shapes", 40 s), sits beside its six storyboard pictures.
+- A cut list with a playhead and the current shot stay in step with playback; clicking a shot seeks to it.
+- The film plays muted while at least half is on screen, never under reduced motion.
+- Shot starts are the film's measured cuts: 0, 2.97, 6.9, 12.1, 18.13, 23.2.
+- Assets are in-repo at `public/work/monstoryx/finale/` (3.9 MB mp4, poster, six stills).
+- Finding for the platform: the source render's video track is 29.5 s but its audio is 40.2 s. The web copy holds the last frame (tpad clone) so picture and sound end together. Worth checking the Finale assembly step.

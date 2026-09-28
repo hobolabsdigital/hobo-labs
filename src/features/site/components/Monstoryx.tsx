@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { MONSTORYX } from '../content';
+import { FinaleFilm } from './FinaleFilm';
 import { Pipeline } from './Pipeline';
 import { QuestSequence } from './QuestSequence';
 import { ExtLink, Headline, SheetHead } from './Sheet';
@@ -46,6 +47,7 @@ export function Monstoryx() {
         code.
       </h4>
       <Pipeline stages={MONSTORYX.pipeline} loops={FINALE_RETRIES} />
+      <FinaleFilm />
 
       <div className="systems">
         {MONSTORYX.systems.map((s) => (
@@ -72,7 +74,7 @@ export function Monstoryx() {
               <Image src={img.src} alt={img.alt} width={1920} height={1080} sizes="(min-width: 900px) 46vw, 100vw" />
             </div>
             <figcaption>
-              <span>Fig. 3.{i + 2}</span> {i === 0 ? 'The cast — sculpted in plasticine, rigged in UE5' : 'The front door — speak to play'}
+              <span>Fig. 3.{i + 3}</span> {i === 0 ? 'The cast — sculpted in plasticine, rigged in UE5' : 'The front door — speak to play'}
             </figcaption>
           </figure>
         ))}

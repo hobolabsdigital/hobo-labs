@@ -42,6 +42,15 @@
   font-size: 10px;
   letter-spacing: 0.14em;
 }
+@media (max-width: 600px) {
+  /* Nearly column-wide on a phone: keep the tilted corners inside the page. */
+  .summit-stamp__event {
+    padding: 10px 14px 9px;
+  }
+  .summit-stamp__tracks {
+    font-size: 16px;
+  }
+}
 
 /* ---------- Fig. 3.0: one quest, start to finish ----------
    Two layouts from the same markup. By default (no JS, or reduced motion) it
@@ -381,5 +390,139 @@
     .js .quest__deck {
       width: 100%;
     }
+  }
+}
+
+/* ---------- Fig. 3.2: the Finale film beside its storyboard ---------- */
+
+.finale {
+  /* Playback position 0 → 1, written by FinaleFilm; the playhead reads it. */
+  --t: 0;
+  margin: 0 0 clamp(56px, 7vw, 104px);
+}
+.finale__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(260px, 1fr);
+  gap: clamp(20px, 2.6vw, 40px);
+  align-items: start;
+}
+.finale__screen {
+  position: relative;
+}
+.finale__video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background: #0a0a0a;
+  border: 3px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--plate-shadow);
+}
+.finale__sound {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+/* The cut list: an edit decision list you can read at a glance. */
+.finale__cuts {
+  position: relative;
+  display: flex;
+  gap: 3px;
+  margin-top: 16px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  font-weight: 700;
+}
+.finale__cuts span {
+  flex-basis: 0;
+  padding: 5px 6px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  transition:
+    background-color 0.25s var(--ease-out),
+    color 0.25s var(--ease-out);
+}
+.finale__cuts span[data-on] {
+  background: var(--signal);
+  border-color: var(--signal);
+  color: var(--on-signal);
+}
+.finale__playhead {
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  left: calc(var(--t) * 100%);
+  width: 2px;
+  background: var(--ink);
+}
+.finale__shots {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+.finale__shot {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  padding: 6px;
+  text-align: left;
+  border: 1px solid transparent;
+  transition:
+    background-color 0.25s var(--ease-out),
+    border-color 0.25s var(--ease-out);
+}
+.finale__shot:hover {
+  border-color: var(--line);
+}
+.finale__shot[aria-current] {
+  background: var(--paper-2);
+  border-color: var(--signal);
+}
+.finale__thumb {
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: clip;
+  border: 2px solid var(--line-strong);
+}
+.finale__shot[aria-current] .finale__thumb {
+  border-color: var(--signal);
+}
+.finale__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.finale__text {
+  display: grid;
+  gap: 3px;
+}
+.finale__who {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+.finale__line {
+  font-size: calc(var(--body-size) * 0.86);
+  line-height: 1.35;
+}
+@media (max-width: 1000px) {
+  .finale__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .finale__shots {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .finale__shot {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
   }
 }

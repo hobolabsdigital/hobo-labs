@@ -182,6 +182,22 @@ export const MONSTORYX = {
     { stage: 'Render', gate: 'x-corr ≥ 0.95 with its voice line, lag ≤ 100 ms — or re-render' },
     { stage: 'Assembly', gate: 'ffmpeg; HMAC-signed callbacks, deduped under a row lock' },
   ],
+  /** Fig. 3.2 — a real output of the Finale pipeline. Shot starts are the film's cuts. */
+  finale: {
+    caption:
+      'Fig. 3.2 — What the pipeline made: “Learning Shapes”, six pictures to a 40-second film. In the game it plays as “Our story” when the mission ends.',
+    src: '/work/monstoryx/finale/learning-shapes.mp4',
+    poster: '/work/monstoryx/finale/poster.jpg',
+    duration: 40.2,
+    shots: [
+      { at: 0, who: 'Blorp', kind: 'Title', line: 'Learning Shapes', src: '/work/monstoryx/finale/shot-1.jpg' },
+      { at: 2.97, who: 'Blorp', line: 'Blorp will roll this block like a ball!', src: '/work/monstoryx/finale/shot-2.jpg' },
+      { at: 6.9, who: 'Lopsy', line: 'Flat edges stop, Blorp. Blocks do not roll.', src: '/work/monstoryx/finale/shot-3.jpg' },
+      { at: 12.1, who: 'Lopsy', line: 'Round shapes roll. A circle has no sharp corners.', src: '/work/monstoryx/finale/shot-4.jpg' },
+      { at: 18.13, who: 'Blorp', line: 'A circle rolls! Blorp pushes the block. Thud.', src: '/work/monstoryx/finale/shot-5.jpg' },
+      { at: 23.2, who: 'Trio', line: 'A circle rolls. Flat edges stop every time.', src: '/work/monstoryx/finale/shot-6.jpg' },
+    ] as { at: number; who: string; kind?: string; line: string; src: string }[],
+  },
   systems: [
     {
       id: 'SYS-01',
