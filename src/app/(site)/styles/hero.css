@@ -1,0 +1,289 @@
+/* The hero is a tall track; the frame pins while scroll grows the lens. */
+.hero {
+  position: relative;
+  height: 170svh;
+}
+.hero__frame {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 560px;
+  overflow: hidden;
+  isolation: isolate;
+  --lens-x: 66vw;
+  --lens-y: 42svh;
+  --lens-r: 0px;
+  --order: 0;
+  /* Shown until the shader's first frame lands, and for good if WebGL2 is missing. */
+  background-color: var(--paper);
+  background-image: radial-gradient(circle at 1px 1px, var(--ink) 1px, transparent 1.4px);
+  background-size: 6px 6px;
+  background-blend-mode: normal;
+}
+.hero__frame::after {
+  /* Soften the static dot field so the fallback reads as a texture, not noise. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse at 70% 40%, transparent 0 18%, var(--paper) 62%);
+  pointer-events: none;
+}
+.gl-ready.hero__frame::after {
+  display: none;
+}
+.field-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  opacity: 0;
+  transition: opacity 0.5s linear;
+}
+.gl-ready .field-canvas {
+  opacity: 1;
+}
+
+/* Registration marks, as on the drawing sheets. */
+.reg {
+  position: absolute;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+}
+.reg::before,
+.reg::after {
+  content: '';
+  position: absolute;
+  background: var(--ink);
+}
+.reg::before {
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+}
+.reg::after {
+  top: 50%;
+  left: 0;
+  height: 1px;
+  width: 100%;
+}
+.reg--tl {
+  top: calc(var(--nav-h) + 12px);
+  left: 10px;
+}
+.reg--tr {
+  top: calc(var(--nav-h) + 12px);
+  right: 10px;
+}
+.reg--bl {
+  bottom: 10px;
+  left: 10px;
+}
+.reg--br {
+  bottom: 10px;
+  right: 10px;
+}
+
+/* A label that rides the lens rim. */
+.lens-tag {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  top: 0;
+  display: grid;
+  gap: 2px;
+  padding: 6px 8px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(
+    calc(var(--lens-x) + var(--lens-r) * 0.71 + 12px),
+    calc(var(--lens-y) - var(--lens-r) * 0.71 - 44px)
+  );
+}
+.gl-ready .lens-tag {
+  opacity: calc(1 - var(--order) * 4);
+}
+.lens-tag__title {
+  font-weight: 700;
+}
+.lens-tag b {
+  font-weight: 700;
+  color: var(--signal);
+}
+
+.hero__meter {
+  position: absolute;
+  z-index: 3;
+  top: calc(var(--nav-h) + 12px);
+  right: calc(var(--gutter) + 28px);
+  display: flex;
+  gap: 4px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hero__meter > span {
+  padding: 7px 10px;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+}
+.hero__meter > span:last-child {
+  background: var(--ink);
+  color: var(--paper);
+}
+.hero__meter b {
+  display: inline-block;
+  min-width: 5ch;
+  margin-left: 6px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero__copy {
+  position: absolute;
+  z-index: 2;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 96px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 400px);
+  grid-template-areas:
+    '. aside'
+    'kicker kicker'
+    'title title';
+  row-gap: 14px;
+}
+.hero__kicker {
+  grid-area: kicker;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--signal);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.25;
+  }
+}
+.headline--hero {
+  grid-area: title;
+  font-size: clamp(28px, calc(9vw * var(--display-scale)), 158px);
+  gap: 0.04em;
+}
+.headline--hero .headline__line > span {
+  padding: 0.05em 0.14em 0.03em;
+  background: var(--hl-bg);
+  color: var(--hl-fg);
+}
+.headline--hero .headline__line--knock > span {
+  background: var(--knock-bg);
+  color: var(--knock-fg);
+}
+.hero__aside {
+  grid-area: aside;
+  padding: 16px 16px 18px;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+}
+.hero__intro {
+  font-size: calc(var(--body-size) * 0.92);
+  line-height: 1.55;
+}
+.hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.hero__ctas .btn {
+  min-height: 40px;
+  padding: 0 12px;
+  font-size: 11px;
+}
+.hero__title-block {
+  position: absolute;
+  z-index: 2;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  .hero__copy {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'aside'
+      'kicker'
+      'title';
+    bottom: 84px;
+  }
+  .hero__meter {
+    right: auto;
+    left: calc(var(--gutter) + 26px);
+  }
+}
+.hero__intro--short {
+  display: none;
+}
+@media (max-width: 760px) {
+  .headline--hero {
+    font-size: calc(11.2vw * var(--display-scale));
+  }
+  .hero__intro--long {
+    display: none;
+  }
+  .hero__intro--short {
+    display: block;
+  }
+  .hero__aside {
+    padding: 12px;
+  }
+  .hero__meter {
+    font-size: 10px;
+  }
+  .hero__meter > span {
+    padding: 6px 8px;
+  }
+  .lens-tag {
+    display: none;
+  }
+  .hero__intro {
+    font-size: 13px;
+  }
+}
+@media (max-width: 760px) and (max-height: 700px) {
+  .hero__intro {
+    display: none !important;
+  }
+  .hero__ctas {
+    margin-top: 0;
+  }
+}

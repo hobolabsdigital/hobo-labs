@@ -39,9 +39,11 @@ const darkerGrotesque = Darker_Grotesque({
   subsets: ["latin"],
 });
 
+// The previous hobolabs.digital: an AI-driven editorial canvas, kept running at /lab.
+// It has its own root layout so none of its global CSS or theme classes reach the main site.
 export const metadata: Metadata = {
-  title: "Editorial Canvas Portfolio",
-  description: "AI-powered experimental portfolio",
+  title: "Lab — Editorial Canvas · Emile Harmel",
+  description: "The previous hobolabs.digital: an experimental AI canvas where a digital twin builds the page as you talk to it.",
 };
 
 export default function RootLayout({
