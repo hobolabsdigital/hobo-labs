@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { NUTRONS } from '../content';
+import { GameplayFilm } from './GameplayFilm';
 import { ExtLink, Headline, SheetHead } from './Sheet';
 import { Showreel } from './Showreel';
 
@@ -78,6 +79,7 @@ export function Nutrons() {
       <h3 className="caption-head" data-reveal>
         Shipped — early access, live now. Pick a hero, fly three worlds, bank Seeds, come back to Base Camp.
       </h3>
+      <GameplayFilm fig="2.1" />
       <div className="shipped">
         {SHIPPED.map((g, i) => (
           <figure key={g.src} className={`plate shipped__${g.area}`} data-reveal>
@@ -92,7 +94,7 @@ export function Nutrons() {
               />
             </div>
             <figcaption>
-              <span>Fig. 2.{i + 1}</span> {g.cap}
+              <span>Fig. 2.{i + 2}</span> {g.cap}
             </figcaption>
           </figure>
         ))}
@@ -134,7 +136,7 @@ export function Nutrons() {
               />
             </div>
             <figcaption>
-              <span>Fig. 2.{i + 1 + SHIPPED.length}</span> {g.cap}
+              <span>Fig. 2.{i + 2 + SHIPPED.length}</span> {g.cap}
             </figcaption>
           </figure>
         ))}

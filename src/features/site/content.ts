@@ -183,6 +183,15 @@ export const NUTRONS = {
   ],
   coaching:
     'Also: three sessions coaching the client’s in-house AI designer, from watching the workflow to running it herself.',
+  /** The live game, played: an edited 57 s capture (1920×1080 60 fps source, no audio), encoded to 720p60. */
+  gameplay: {
+    src: '/work/nutrons/gameplay.mp4',
+    poster: '/work/nutrons/gameplay-poster.jpg',
+    width: 1280,
+    height: 720,
+    caption: 'Canopy Run, played: pick a hero, fly Nu-Terra Path, Junkropolis and Venus-City, bank the Seeds at Base Camp.',
+    label: 'Nutrons Canopy Run gameplay showreel: picking a hero, runs through the three worlds, and Base Camp',
+  },
 };
 
 export const REEL = {
