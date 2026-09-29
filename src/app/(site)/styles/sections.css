@@ -376,6 +376,17 @@
 .gallery__c {
   grid-column: span 6;
 }
+/* The game, played: full width above the stills it moves through. */
+.plate--film {
+  margin-bottom: clamp(40px, 5vw, 72px);
+}
+.plate--film video {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--ink);
+}
+
 /* Live build: gameplay large, two stacked beside it, then camp + heroes. */
 .shipped {
   display: grid;
