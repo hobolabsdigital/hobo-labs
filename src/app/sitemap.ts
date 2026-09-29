@@ -1,8 +1,14 @@
 import type { MetadataRoute } from 'next';
+import { SHEETS } from '@/features/site/content';
+import { SITE_URL } from '@/features/site/metadata';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
-    { url: 'https://hobolabs.digital', changeFrequency: 'monthly', priority: 1 },
-    { url: 'https://hobolabs.digital/lab', changeFrequency: 'yearly', priority: 0.3 },
+    ...SHEETS.map((s) => ({
+      url: s.href === '/' ? SITE_URL : `${SITE_URL}${s.href}`,
+      changeFrequency: 'monthly' as const,
+      priority: s.href === '/' ? 1 : 0.8,
+    })),
+    { url: `${SITE_URL}/lab`, changeFrequency: 'yearly', priority: 0.3 },
   ];
 }

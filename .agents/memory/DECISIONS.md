@@ -128,7 +128,7 @@ src/
 **Content**: all copy in `src/features/site/content.ts`, sourced from the 2026-09 CVs and letters — keep every figure measured. Nutrons frames were captured from the Figma hub file (`public/work/nutrons/`).
 **Gotcha**: a live WebGL context can stall `document.startViewTransition` capture under software GL (seen with headless SwiftShader). Theme switching freezes the shader during the transition and bails to `skipTransition()` + direct commit after 400 ms, so the theme always applies.
 
-### D015 — Orchestration gets its own sheet (§05), figures from the platform repo (2026-09-28)
+### D015 — Orchestration gets its own sheet (§05), figures from the platform repo (2026-09-28) — ~~the counts~~ superseded by D018
 **Context**: Emile's edge is how he runs agents, not just that he uses them. The Method sheet compressed it into one line ("owner agents hired by paths, blind critics, memory as the bus, every decision an ADR").
 **Decision**: New section `Orchestration` (`src/features/site/components/Orchestration.tsx`, copy in `ORCHESTRATION` in `content.ts`, styles in `styles/orchestration.css`). It shows the ticket → spec → owner → build → critic → re-check → merge flow (the Finale `Pipeline` component, now generic), an animated gauntlet figure, the counts, and four cards. Sheets renumber off `SECTIONS`, and `SHEET_COUNT` feeds every "NN / NN".
 **Sources**: facts and counts come from the MonstoryX lead session, measured 2026-09-28: 62 ADRs, 51 merged PRs, 110 of ~511 tickets done, 807 test files, 11 owner charters, 1–3 rounds per change. They supersede the CV's 36 ADRs and 1,569 commits, and the Receipts now use 62 ADRs and 2,006 commits on main.
@@ -171,3 +171,14 @@ The hero headline plays the line rise as a CSS load animation, so it never waits
 - Shot starts are the film's measured cuts: 0, 2.97, 6.9, 12.1, 18.13, 23.2.
 - Assets are in-repo at `public/work/monstoryx/finale/` (3.9 MB mp4, poster, six stills).
 - Finding for the platform: the source render's video track is 29.5 s but its audio is 40.2 s. The web copy holds the last frame (tpad clone) so picture and sound end together. Worth checking the Finale assembly step.
+
+### D018 — One page per sheet; process counts come off the site (2026-09-29)
+**Context**: Colleague feedback: one page that "goes on and on" (the front door measured 26.6 screens at 1440×900 and 38.3 at 390×844), and too many numbers. Agencies and clients don't buy commits, test counts, ADR totals or "3/3". They buy the quality of the code, the orchestration and the products.
+**Decision**: the site is a drawing set of five pages, one per sheet, registered in `SHEETS` (`content.ts`): 01 `/` general arrangement (hero, latest work as two case cards, Method, contact), 02 `/work/nutrons`, 03 `/work/monstoryx`, 04 `/orchestration`, 05 `/work` (full archive + parts list). Every page renders through `SiteShell`: nav, the sheet, a "next sheet" hand-on (02 → 05; the front page has none), and Contact, whose title block names the sheet. The front page is now 6.2 screens on desktop and 7.9 on a phone.
+**Numbering**: a page title carries its sheet number (§02 Nutrons); sections within a page are decimals (§01.1, §05.1). Figures follow the sheet (Orchestration is Fig. 4.x).
+**Numbers policy**: the Receipts grid and the Orchestration stats are gone. ADR, PR, ticket, test, line and commit counts, calibration scores, timings and thresholds are rewritten as what the check does. The rig's stat block became "What that buys a client". Numbers stay only where they describe a product or a client outcome (three worlds, +18% conversion, 1M+ impressions). Don't reintroduce counters.
+**Gotchas**:
+- Next 16 no longer drops CSS `scroll-behavior: smooth` for route changes. `<html data-scroll-behavior="smooth">` opts back in, so a new sheet lands at its top instead of gliding there.
+- Metadata merges shallowly, so every sheet restates openGraph and twitter (`sheetMetadata` in `metadata.ts`). The `opengraph-image` file convention never reaches a page that sets openGraph, so the share card is a plain `public/og.png`, declared once.
+- `PageChrome` is keyed by sheet, so reveals re-arm after a client-side navigation. The sheet tab stays down while a `[data-sheet-quiet]` block (the hero) holds the middle of the screen.
+- Phones: nav links become a `<details>` "Sheets" index (`NavIndex`), which also carries both CVs. The CV chip is hidden under 760px so the bar fits at 360.

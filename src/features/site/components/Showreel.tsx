@@ -9,10 +9,10 @@ export function Showreel() {
   const total = Math.round(clips.reduce((s, c) => s + c.duration, 0));
   return (
     <div className="showreel">
-      <h4 className="caption-head" data-reveal>
+      <h3 className="caption-head" data-reveal>
         {REEL.heading} · {String(clips.length).padStart(2, '0')} films · {Math.floor(total / 60)}:
         {String(total % 60).padStart(2, '0')}
-      </h4>
+      </h3>
       {REEL.intro && (
         <p className="lede showreel__intro" data-reveal>
           {REEL.intro}

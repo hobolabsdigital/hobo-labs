@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Anton, Darker_Grotesque, Fraunces, Inter, Saira_Condensed, Space_Mono } from 'next/font/google';
+import { SITE_DESCRIPTION, SITE_IMAGE, SITE_NAME, SITE_TITLE, SITE_URL } from '@/features/site/metadata';
 import { DEFAULT_THEME, THEME_BOOT_SCRIPT } from '@/features/site/themes';
 import './styles/tokens.css';
 import './styles/base.css';
@@ -30,13 +31,13 @@ const saira = Saira_Condensed({
 });
 const fraunces = Fraunces({ variable: '--font-fraunces', subsets: ['latin'], preload: false });
 
-const title = 'Emile Harmel — Creative Technologist & Senior Engineer';
-const description =
-  'A thousand frames. Ten on brand. I build the filter. Agent pipelines for image, voice and video where code — not hope — decides what ships. Graz, CET.';
+const title = SITE_TITLE;
+const description = SITE_DESCRIPTION;
 
+// Each sheet restates its own openGraph/twitter (see sheetMetadata); these are the fallbacks.
 export const metadata: Metadata = {
-  metadataBase: new URL('https://hobolabs.digital'),
-  title,
+  metadataBase: new URL(SITE_URL),
+  title: { default: title, template: '%s — Emile Harmel' },
   description,
   authors: [{ name: 'Emile Harmel' }],
   keywords: [
@@ -54,11 +55,12 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: '/',
-    siteName: 'Hobo Labs',
+    siteName: SITE_NAME,
     title,
     description,
+    images: [SITE_IMAGE],
   },
-  twitter: { card: 'summary_large_image', title, description },
+  twitter: { card: 'summary_large_image', title, description, images: [SITE_IMAGE] },
 };
 
 export const viewport: Viewport = {
@@ -68,7 +70,15 @@ export const viewport: Viewport = {
 export default function SiteLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const fonts = [spaceMono, anton, darker, inter, saira, fraunces].map((f) => f.variable).join(' ');
   return (
-    <html lang="en" data-theme={DEFAULT_THEME} className={fonts} suppressHydrationWarning>
+    // data-scroll-behavior: Next 16 no longer drops the CSS smooth scroll for route changes
+    // unless asked, and a new sheet should land at its top, not glide there.
+    <html
+      lang="en"
+      data-theme={DEFAULT_THEME}
+      data-scroll-behavior="smooth"
+      className={fonts}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
       </head>

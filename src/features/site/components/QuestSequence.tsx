@@ -149,7 +149,7 @@ export function QuestSequence() {
                 <span className="quest__caption-n">
                   {s.n} / {String(N).padStart(2, '0')} · {s.label}
                 </span>
-                <h4 className="quest__caption-title">{s.title}</h4>
+                <h3 className="quest__caption-title">{s.title}</h3>
                 <p className="quest__caption-body">{s.body}</p>
               </div>
             ))}

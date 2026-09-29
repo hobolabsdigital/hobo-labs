@@ -25,8 +25,8 @@ const DESIGNED = [
 
 export function Nutrons() {
   return (
-    <section id="nutrons" className="section nutrons" data-sheet="03" data-sheet-label="Nutrons">
-      <SheetHead n="02" title="Latest — Nutrons" label={`${NUTRONS.client} · ${NUTRONS.year}`} />
+    <section id="nutrons" className="section nutrons">
+      <SheetHead n="02" title="Nutrons" label={`${NUTRONS.client} · ${NUTRONS.year}`} as="h1" />
 
       <div className="nutrons__stripe" aria-hidden="true">
         <span />
@@ -35,7 +35,7 @@ export function Nutrons() {
         <span />
       </div>
 
-      <Headline lines={NUTRONS.title} as="h3" className="headline--section" />
+      <Headline lines={NUTRONS.title} as="h2" className="headline--section" />
       <div className="split">
         <div className="split__main" data-reveal>
           <p className="lede">{NUTRONS.intro}</p>
@@ -75,9 +75,9 @@ export function Nutrons() {
 
       <Showreel />
 
-      <h4 className="caption-head" data-reveal>
+      <h3 className="caption-head" data-reveal>
         Shipped — early access, live now. Pick a hero, fly three worlds, bank Seeds, come back to Base Camp.
-      </h4>
+      </h3>
       <div className="shipped">
         {SHIPPED.map((g, i) => (
           <figure key={g.src} className={`plate shipped__${g.area}`} data-reveal>
@@ -102,7 +102,7 @@ export function Nutrons() {
         {NUTRONS.trail.map((s) => (
           <li key={s.n} className="trail__row" data-reveal>
             <span className="trail__n">{s.n}</span>
-            <h4 className="trail__title">{s.title}</h4>
+            <h3 className="trail__title">{s.title}</h3>
             <div className="trail__body">
               <p>{s.body}</p>
               <div className="trail__links">
@@ -117,9 +117,9 @@ export function Nutrons() {
         ))}
       </ol>
 
-      <h4 className="caption-head" data-reveal>
+      <h3 className="caption-head" data-reveal>
         Designed — the hub in Figma, three breakpoints, one component library.
-      </h4>
+      </h3>
       <div className="gallery">
         {DESIGNED.map((g, i) => (
           <figure key={g.src} className={`plate gallery__${g.area}`} data-reveal>

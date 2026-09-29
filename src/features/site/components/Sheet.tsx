@@ -1,11 +1,24 @@
 import type { ReactNode } from 'react';
 
-/** Section header in the CV's drawing-sheet grammar: §NN TITLE ——— RIGHT LABEL */
-export function SheetHead({ n, title, label }: { n: string; title: string; label?: string }) {
+/**
+ * Section header in the CV's drawing-sheet grammar: §NN TITLE ——— RIGHT LABEL.
+ * A sheet's opening head is its page title (`as="h1"`).
+ */
+export function SheetHead({
+  n,
+  title,
+  label,
+  as: Tag = 'h2',
+}: {
+  n: string;
+  title: string;
+  label?: string;
+  as?: 'h1' | 'h2';
+}) {
   return (
     <div className="sheet-head" data-reveal="rule">
       <span className="sheet-head__n">§{n}</span>
-      <h2 className="sheet-head__title">{title}</h2>
+      <Tag className="sheet-head__title">{title}</Tag>
       {label && <span className="sheet-head__label">{label}</span>}
     </div>
   );

@@ -10,10 +10,10 @@ const FINALE_RETRIES = { Script: '↺ retry ×1', 'Vision QA': '↺ retry ×1', 
 
 export function Monstoryx() {
   return (
-    <section id="monstoryx" className="section monstoryx" data-sheet="04" data-sheet-label="MonstoryX">
-      <SheetHead n="03" title="The platform — MonstoryX" label={`${MONSTORYX.role} · ${MONSTORYX.years}`} />
+    <section id="monstoryx" className="section monstoryx">
+      <SheetHead n="03" title="MonstoryX" label={`${MONSTORYX.role} · ${MONSTORYX.years}`} as="h1" />
 
-      <Headline lines={MONSTORYX.title} as="h3" className="headline--section" />
+      <Headline lines={MONSTORYX.title} as="h2" className="headline--section" />
       <div className="split">
         <div className="split__main" data-reveal>
           <p className="lede">{MONSTORYX.intro}</p>
@@ -42,10 +42,10 @@ export function Monstoryx() {
 
       <QuestSequence />
 
-      <h4 className="caption-head" data-reveal>
+      <h3 className="caption-head" data-reveal>
         Fig. 3.1 — The Finale pipeline: a mission’s quests become a narrated film. Every hop an agent run, every gate
         code.
-      </h4>
+      </h3>
       <Pipeline stages={MONSTORYX.pipeline} loops={FINALE_RETRIES} />
       <FinaleFilm />
 
@@ -54,7 +54,7 @@ export function Monstoryx() {
           <article key={s.id} className="system" data-reveal="content">
             <header className="system__head">
               <span className="system__id">{s.id}</span>
-              <h4 className="system__title">{s.title}</h4>
+              <h3 className="system__title">{s.title}</h3>
             </header>
             <p className="system__body">{s.body}</p>
             <p className="system__stack">

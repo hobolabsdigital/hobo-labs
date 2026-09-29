@@ -43,7 +43,7 @@ export function Hero() {
           <p className="hero__intro hero__intro--long">{HERO.intro}</p>
           <p className="hero__intro hero__intro--short">{HERO.introShort}</p>
           <div className="hero__ctas">
-            <a className="btn btn--ink" href="#nutrons">
+            <a className="btn btn--ink" href="#work">
               See the work ↓
             </a>
             <a className="btn" href={`mailto:${CONTACT.email}`}>

@@ -37,6 +37,9 @@
 .method__body {
   max-width: 58ch;
 }
+.method__more {
+  margin-top: 28px;
+}
 @media (max-width: 900px) {
   .method__row {
     grid-template-columns: 64px minmax(0, 1fr);

@@ -1,13 +1,14 @@
-import { CONTACT, SHEET_COUNT } from '../content';
+import { CONTACT, SHEET_COUNT, type Sheet } from '../content';
 import { ExtLink, Headline, TitleBlock } from './Sheet';
 import { ThemeSwitcher } from './ThemeSwitcher';
 
-export function Contact() {
+/** Closes every sheet. The footer's title block names the sheet it closes. */
+export function Contact({ sheet }: { sheet: Sheet }) {
   return (
-    <section id="contact" className="contact" data-sheet="08" data-sheet-label="Contact">
+    <section id="contact" className="contact">
       <div className="contact__inner">
         <p className="contact__kicker" data-reveal>
-          §08 — Open application, always
+          Contact — open application, always
         </p>
         <Headline lines={['Send me the brief.', 'I’ll send back receipts.']} as="h2" className="headline--contact" />
 
@@ -52,8 +53,8 @@ export function Contact() {
 
         <div className="contact__themes" data-reveal>
           <p className="contact__small">
-            <strong>One design system, five themes.</strong> The CV is sheet 01, the letters are sheet 02. The other three
-            are here — try them, the shader follows.
+            <strong>One design system, five themes.</strong> The CV wears the first, the letters the second. The other three
+            are here — try them, the whole site follows.
           </p>
           <ThemeSwitcher variant="deck" />
         </div>
@@ -66,7 +67,7 @@ export function Contact() {
             { k: 'Project', v: 'Hobo Labs' },
             { k: 'Scale', v: '1:1' },
             { k: 'Date', v: '2026-09' },
-            { k: 'Sheet', v: `${SHEET_COUNT} / ${SHEET_COUNT}` },
+            { k: 'Sheet', v: `${sheet.n} / ${SHEET_COUNT}` },
           ]}
         />
         <p className="colophon">

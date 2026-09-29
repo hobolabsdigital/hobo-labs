@@ -1,16 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { SHEET_COUNT } from '../content';
+import { SHEET_COUNT, type Sheet } from '../content';
 
 /**
  * Page-level behaviour with no markup of its own beyond the sheet tab:
  * - reveals [data-reveal] elements as they enter the viewport
- * - tracks which [data-sheet] section is current and shows it in a mini
- *   title block, bottom-right (hidden while the hero is on screen)
+ * - shows this page's sheet in a mini title block, bottom-right, except
+ *   while a [data-sheet-quiet] block (the hero, which carries its own title
+ *   block) holds the middle of the screen
  */
-export function PageChrome() {
-  const [sheet, setSheet] = useState<{ n: string; label: string } | null>(null);
+export function PageChrome({ sheet, quietAtTop = false }: { sheet: Sheet; quietAtTop?: boolean }) {
+  const [on, setOn] = useState(!quietAtTop);
 
   useEffect(() => {
     const timers: number[] = [];
@@ -36,31 +37,33 @@ export function PageChrome() {
     );
     document.querySelectorAll('[data-reveal]').forEach((el) => revealIO.observe(el));
 
-    const sheets = Array.from(document.querySelectorAll<HTMLElement>('[data-sheet]'));
-    const sheetIO = new IntersectionObserver(
+    const quiet = new Set<Element>();
+    const quietIO = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
-          if (!e.isIntersecting) continue;
-          const el = e.target as HTMLElement;
-          setSheet(el.dataset.sheet === '01' ? null : { n: el.dataset.sheet ?? '', label: el.dataset.sheetLabel ?? '' });
+          if (e.isIntersecting) quiet.add(e.target);
+          else quiet.delete(e.target);
         }
+        setOn(quiet.size === 0);
       },
       { rootMargin: '-50% 0px -50% 0px' },
     );
-    sheets.forEach((el) => sheetIO.observe(el));
+    document.querySelectorAll('[data-sheet-quiet]').forEach((el) => quietIO.observe(el));
 
     return () => {
       revealIO.disconnect();
-      sheetIO.disconnect();
+      quietIO.disconnect();
       timers.forEach(clearTimeout);
     };
   }, []);
 
   return (
-    <div className={`sheet-tab${sheet ? ' is-on' : ''}`} aria-hidden="true">
+    <div className={`sheet-tab${on ? ' is-on' : ''}`} aria-hidden="true">
       <span className="sheet-tab__k">Sheet</span>
-      <span className="sheet-tab__v">{sheet ? `${sheet.n} / ${SHEET_COUNT}` : `01 / ${SHEET_COUNT}`}</span>
-      <span className="sheet-tab__label">{sheet?.label ?? 'General arrangement'}</span>
+      <span className="sheet-tab__v">
+        {sheet.n} / {SHEET_COUNT}
+      </span>
+      <span className="sheet-tab__label">{sheet.label}</span>
     </div>
   );
 }
