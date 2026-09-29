@@ -5,65 +5,138 @@
   background-image: var(--page-texture);
   background-size: var(--page-texture-size);
 }
-main > .section:last-of-type {
+/* The sheet's last section closes with room before the hand-on or contact. */
+.sheet-body > .section:last-child {
   padding-bottom: clamp(88px, 11vw, 168px);
 }
 
-/* ---------- Receipts ---------- */
+/* ---------- Latest work (front page) ---------- */
 
-.receipts__lede {
+.selected__lede {
   max-width: 60ch;
   margin-bottom: clamp(32px, 4vw, 56px);
   font-size: calc(var(--body-size) * 1.15);
 }
-.receipts__grid {
+.cases {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(48px, 5vw, 72px) clamp(24px, 3vw, 48px);
 }
-.receipt {
-  display: grid;
-  align-content: start;
-  gap: 10px;
-  min-height: 190px;
-  padding: 22px 20px;
-  background: var(--paper);
+.case {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
-.receipt__value {
-  font-family: var(--f-display);
-  font-weight: var(--display-weight);
-  letter-spacing: var(--display-track);
-  font-size: clamp(38px, calc(4.8vw * var(--display-scale)), 84px);
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
+.case__img {
+  aspect-ratio: 16 / 9;
+  margin-bottom: 10px;
 }
-.receipt:nth-child(3n + 1) .receipt__value {
-  color: var(--signal);
+.case__img img {
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: scale 0.7s var(--ease-out);
 }
-.receipt__label {
-  font-size: calc(var(--body-size) * 0.92);
-  line-height: 1.35;
-  max-width: 24ch;
+.case:hover .case__img img {
+  scale: 1.04;
 }
-.receipt__src {
-  margin-top: auto;
+.case__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
   font-family: var(--f-mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
 }
-@media (max-width: 1000px) {
-  .receipts__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.case__meta span:first-child {
+  color: var(--ink);
+  font-weight: 700;
 }
-@media (max-width: 480px) {
-  .receipt {
-    min-height: 150px;
-    padding: 16px 14px;
+.case__title {
+  font-family: var(--f-display);
+  font-weight: var(--display-weight);
+  text-transform: var(--display-case);
+  letter-spacing: var(--display-track);
+  font-size: clamp(30px, calc(4vw * var(--display-scale) + 8px), 72px);
+  line-height: 1;
+  transition: color 0.3s;
+}
+.case__link {
+  text-decoration: none;
+}
+/* The title's link is the card's hit area; the focus ring goes round the card. */
+.case__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.case__link:focus-visible {
+  outline: none;
+}
+.case:has(.case__link:focus-visible) {
+  outline: 2px solid var(--signal);
+  outline-offset: 8px;
+}
+.case:hover .case__title {
+  color: var(--signal);
+}
+.case__kind {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.case__body {
+  max-width: 54ch;
+}
+.case__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-strong);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.case__stamp {
+  color: var(--signal);
+}
+.case__cta {
+  transition: translate 0.35s var(--ease-out);
+}
+.case:hover .case__cta {
+  translate: 6px 0;
+}
+.selected__earlier {
+  margin-top: clamp(48px, 6vw, 80px);
+  padding-top: 18px;
+  border-top: 2px solid var(--line-strong);
+  font-family: var(--f-mono);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.selected__earlier a {
+  font-weight: 700;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+.selected__earlier a:hover {
+  color: var(--signal);
+}
+@media (max-width: 900px) {
+  .cases {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

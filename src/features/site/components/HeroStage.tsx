@@ -7,7 +7,7 @@ import { FilterField } from '../gl/FilterField';
 export function HeroStage({ children }: { children: ReactNode }) {
   const trackRef = useRef<HTMLElement>(null);
   return (
-    <section id="top" ref={trackRef} className="hero" aria-labelledby="hero-title" data-sheet="01" data-sheet-label="General arrangement">
+    <section id="top" ref={trackRef} className="hero" aria-labelledby="hero-title" data-sheet-quiet>
       <div className="hero__frame">
         <FilterField trackRef={trackRef} />
         {children}

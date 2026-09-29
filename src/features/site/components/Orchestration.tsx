@@ -57,7 +57,7 @@ function Gauntlet() {
         </ol>
       </div>
       <figcaption>
-        <span>Fig. 5.1</span> One gauntlet. The critic never sees the builder’s own verdict, and the loop exits on evidence, not claims.
+        <span>Fig. 4.1</span> One gauntlet. The critic never sees the builder’s own verdict, and the loop exits on evidence, not claims.
       </figcaption>
     </figure>
   );
@@ -65,10 +65,10 @@ function Gauntlet() {
 
 export function Orchestration() {
   return (
-    <section id="orchestration" className="section orchestration" data-sheet="06" data-sheet-label="Orchestration">
-      <SheetHead n="05" title="Orchestration" label="How the agent team runs" />
+    <section id="orchestration" className="section orchestration">
+      <SheetHead n="04" title="Orchestration" label="How the agent team runs" as="h1" />
 
-      <Headline lines={ORCHESTRATION.title} as="h3" className="headline--section" />
+      <Headline lines={ORCHESTRATION.title} as="h2" className="headline--section" />
       <div className="split">
         <div className="split__main" data-reveal>
           <p className="lede">{ORCHESTRATION.intro}</p>
@@ -83,21 +83,26 @@ export function Orchestration() {
         </dl>
       </div>
 
-      <h4 className="caption-head" data-reveal>
-        Fig. 5.0 — One change, ticket to main. Every hop leaves a record an agent can read.
-      </h4>
+      <h3 className="caption-head" data-reveal>
+        Fig. 4.0 — One change, ticket to main. Every hop leaves a record an agent can read.
+      </h3>
       <Pipeline stages={ORCHESTRATION.flow} loops={ORCHESTRATION.flowLoops} className="pipeline--rig" />
 
       <div className="rig-duo">
         <Gauntlet />
-        <dl className="rig-stats">
-          {ORCHESTRATION.stats.map((s) => (
-            <div key={s.label} className="rig-stat" data-reveal="content">
-              <dt className="rig-stat__value">{s.value}</dt>
-              <dd className="rig-stat__label">{s.label}</dd>
-            </div>
-          ))}
-        </dl>
+        <div className="rig-yields">
+          <h3 className="caption-head" data-reveal>
+            What that buys a client
+          </h3>
+          <ul className="rig-yields__list">
+            {ORCHESTRATION.yields.map((y) => (
+              <li key={y.title} className="rig-yield" data-reveal>
+                <span className="rig-yield__title">{y.title}</span>
+                <span className="rig-yield__body">{y.body}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       <div className="systems">
@@ -105,7 +110,7 @@ export function Orchestration() {
           <article key={c.id} className="system" data-reveal="content">
             <header className="system__head">
               <span className="system__id">{c.id}</span>
-              <h4 className="system__title">{c.title}</h4>
+              <h3 className="system__title">{c.title}</h3>
             </header>
             <p className="system__body">{c.body}</p>
             <p className="system__stack">

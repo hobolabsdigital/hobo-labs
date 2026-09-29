@@ -1,12 +1,14 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { WORK } from '../content';
 
 /**
  * The archive as a section view. On fine pointers a duotone preview trails the
- * cursor; on touch the thumbnail sits inline in each row (CSS decides).
+ * cursor; on touch the thumbnail sits inline in each row (CSS decides). Rows
+ * with a sheet of their own link to it; the lab is another app, so a plain <a>.
  */
 export function WorkList() {
   const [active, setActive] = useState<number | null>(null);
@@ -93,7 +95,11 @@ export function WorkList() {
               data-reveal
               onPointerEnter={() => setActive(i)}
             >
-              {w.href ? (
+              {w.href?.startsWith('/work/') ? (
+                <Link className="work__link" href={w.href}>
+                  {inner}
+                </Link>
+              ) : w.href ? (
                 <a className="work__link" href={w.href}>
                   {inner}
                 </a>

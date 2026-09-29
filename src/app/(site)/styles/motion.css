@@ -166,7 +166,7 @@
 
 /* ----- Content: the cell stays put, what's inside cascades ----- */
 
-/* For cells of hairline grids (receipts, systems, stats), whose 1px rules
+/* For cells of hairline grids (systems), whose 1px rules
    are the container's background showing through the gaps: fading the cell
    itself would flash that colour as a solid block. */
 .js [data-reveal='content'] {

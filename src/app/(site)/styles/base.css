@@ -218,14 +218,78 @@ table {
   display: flex;
   gap: 6px;
 }
+.nav__links .chip.is-current {
+  background: var(--ink);
+  color: var(--paper);
+}
 .nav__tools {
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
+/* Small screens: the sheet index stands in for the links and the CV chip.
+   The panel hangs from the (fixed) nav bar, full width inside the gutters. */
+.nav__index {
+  display: none;
+}
+.nav__index > summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+.nav__index > summary::-webkit-details-marker {
+  display: none;
+}
+.nav__index[open] > summary {
+  background: var(--ink);
+  color: var(--paper);
+}
+.nav__index-panel {
+  position: absolute;
+  top: calc(var(--nav-h) + 6px);
+  left: var(--gutter);
+  right: var(--gutter);
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+.nav__index-panel a {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 10px;
+  padding: 14px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.nav__index-panel li:last-child a {
+  border-bottom: 0;
+}
+li:not(.nav__index-cv) + .nav__index-cv a {
+  border-top: 2px solid var(--line-strong);
+}
+.nav__index-panel a:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+.nav__index-panel a[aria-current='page'] {
+  font-weight: 700;
+}
+.nav__index-panel a[aria-current='page'] .nav__index-n {
+  color: var(--signal);
+}
 @media (max-width: 760px) {
-  .nav__links {
+  .nav__links,
+  .nav__tools .chip--signal {
     display: none;
+  }
+  .nav__index {
+    display: block;
+    margin-right: auto;
   }
 }
 
@@ -449,6 +513,67 @@ table {
 }
 
 /* Reveal-on-scroll lives in motion.css. */
+
+/* ---------- Next sheet: the hand-on at the foot of a page ---------- */
+
+.next-sheet {
+  padding: 0 var(--gutter) clamp(88px, 11vw, 140px);
+  background: var(--paper);
+  background-image: var(--page-texture);
+  background-size: var(--page-texture-size);
+}
+.next-sheet__link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'k k'
+    'title note';
+  align-items: end;
+  gap: 12px 32px;
+  padding: clamp(20px, 2.6vw, 36px) 12px;
+  border-top: 3px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
+  text-decoration: none;
+  transition:
+    background-color 0.35s var(--ease-out),
+    color 0.35s var(--ease-out);
+}
+.next-sheet__link:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+.next-sheet__k {
+  grid-area: k;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.next-sheet__title {
+  grid-area: title;
+  font-family: var(--f-display);
+  font-weight: var(--display-weight);
+  text-transform: var(--display-case);
+  letter-spacing: var(--display-track);
+  font-size: clamp(34px, calc(6.4vw * var(--display-scale) + 6px), 112px);
+  line-height: 1;
+}
+.next-sheet__note {
+  grid-area: note;
+  max-width: 34ch;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  text-align: right;
+}
+@media (max-width: 760px) {
+  .next-sheet__link {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'k' 'title' 'note';
+  }
+  .next-sheet__note {
+    text-align: left;
+  }
+}
 
 /* ---------- Sheet tab (fixed mini title block) ---------- */
 

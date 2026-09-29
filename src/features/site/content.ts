@@ -1,6 +1,7 @@
 /**
- * Every word on the page lives here. Figures come from the CVs and are
- * measured from work that can be opened and walked through — keep it that way.
+ * Every word on the site lives here. Clients read quality in the work, not in
+ * counts: numbers stay only where they describe a product or a client outcome.
+ * Process tallies (commits, tests, ADRs, tickets) stay off the page.
  */
 
 export const CONTACT = {
@@ -19,18 +20,67 @@ export const CONTACT = {
   ],
 } as const;
 
-export const SECTIONS = [
-  { id: 'top', sheet: '01', label: 'General arrangement' },
-  { id: 'receipts', sheet: '02', label: 'Receipts' },
-  { id: 'nutrons', sheet: '03', label: 'Nutrons' },
-  { id: 'monstoryx', sheet: '04', label: 'MonstoryX' },
-  { id: 'method', sheet: '05', label: 'Method' },
-  { id: 'orchestration', sheet: '06', label: 'Orchestration' },
-  { id: 'work', sheet: '07', label: 'Section view' },
-  { id: 'contact', sheet: '08', label: 'Contact' },
+/**
+ * The site is a drawing set: one page per sheet, in reading order. Each case
+ * study hands on to the next; the last sheet ends the set.
+ */
+export const SHEETS = [
+  {
+    n: '01',
+    href: '/',
+    label: 'General arrangement',
+    note: 'The front page',
+    description:
+      'A thousand frames. Ten on brand. I build the filter. Agent pipelines for image, voice and video where code — not hope — decides what ships. Graz, CET.',
+  },
+  {
+    n: '02',
+    href: '/work/nutrons',
+    label: 'Nutrons',
+    note: 'Brand hub, web game, on-brand image pipeline',
+    description:
+      'Nutrons for Awesome Nuts GmbH: a comic-book snack brand’s hub and web game, designed and built by Emile Harmel, with the brand codified so generated art stays on model.',
+  },
+  {
+    n: '03',
+    href: '/work/monstoryx',
+    label: 'MonstoryX',
+    note: 'A spoken language game and its teacher platform',
+    description:
+      'MonstoryX: a spoken language-learning game for primary schools and its teacher platform. Teachers approve every word; a multi-agent pipeline films each mission.',
+  },
+  {
+    n: '04',
+    href: '/orchestration',
+    label: 'Orchestration',
+    note: 'How the agent team runs',
+    description:
+      'How Emile Harmel runs a team of coding agents on engineering-org rails: tickets, specs, decision records, owner agents, a blind critic — and a person who merges.',
+  },
+  {
+    n: '05',
+    href: '/work',
+    label: 'Selected work',
+    note: '2016 — 2026, and the parts list',
+    description:
+      'Selected work 2016 — 2026: Mazda Germany, gematik’s national patient record, Nestlé Wagner, Super RTL, Oceana, XiTrust — and the parts list.',
+  },
 ] as const;
 
-export const SHEET_COUNT = String(SECTIONS.length).padStart(2, '0');
+export type Sheet = (typeof SHEETS)[number];
+export type SheetHref = Sheet['href'];
+
+export const SHEET_COUNT = String(SHEETS.length).padStart(2, '0');
+
+export function sheet(href: SheetHref): Sheet {
+  return SHEETS.find((s) => s.href === href)!;
+}
+
+/** The hand-on chain runs 02 → 05; the front page deals its own ways in (the case cards). */
+export function nextSheet(current: Sheet): Sheet | undefined {
+  if (current.href === '/') return undefined;
+  return SHEETS[SHEETS.indexOf(current) + 1];
+}
 
 export const HERO = {
   kicker: 'Portfolio — Rev. 2026.09',
@@ -42,18 +92,11 @@ export const HERO = {
   roles: ['Creative Technologist', 'Senior Engineer', 'Agentic AI systems'],
 };
 
-export type Receipt = { value: number; prefix?: string; suffix?: string; display?: string; label: string; src: string };
-
-export const RECEIPTS: Receipt[] = [
-  { value: 264000, label: 'lines of TypeScript', src: 'MonstoryX platform' },
-  { value: 14, label: 'weeks, blank repo to pre-alpha', src: 'MonstoryX platform' },
-  { value: 2006, label: 'commits on main', src: 'MonstoryX platform' },
-  { value: 62, label: 'architecture decision records', src: 'MonstoryX platform' },
-  { value: 6600, prefix: '~', label: 'tests', src: 'MonstoryX platform' },
-  { value: 3, display: '3/3', label: 'defects caught by the vision judge, 0 false fails', src: 'Keyframe QA' },
-  { value: 18, prefix: '+', suffix: '%', label: 'conversion, Find My Mazda', src: 'Mazda Germany' },
-  { value: 20000, label: 'unique QR codes, generated and validated', src: 'Nutrons' },
-];
+/** The front page's opening, under the hero: what I do, then the work that shows it. */
+export const INTRO = {
+  lede: 'AI made everything faster. It didn’t make anyone’s taste better — that part has to be built in on purpose, and building it in is what I do. Two products where I did it most recently:',
+  earlier: 'Before these: Mazda Germany’s online sales platform, gematik’s national patient record, AR for Nestlé Wagner, a talking puppet for Super RTL.',
+};
 
 export const FIGMA = {
   decisions:
@@ -175,11 +218,11 @@ export const MONSTORYX = {
   ],
   pipeline: [
     { stage: 'Brief', gate: 'Co-author won’t plan until the level is settled — a rule in code' },
-    { stage: 'Script', gate: '~28 violation types linted, retried once with the violations quoted' },
+    { stage: 'Script', gate: 'Linted against the house rules, retried once with the violations quoted' },
     { stage: 'Storyboard', gate: 'Camera grammar compiled from the canon package' },
-    { stage: 'Keyframes ×4', gate: 'Four in parallel, ~17 s each, streaming into their slots' },
+    { stage: 'Keyframes ×4', gate: 'Generated in parallel, streaming into their slots' },
     { stage: 'Vision QA', gate: 'Trait by trait on crops, colour as a hue band' },
-    { stage: 'Render', gate: 'x-corr ≥ 0.95 with its voice line, lag ≤ 100 ms — or re-render' },
+    { stage: 'Render', gate: 'Audio matched to its voice line and in sync — or re-rendered' },
     { stage: 'Assembly', gate: 'ffmpeg; HMAC-signed callbacks, deduped under a row lock' },
   ],
   /** Fig. 3.2 — a real output of the Finale pipeline. Shot starts are the film's cuts. */
@@ -202,25 +245,25 @@ export const MONSTORYX = {
     {
       id: 'SYS-01',
       title: 'A multi-agent video pipeline',
-      body: 'Four agents turn a quest into a narrated film. Failure, retry and refund are per slot, not per film; timeouts are sized from the measured worst case (~225 s a clip), not guessed.',
+      body: 'Four agents turn a quest into a narrated film. Failure, retry and refund are per slot, not per film, and timeouts are sized from the measured worst case, not guessed.',
       stack: 'Flue · Hono · Gemini · fal.ai · Resemble · ffmpeg · Cloud Run',
     },
     {
       id: 'SYS-02',
       title: 'Character bibles as executable canon',
-      body: 'Four characters’ sheets, camera grammar and style register compiled into agent prompts at build. Trait schemas hash-locked to the reference plates by tests; the judge calibrated from 5 false fails on 6 good frames to 3/3 defects, 0 false.',
+      body: 'Each character’s sheet, camera grammar and style register compiled into agent prompts at build. Trait schemas are hash-locked to the reference plates by tests, and the vision judge was calibrated until it caught every planted defect without failing a good frame.',
       stack: 'Canon as a package · derived schemas · calibrated vision judge',
     },
     {
       id: 'SYS-03',
       title: 'A co-author, quest images and voice',
-      body: '9 agent workflows and 16 skills co-author quests in English and German. Invented words are dropped by code. The model writes emotion tags; a deterministic compiler writes the SSML.',
+      body: 'Agent workflows and skills co-author quests in English and German. Invented words are dropped by code. The model writes emotion tags; a deterministic compiler writes the SSML.',
       stack: 'Gemini · Ideogram v4 · Resemble · promptfoo · OpenTelemetry',
     },
     {
       id: 'SYS-04',
       title: 'The platform under it',
-      body: '~190 API handlers, 43 Prisma models, RLS forced on 28 tables. A credit ledger where reserve, commit and refund share one transaction and one row lock. ~6,600 tests.',
+      body: 'Row-level security forced in the database, not just checked in the app. A credit ledger where reserve, commit and refund share one transaction and one row lock, so a failed render is refunded exactly once. Covered by unit, integration and browser tests.',
       stack: 'Fastify · Prisma · Postgres · Next.js 16 · React 19 · Stripe · Turborepo',
     },
   ],
@@ -288,6 +331,48 @@ export const QUEST = {
   ] as QuestStep[],
 };
 
+export type CaseCard = {
+  href: SheetHref;
+  title: string;
+  meta: string;
+  kind: string;
+  body: string;
+  stamp: string;
+  image: { src: string; w: number; h: number; alt: string };
+};
+
+/** The two case studies as the front page deals them: one card each, one click to the sheet. */
+export const CASES: CaseCard[] = [
+  {
+    href: '/work/nutrons',
+    title: 'Nutrons',
+    meta: `${NUTRONS.client} · ${NUTRONS.year}`,
+    kind: 'Brand hub · web game · on-brand image pipeline',
+    body: 'A comic-book snack brand with a world behind every pack. I designed and built the hub and its game, then codified the brand so generated art stays on model.',
+    stamp: 'Live — portal.getnutrons.com',
+    image: {
+      src: '/work/nutrons/hub-hero.webp',
+      w: 1728,
+      h: 918,
+      alt: 'Nutrons hub hero: four nut superheroes surf leaves past the World Tree of Nu-Terra.',
+    },
+  },
+  {
+    href: '/work/monstoryx',
+    title: 'MonstoryX',
+    meta: `${MONSTORYX.role} · ${MONSTORYX.years}`,
+    kind: 'Language game · teacher platform · video agents',
+    body: 'Children speak, monsters listen. Teachers write spoken quests with an AI co-author and approve every word; a multi-agent pipeline films each mission.',
+    stamp: `${MONSTORYX.summit.event} · Impact startup`,
+    image: {
+      src: '/work/monstoryx/finale/poster.jpg',
+      w: 1280,
+      h: 720,
+      alt: 'Two clay monsters, a ramp and building blocks: a frame from “Learning Shapes”, a film the MonstoryX pipeline made.',
+    },
+  },
+];
+
 export const METHOD = [
   {
     title: 'Code decides what ships',
@@ -299,7 +384,7 @@ export const METHOD = [
   },
   {
     title: 'No agent grades its own work',
-    body: 'Owners write, critics prove. The agent that builds never grades it: a critic with fresh context does, blind, against the bar the spec set. I set the architecture, review the diffs and merge what ships. The whole rig is on the next sheet.',
+    body: 'Owners write, critics prove. The agent that builds never grades it: a critic with fresh context does, blind, against the bar the spec set. I set the architecture, review the diffs and merge what ships. The whole rig has a sheet of its own.',
   },
   {
     title: 'Prototypes that are already code',
@@ -312,18 +397,17 @@ export const METHOD = [
 ];
 
 export type RigCard = { id: string; title: string; body: string; stack: string };
-export type RigStat = { value: string; label: string };
 
-/** Figures measured from the MonstoryX platform repo and its Jira board, 2026-09-28. */
+/** How the MonstoryX platform gets built: the agent team, its rails and its checks. */
 export const ORCHESTRATION = {
   title: ['Jira holds the ask.', 'The ADR holds the why.', 'A blind critic holds the line.'],
   intro:
-    'I don’t prompt a chatbot and hope. I run a team of coding agents on the rails a good engineering org already trusts. A lead session dispatches, eleven owner agents each hold one seam of the codebase, and nobody grades their own work. Every change is a Jira ticket, every creative brief a spec with a bar to beat, every decision future code must obey an ADR. I merge. Nothing reaches main any other way.',
+    'I don’t prompt a chatbot and hope. I run a team of coding agents on the rails a good engineering org already trusts. A lead session dispatches, owner agents each hold one seam of the codebase, and nobody grades their own work. Every change is a Jira ticket, every creative brief a spec with a bar to beat, every decision future code must obey an ADR. I merge. Nothing reaches main any other way.',
   rig: [
     { k: 'Tickets', v: 'Jira — the unit of delegation' },
     { k: 'Specs', v: 'Intent, constraints, acceptance test, the bar' },
-    { k: 'Decisions', v: '62 ADRs, each titled as the decision' },
-    { k: 'Owners', v: '11 charters, hired by the paths a change touches' },
+    { k: 'Decisions', v: 'ADRs, each titled as the decision it records' },
+    { k: 'Owners', v: 'Charters, hired by the paths a change touches' },
     { k: 'Loop', v: 'Gauntlet — builder, blind critic, browser tester' },
     { k: 'Memory', v: 'Ruflo — memory bus, hooks, router', href: 'https://github.com/ruvnet/ruflo' },
     { k: 'Design', v: 'impeccable — fires on every UI write', href: 'https://github.com/pbakaus/impeccable' },
@@ -339,15 +423,23 @@ export const ORCHESTRATION = {
     { stage: 'Re-check', gate: 'The lead re-runs every “not found” itself' },
     { stage: 'Merge', gate: 'The PR maps each change to its ADR. I merge' },
   ],
-  flowLoops: { Critic: '↺ 1–3 rounds' } as Record<string, string>,
-  stats: [
-    { value: '62', label: 'ADRs, each titled as the decision it records' },
-    { value: '51', label: 'PRs merged, not one of them by an agent' },
-    { value: '110', label: 'tickets done, of ~511 filed. The board stays honest' },
-    { value: '807', label: 'test files across 24 packages' },
-    { value: '1–3', label: 'rounds for a typical change: one builder, one critic' },
-    { value: '36 h', label: 'documents → quests: 7 build rounds, 4 browser passes' },
-  ] as RigStat[],
+  flowLoops: { Critic: '↺ until it passes' } as Record<string, string>,
+  /** What the rig is for, in the client's terms. Sits beside the gauntlet. */
+  yields: [
+    {
+      title: 'Every change is traceable',
+      body: 'Ticket, spec, decision, review, merge. Ask why any line exists and there is a written answer.',
+    },
+    {
+      title: 'Nothing grades its own work',
+      body: 'A critic that never saw the builder’s reasoning checks it against a bar set before the work began.',
+    },
+    { title: 'A person merges', body: 'Agents propose, I review the diff and merge. Nothing reaches main any other way.' },
+    {
+      title: 'Yours to keep',
+      body: 'Decisions, rules and checks live in the repo, not in a chat log. Your team inherits them with the code.',
+    },
+  ],
   cards: [
     {
       id: 'RIG-01',
@@ -359,13 +451,13 @@ export const ORCHESTRATION = {
       id: 'RIG-02',
       title: 'Decisions written as sentences',
       body: 'An ADR’s title is the decision, as a sentence. Each one records who decided: my calls kept apart from the lead’s, and the lead’s marked as dials I can overturn. Code that obeys a decision cites its ADR at that line, and a reversal is written down as a reversal, the same day. Anything creative or ambiguous gets a spec first: intent in my words, the constraints, the acceptance test and the real reference it has to beat.',
-      stack: '62 ADRs · design specs in the repo and an Obsidian vault',
+      stack: 'ADRs · design specs in the repo and an Obsidian vault',
     },
     {
       id: 'RIG-03',
       title: 'Owners write, critics prove',
-      body: 'Eleven owner charters each name a seam by its paths and its invariants. The lead reads a ticket’s changed paths against them and hires an owner by name, to analyse or to build; the database owner reviews and never builds features. The builder reports its gates as totals, a critic with fresh context grades the work blind, and for UI a tester drives my browser in its own tab. Then the lead re-runs every “not found” itself. An agent’s grep scope is part of its claim.',
-      stack: 'Gauntlet loop · 11 owner charters · browser tester',
+      body: 'Each owner charter names a seam by its paths and its invariants. The lead reads a ticket’s changed paths against them and hires an owner by name, to analyse or to build; the database owner reviews and never builds features. The builder reports its gates as totals, a critic with fresh context grades the work blind, and for UI a tester drives my browser in its own tab. Then the lead re-runs every “not found” itself. An agent’s grep scope is part of its claim.',
+      stack: 'Gauntlet loop · owner charters · browser tester',
     },
     {
       id: 'RIG-04',
@@ -387,6 +479,24 @@ export type WorkItem = {
 };
 
 export const WORK: WorkItem[] = [
+  {
+    years: '2026',
+    title: 'Nutrons',
+    client: NUTRONS.client,
+    role: 'Design, build & image pipeline',
+    body: 'A comic-book snack brand’s hub: scan a pack, collect Seeds, fly Canopy Run. The brand shipped as an agent plugin, so generated art stays on model.',
+    image: '/work/nutrons/hub-hero.webp',
+    href: '/work/nutrons',
+  },
+  {
+    years: '2024—',
+    title: 'MonstoryX',
+    client: 'MonstoryX · Web Summit 2026',
+    role: MONSTORYX.role,
+    body: 'A spoken language-learning game for primary schools and the teacher platform behind it, with a multi-agent pipeline that films each mission.',
+    image: '/work/monstoryx/finale/poster.jpg',
+    href: '/work/monstoryx',
+  },
   {
     years: '2024—26',
     title: 'Moxis',
