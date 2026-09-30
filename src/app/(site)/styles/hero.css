@@ -287,3 +287,65 @@
     margin-top: 0;
   }
 }
+
+/*
+ * Desktop height budget. The copy stacks up from 96px above the foot, so on a
+ * short frame the aside would climb into the meter and the nav. The headline
+ * still scales with the width, but never past what the frame can spare:
+ * everything else in the stack is --copy-top (the band it may not enter),
+ * the 96px foot, --copy-rows (gaps and the kicker row when it has its own) and
+ * --copy-aside (the aside's height in the tallest theme, Sunset). The divisor
+ * is the headline's height in ems: three lines at the theme's line-height,
+ * 0.08em of knock-out padding each and two 0.04em gaps.
+ */
+@media (min-width: 901px) {
+  .hero__frame {
+    --copy-top: calc(var(--nav-h) + 60px);
+    --copy-rows: 62px;
+    --copy-aside: 250px;
+  }
+  .headline--hero {
+    --copy-room: calc(
+      max(100svh, 560px) - var(--copy-top) - 96px - var(--copy-rows) - var(--copy-aside)
+    );
+    font-size: clamp(
+      28px,
+      min(9vw * var(--display-scale), var(--copy-room) / (3 * var(--display-lh) + 0.32)),
+      158px
+    );
+  }
+}
+/* Short or wide frames: the meter moves left, as on phones, so the aside can
+   rise to the registration marks, and the kicker sits beside the aside instead
+   of on a row of its own. */
+@media (min-width: 901px) and (max-height: 880px), (min-width: 901px) and (min-aspect-ratio: 9/5) {
+  .hero__frame {
+    --copy-top: calc(var(--nav-h) + 12px);
+    --copy-rows: 14px;
+  }
+  .hero__meter {
+    right: auto;
+    left: calc(var(--gutter) + 28px);
+  }
+  .hero__copy {
+    grid-template-areas:
+      'kicker aside'
+      'title title';
+    column-gap: 14px;
+  }
+  .hero__kicker {
+    align-self: end;
+  }
+}
+/* Laptop heights: the short intro, as on phones, keeps the headline full size. */
+@media (min-width: 901px) and (max-height: 780px) {
+  .hero__frame {
+    --copy-aside: 180px;
+  }
+  .hero__intro--long {
+    display: none;
+  }
+  .hero__intro--short {
+    display: block;
+  }
+}
